@@ -154,7 +154,7 @@ export default function Home() {
             프로젝트 문의, 제안, 협업 — 무엇이든 편하게 보내주세요.
           </p>
           <form
-            action="https://formspree.io/f/YOUR_FORM_ID"
+            action="https://formspree.io/f/xgorwywd"
             method="POST"
             className="space-y-6"
           >
