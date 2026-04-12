@@ -11,6 +11,7 @@ export default function Home() {
             <a href="#about" className="hover:text-white transition-colors">소개</a>
             <a href="#product" className="hover:text-white transition-colors">서비스</a>
             <a href="#team" className="hover:text-white transition-colors">팀</a>
+            <a href="#contact" className="hover:text-white transition-colors">연락처</a>
           </div>
         </div>
       </nav>
@@ -139,6 +140,79 @@ export default function Home() {
               </div>
             ))}
           </div>
+        </div>
+      </section>
+
+      {/* Contact */}
+      <section id="contact" className="py-32 px-6 bg-white/[0.02]">
+        <div className="max-w-2xl mx-auto">
+          <h2 className="text-3xl sm:text-4xl font-bold mb-6 text-center">
+            <span className="text-indigo-500">Contact</span>
+          </h2>
+          <div className="h-px w-16 bg-indigo-500 mb-4 mx-auto" />
+          <p className="text-gray-500 text-center mb-12">
+            프로젝트 문의, 제안, 협업 — 무엇이든 편하게 보내주세요.
+          </p>
+          <form
+            action="https://formspree.io/f/YOUR_FORM_ID"
+            method="POST"
+            className="space-y-6"
+          >
+            <div className="grid grid-cols-1 sm:grid-cols-2 gap-6">
+              <div>
+                <label htmlFor="name" className="block text-sm text-gray-400 mb-2">이름</label>
+                <input
+                  type="text"
+                  id="name"
+                  name="name"
+                  required
+                  placeholder="홍길동"
+                  className="w-full px-4 py-3 rounded-xl bg-white/[0.04] border border-white/10 text-white placeholder-gray-600 focus:outline-none focus:border-indigo-500/50 focus:ring-1 focus:ring-indigo-500/25 transition-all"
+                />
+              </div>
+              <div>
+                <label htmlFor="email" className="block text-sm text-gray-400 mb-2">이메일</label>
+                <input
+                  type="email"
+                  id="email"
+                  name="email"
+                  required
+                  placeholder="hello@example.com"
+                  className="w-full px-4 py-3 rounded-xl bg-white/[0.04] border border-white/10 text-white placeholder-gray-600 focus:outline-none focus:border-indigo-500/50 focus:ring-1 focus:ring-indigo-500/25 transition-all"
+                />
+              </div>
+            </div>
+            <div>
+              <label htmlFor="subject" className="block text-sm text-gray-400 mb-2">제목</label>
+              <input
+                type="text"
+                id="subject"
+                name="subject"
+                required
+                placeholder="문의 제목을 입력해주세요"
+                className="w-full px-4 py-3 rounded-xl bg-white/[0.04] border border-white/10 text-white placeholder-gray-600 focus:outline-none focus:border-indigo-500/50 focus:ring-1 focus:ring-indigo-500/25 transition-all"
+              />
+            </div>
+            <div>
+              <label htmlFor="message" className="block text-sm text-gray-400 mb-2">메시지</label>
+              <textarea
+                id="message"
+                name="message"
+                required
+                rows={6}
+                placeholder="내용을 입력해주세요"
+                className="w-full px-4 py-3 rounded-xl bg-white/[0.04] border border-white/10 text-white placeholder-gray-600 focus:outline-none focus:border-indigo-500/50 focus:ring-1 focus:ring-indigo-500/25 transition-all resize-none"
+              />
+            </div>
+            <div className="text-center pt-2">
+              <button
+                type="submit"
+                className="px-10 py-3.5 bg-indigo-600 hover:bg-indigo-500 rounded-full text-sm font-medium transition-all hover:shadow-lg hover:shadow-indigo-500/25 active:scale-95"
+              >
+                보내기
+              </button>
+            </div>
+          </form>
         </div>
       </section>
 
