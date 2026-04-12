@@ -113,7 +113,7 @@ export default function Home() {
       {/* Footer */}
       <footer className="py-8 px-6 border-t border-white/5">
         <div className="max-w-6xl mx-auto flex flex-col sm:flex-row items-center justify-between gap-4 text-sm text-gray-600">
-          <p>© 2026 Zuply. All rights reserved.</p>
+          <p>© 2024 Zuply. All rights reserved.</p>
           <p>
             <span className="text-indigo-500">Z</span>uply — We zuply what you need.
           </p>
