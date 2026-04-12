@@ -54,28 +54,60 @@ export default function Home() {
         </div>
       </section>
 
-      {/* Product — 모닝브리핑 */}
+      {/* Products */}
       <section id="product" className="py-32 px-6 bg-white/[0.02]">
         <div className="max-w-4xl mx-auto">
           <h2 className="text-3xl sm:text-4xl font-bold mb-6">
-            <span className="text-indigo-500">모닝브리핑</span>
+            <span className="text-indigo-500">Services</span>
           </h2>
           <div className="h-px w-16 bg-indigo-500 mb-10" />
-          <div className="group relative p-10 rounded-2xl border border-white/10 bg-gradient-to-br from-white/[0.04] to-transparent">
-            <div className="absolute inset-0 bg-gradient-to-br from-indigo-500/5 to-transparent rounded-2xl opacity-0 group-hover:opacity-100 transition-opacity" />
-            <div className="relative">
-              <div className="text-5xl mb-6">📰</div>
-              <h3 className="text-2xl font-bold mb-4">매일 아침, 필요한 정보를 한눈에.</h3>
-              <p className="text-gray-400 leading-relaxed mb-8 max-w-2xl">
-                주식 시장 동향, 코인 가격, 오늘의 날씨, 주요 뉴스까지.
-                하루를 시작하기 전 꼭 필요한 정보를 깔끔하게 정리해서 전달합니다.
-              </p>
-              <div className="flex flex-wrap gap-3">
-                {["📈 주식", "₿ 코인", "🌤️ 날씨", "📰 뉴스"].map((tag) => (
-                  <span key={tag} className="px-4 py-2 rounded-full text-sm bg-indigo-500/10 text-indigo-400 border border-indigo-500/20">
-                    {tag}
-                  </span>
-                ))}
+          <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
+            {/* 모닝브리핑 */}
+            <div className="group relative p-8 rounded-2xl border border-white/10 bg-gradient-to-br from-white/[0.04] to-transparent hover:border-indigo-500/30 transition-all">
+              <div className="absolute inset-0 bg-gradient-to-br from-indigo-500/5 to-transparent rounded-2xl opacity-0 group-hover:opacity-100 transition-opacity" />
+              <div className="relative">
+                <div className="text-4xl mb-4">📰</div>
+                <h3 className="text-xl font-bold mb-3">모닝브리핑</h3>
+                <p className="text-gray-400 text-sm leading-relaxed mb-4">
+                  매일 아침 주식, 코인, 날씨, 뉴스를 한눈에 정리해서 전달합니다.
+                </p>
+                <div className="flex flex-wrap gap-2">
+                  {["📈 주식", "₿ 코인", "🌤️ 날씨", "📰 뉴스"].map((tag) => (
+                    <span key={tag} className="px-3 py-1 rounded-full text-xs bg-indigo-500/10 text-indigo-400 border border-indigo-500/20">
+                      {tag}
+                    </span>
+                  ))}
+                </div>
+              </div>
+            </div>
+
+            {/* 교육 서비스 */}
+            <div className="group relative p-8 rounded-2xl border border-white/10 bg-gradient-to-br from-white/[0.04] to-transparent hover:border-indigo-500/30 transition-all">
+              <div className="absolute inset-0 bg-gradient-to-br from-indigo-500/5 to-transparent rounded-2xl opacity-0 group-hover:opacity-100 transition-opacity" />
+              <div className="relative">
+                <div className="text-4xl mb-4">🎓</div>
+                <h3 className="text-xl font-bold mb-3">교육 서비스</h3>
+                <p className="text-gray-400 text-sm leading-relaxed mb-4">
+                  누구나 쉽게 배우고 성장할 수 있는 교육 플랫폼을 준비하고 있습니다.
+                </p>
+                <span className="px-3 py-1 rounded-full text-xs bg-amber-500/10 text-amber-400 border border-amber-500/20">
+                  개발 중
+                </span>
+              </div>
+            </div>
+
+            {/* 취업 서비스 */}
+            <div className="group relative p-8 rounded-2xl border border-white/10 bg-gradient-to-br from-white/[0.04] to-transparent hover:border-indigo-500/30 transition-all">
+              <div className="absolute inset-0 bg-gradient-to-br from-indigo-500/5 to-transparent rounded-2xl opacity-0 group-hover:opacity-100 transition-opacity" />
+              <div className="relative">
+                <div className="text-4xl mb-4">💼</div>
+                <h3 className="text-xl font-bold mb-3">취업 서비스</h3>
+                <p className="text-gray-400 text-sm leading-relaxed mb-4">
+                  당신에게 딱 맞는 커리어를 찾을 수 있도록 도와드립니다.
+                </p>
+                <span className="px-3 py-1 rounded-full text-xs bg-amber-500/10 text-amber-400 border border-amber-500/20">
+                  개발 중
+                </span>
               </div>
             </div>
           </div>
