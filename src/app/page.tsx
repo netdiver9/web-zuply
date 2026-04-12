@@ -96,6 +96,9 @@ export default function Home() {
               { name: "Yumi", role: "Frontend Developer", emoji: "🖥️" },
               { name: "Jaden", role: "Backend Developer", emoji: "⚙️" },
               { name: "Ryan", role: "Infrastructure", emoji: "🛠️" },
+              { name: "Sophie", role: "Product Manager", emoji: "📋" },
+              { name: "Ethan", role: "QA Engineer", emoji: "🔍" },
+              { name: "Hana", role: "Data Analyst", emoji: "📊" },
             ].map((member) => (
               <div key={member.name} className="p-6 rounded-2xl border border-white/5 bg-white/[0.02] hover:bg-white/[0.04] transition-colors">
                 <div className="text-4xl mb-4">{member.emoji}</div>
