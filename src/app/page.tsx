@@ -27,7 +27,7 @@ export default function Home() {
             We zuply what you need.
           </p>
           <p className="text-base text-gray-500 max-w-lg mx-auto">
-            AI 기반 앱 스튜디오. 사람들에게 필요한 것을 만듭니다.
+            앱 스튜디오. 사람들에게 필요한 것을 만듭니다.
           </p>
         </div>
         <div className="absolute bottom-10 left-1/2 -translate-x-1/2 animate-bounce">
@@ -45,7 +45,7 @@ export default function Home() {
           </h2>
           <div className="h-px w-16 bg-indigo-500 mb-10" />
           <p className="text-lg text-gray-400 leading-relaxed mb-6">
-            Zuply는 AI 기술을 활용해 사람들의 일상에 필요한 앱을 만드는 스튜디오입니다.
+            Zuply는 사람들의 일상에 필요한 앱을 만드는 스튜디오입니다.
           </p>
           <p className="text-lg text-gray-400 leading-relaxed">
             복잡한 정보를 간단하게, 어려운 기술을 쉽게.
@@ -89,10 +89,12 @@ export default function Home() {
             <span className="text-indigo-500">Team</span>
           </h2>
           <div className="h-px w-16 bg-indigo-500 mb-10" />
-          <div className="grid grid-cols-1 sm:grid-cols-2 gap-8 max-w-2xl">
+          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-8">
             {[
-              { name: "승환", role: "Co-founder", emoji: "📱" },
-              { name: "유미", role: "Co-founder", emoji: "🎨" },
+              { name: "Seunghwan", role: "Planner", emoji: "💡" },
+              { name: "Sungjin", role: "Designer", emoji: "🎨" },
+              { name: "Yumi", role: "Frontend Developer", emoji: "🖥️" },
+              { name: "Jaden", role: "Backend Developer", emoji: "⚙️" },
             ].map((member) => (
               <div key={member.name} className="p-6 rounded-2xl border border-white/5 bg-white/[0.02] hover:bg-white/[0.04] transition-colors">
                 <div className="text-4xl mb-4">{member.emoji}</div>
