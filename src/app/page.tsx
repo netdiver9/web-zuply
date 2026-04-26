@@ -90,7 +90,7 @@ const T = {
     team_h2: "The people behind Zuply",
     team_sub: "Specialists across every discipline — from AI research to infrastructure.",
     team: [
-      { name: "Greenbi", role: "Product Planner", desc: "Defines product vision and AI strategy. Translates complex AI capabilities into user-centric roadmaps.", skills: ["LLM Strategy", "RAG Design", "Product Roadmap", "AI Workflow"] },
+      { name: "Greenbi", role: "Product Planner · AI/ML Engineer", desc: "Defines product vision and AI strategy. Also leads model fine-tuning, custom training pipelines, and LLM evaluation frameworks.", skills: ["LLM Strategy", "RAG Design", "Fine-tuning", "PyTorch", "AI Workflow"] },
       { name: "Kairo", role: "UI/UX Designer", desc: "Crafts intuitive interfaces for complex AI products. Specialises in data-heavy dashboard design and interaction systems.", skills: ["Figma", "Design System", "Prototyping", "Dashboard UX"] },
       { name: "Yumi", role: "Frontend Engineer", desc: "Builds performant, real-time AI interfaces. Expert in streaming LLM output, interactive data visualisation, and SSE.", skills: ["Next.js", "TypeScript", "D3.js", "WebSocket", "SSE"] },
       { name: "Jaden", role: "Backend Engineer", desc: "Architects AI pipelines and API layers. Builds RAG systems, LangChain integrations, and high-throughput inference servers.", skills: ["FastAPI", "LangChain", "LangGraph", "pgvector", "Redis"] },
@@ -98,6 +98,8 @@ const T = {
       { name: "Sophie", role: "Product Manager", desc: "Drives delivery across AI product cycles. Coordinates between research, engineering, and design to ship on time.", skills: ["Agile", "JIRA", "A/B Testing", "Analytics", "OKR"] },
       { name: "Ethan", role: "QA Engineer", desc: "Ensures reliability of AI systems. Designs evaluation frameworks for LLM output quality, latency, and edge-case robustness.", skills: ["LLM Evaluation", "Pytest", "k6", "Playwright", "CI/CD"] },
       { name: "Hana", role: "Data Analyst", desc: "Turns raw data into product insights. Builds predictive models, behavioural analytics pipelines, and executive dashboards.", skills: ["Python", "pandas", "SQL", "scikit-learn", "Tableau"] },
+      { name: "Marcus", role: "DevSecOps Engineer", desc: "Owns security posture across all AI systems. Manages API key vaulting, compliance audits, threat modelling, and zero-trust architecture.", skills: ["Vault", "SIEM", "Zero Trust", "API Security", "Compliance"] },
+      { name: "Nora", role: "Technical Writer", desc: "Produces API documentation, user manuals, and compliance deliverables for public-sector clients. Bridges technical depth with clear communication.", skills: ["API Docs", "Swagger", "Confluence", "공공기관 납품문서", "Markdown"] },
     ],
     contact_badge: "Contact",
     contact_h2: "Start your project",
@@ -206,7 +208,7 @@ const T = {
     team_h2: "Zuply를 만드는 사람들",
     team_sub: "AI 리서치부터 인프라까지 각 분야 전문가들이 함께합니다.",
     team: [
-      { name: "Greenbi", role: "프로덕트 플래너", desc: "제품 비전과 AI 전략을 수립합니다. 복잡한 AI 기술을 사용자 중심 로드맵으로 전환하는 역할을 맡습니다.", skills: ["LLM 전략", "RAG 설계", "프로덕트 로드맵", "AI 워크플로우"] },
+      { name: "Greenbi", role: "프로덕트 플래너 · AI/ML 엔지니어", desc: "제품 비전과 AI 전략을 수립합니다. 모델 파인튜닝, 커스텀 학습 파이프라인, LLM 평가 프레임워크 구축도 담당합니다.", skills: ["LLM 전략", "RAG 설계", "파인튜닝", "PyTorch", "AI 워크플로우"] },
       { name: "Kairo", role: "UI/UX 디자이너", desc: "AI 제품을 위한 직관적인 인터페이스를 설계합니다. 데이터 대시보드와 인터랙션 시스템 설계에 특화되어 있습니다.", skills: ["Figma", "디자인 시스템", "프로토타이핑", "대시보드 UX"] },
       { name: "Yumi", role: "프론트엔드 엔지니어", desc: "고성능 실시간 AI 인터페이스를 구현합니다. LLM 스트리밍 출력, 인터랙티브 데이터 시각화, SSE 처리에 능숙합니다.", skills: ["Next.js", "TypeScript", "D3.js", "WebSocket", "SSE"] },
       { name: "Jaden", role: "백엔드 엔지니어", desc: "AI 파이프라인과 API 레이어를 설계합니다. RAG 시스템, LangChain 연동, 고성능 추론 서버를 구축합니다.", skills: ["FastAPI", "LangChain", "LangGraph", "pgvector", "Redis"] },
@@ -214,6 +216,8 @@ const T = {
       { name: "Sophie", role: "프로덕트 매니저", desc: "AI 제품 개발 사이클 전체를 조율합니다. 리서치·엔지니어링·디자인 팀 간 협업을 통해 일정 내 제품을 출시합니다.", skills: ["Agile", "JIRA", "A/B 테스팅", "Analytics", "OKR"] },
       { name: "Ethan", role: "QA 엔지니어", desc: "AI 시스템의 안정성을 검증합니다. LLM 출력 품질, 지연 시간, 엣지케이스 견고성을 위한 평가 프레임워크를 설계합니다.", skills: ["LLM 평가", "Pytest", "k6", "Playwright", "CI/CD"] },
       { name: "Hana", role: "데이터 분석가", desc: "원시 데이터를 제품 인사이트로 전환합니다. 예측 모델, 행동 분석 파이프라인, 경영진 대시보드를 구축합니다.", skills: ["Python", "pandas", "SQL", "scikit-learn", "Tableau"] },
+      { name: "Marcus", role: "DevSecOps 엔지니어", desc: "AI 시스템 전체의 보안을 책임집니다. API 키 보관, 컴플라이언스 감사, 위협 모델링, 제로트러스트 아키텍처를 담당합니다.", skills: ["Vault", "SIEM", "Zero Trust", "API 보안", "컴플라이언스"] },
+      { name: "Nora", role: "테크니컬 라이터", desc: "API 문서, 사용자 매뉴얼, 공공기관 납품 문서를 작성합니다. 기술적 깊이와 명확한 커뮤니케이션을 연결하는 역할을 합니다.", skills: ["API 문서", "Swagger", "Confluence", "납품문서", "Markdown"] },
     ],
     contact_badge: "연락처",
     contact_h2: "프로젝트 시작하기",
@@ -451,6 +455,7 @@ const TEAM_COLORS = [
   "from-violet-500 to-purple-600", "from-sky-500 to-blue-600",
   "from-slate-400 to-slate-600", "from-emerald-500 to-teal-600",
   "from-amber-500 to-orange-500", "from-cyan-500 to-sky-500",
+  "from-red-500 to-rose-600", "from-fuchsia-500 to-pink-500",
 ];
 
 // ── Main ──────────────────────────────────────────────────────────
