@@ -227,7 +227,7 @@ function useInView(threshold = 0.2) {
 // ── Stats ─────────────────────────────────────────────────────────
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
 function Stats({ t }: { t: any }) {
-  const { ref, inView } = useInView(0.3);
+  const { ref, inView } = useInView(0.1);
   const u = useCountUp(12400, 2000, inView);
   const a = useCountUp(38, 1800, inView);
   const s = useCountUp(97, 1600, inView);
@@ -239,11 +239,11 @@ function Stats({ t }: { t: any }) {
     { v: y, suf: "+", label: t.stat_labels[3] },
   ];
   return (
-    <div ref={ref} className="grid grid-cols-2 md:grid-cols-4 gap-8">
+    <div ref={ref} className="grid grid-cols-2 md:grid-cols-4 gap-10">
       {vals.map((s) => (
-        <div key={s.label} className="text-center">
-          <div className="text-4xl font-bold bg-gradient-to-r from-indigo-400 to-violet-400 bg-clip-text text-transparent mb-1">
-            {s.v}<span className="text-2xl">{s.suf}</span>
+        <div key={s.label} className="text-center py-4">
+          <div className="text-4xl sm:text-5xl font-bold bg-gradient-to-r from-indigo-400 to-violet-400 bg-clip-text text-transparent mb-2">
+            {s.v}<span className="text-2xl sm:text-3xl">{s.suf}</span>
           </div>
           <div className="text-sm text-gray-400">{s.label}</div>
         </div>
@@ -500,16 +500,16 @@ export default function Home() {
             </div>
           </div>
 
-          <div className="grid grid-cols-1 md:grid-cols-3 gap-5">
+          <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-5">
             {t.other_services.map((s) => (
-              <div key={s.title} className="p-6 rounded-2xl border border-white/5 bg-white/[0.02] hover:border-white/10 hover:bg-white/[0.04] transition-all">
-                <div className="text-2xl mb-4">{s.icon}</div>
-                <h3 className="font-bold text-sm mb-2">{s.title}</h3>
-                <p className="text-gray-500 text-xs leading-relaxed mb-4">{s.desc}</p>
-                {s.badge && <span className="px-2.5 py-1 rounded-full text-xs bg-amber-500/10 text-amber-400 border border-amber-500/20">{s.badge}</span>}
+              <div key={s.title} className="p-7 rounded-2xl border border-white/5 bg-white/[0.02] hover:border-white/10 hover:bg-white/[0.04] transition-all">
+                <div className="text-3xl mb-5">{s.icon}</div>
+                <h3 className="font-bold text-base mb-2">{s.title}</h3>
+                <p className="text-gray-500 text-sm leading-relaxed mb-5">{s.desc}</p>
+                {s.badge && <span className="px-3 py-1.5 rounded-full text-xs bg-amber-500/10 text-amber-400 border border-amber-500/20">{s.badge}</span>}
                 {s.tags.length > 0 && (
-                  <div className="flex flex-wrap gap-1.5">
-                    {s.tags.map(tag => <span key={tag} className="px-2.5 py-1 rounded-full text-xs bg-indigo-500/10 text-indigo-400 border border-indigo-500/20">{tag}</span>)}
+                  <div className="flex flex-wrap gap-2">
+                    {s.tags.map(tag => <span key={tag} className="px-3 py-1.5 rounded-full text-xs bg-indigo-500/10 text-indigo-400 border border-indigo-500/20">{tag}</span>)}
                   </div>
                 )}
               </div>
@@ -561,16 +561,16 @@ export default function Home() {
             <h2 className="text-3xl sm:text-4xl font-bold mb-4">{t.team_h2}</h2>
             <p className="text-gray-500 max-w-md mx-auto">{t.team_sub}</p>
           </div>
-          <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-4 gap-4">
+          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-5">
             {t.team.map((m, i) => (
               <div key={m.name} className="group rounded-2xl border border-white/5 bg-white/[0.02] hover:border-white/10 hover:bg-white/[0.04] transition-all overflow-hidden">
-                <div className={`h-1 bg-gradient-to-r ${TEAM_COLORS[i]}`} />
-                <div className="p-5">
-                  <div className={`w-10 h-10 rounded-xl bg-gradient-to-br ${TEAM_COLORS[i]} mb-4 flex items-center justify-center text-white font-bold`}>
+                <div className={`h-1.5 bg-gradient-to-r ${TEAM_COLORS[i]}`} />
+                <div className="p-6">
+                  <div className={`w-12 h-12 rounded-xl bg-gradient-to-br ${TEAM_COLORS[i]} mb-5 flex items-center justify-center text-white font-bold text-lg`}>
                     {m.name[0]}
                   </div>
-                  <p className="font-semibold text-sm text-white">{m.name}</p>
-                  <p className="text-gray-500 text-xs mt-0.5">{m.role}</p>
+                  <p className="font-semibold text-base text-white">{m.name}</p>
+                  <p className="text-gray-500 text-sm mt-1">{m.role}</p>
                 </div>
               </div>
             ))}
