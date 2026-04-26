@@ -90,14 +90,14 @@ const T = {
     team_h2: "The people behind Zuply",
     team_sub: "Specialists across every discipline — from AI research to infrastructure.",
     team: [
-      { name: "Seunghwan", role: "Product Planner" },
-      { name: "Sungjin", role: "UI/UX Designer" },
-      { name: "Yumi", role: "Frontend Engineer" },
-      { name: "Jaden", role: "Backend Engineer" },
-      { name: "Ryan", role: "Infrastructure" },
-      { name: "Sophie", role: "Product Manager" },
-      { name: "Ethan", role: "QA Engineer" },
-      { name: "Hana", role: "Data Analyst" },
+      { name: "Seunghwan", role: "Product Planner", desc: "Defines product vision and AI strategy. Translates complex AI capabilities into user-centric roadmaps.", skills: ["LLM Strategy", "RAG Design", "Product Roadmap", "AI Workflow"] },
+      { name: "Kairo", role: "UI/UX Designer", desc: "Crafts intuitive interfaces for complex AI products. Specialises in data-heavy dashboard design and interaction systems.", skills: ["Figma", "Design System", "Prototyping", "Dashboard UX"] },
+      { name: "Yumi", role: "Frontend Engineer", desc: "Builds performant, real-time AI interfaces. Expert in streaming LLM output, interactive data visualisation, and SSE.", skills: ["Next.js", "TypeScript", "D3.js", "WebSocket", "SSE"] },
+      { name: "Jaden", role: "Backend Engineer", desc: "Architects AI pipelines and API layers. Builds RAG systems, LangChain integrations, and high-throughput inference servers.", skills: ["FastAPI", "LangChain", "LangGraph", "pgvector", "Redis"] },
+      { name: "Ryan", role: "Infrastructure Engineer", desc: "Manages cloud infrastructure for AI workloads. Optimises GPU instances, vector DBs, and model serving at scale.", skills: ["AWS", "Docker", "Kubernetes", "MLflow", "Pinecone"] },
+      { name: "Sophie", role: "Product Manager", desc: "Drives delivery across AI product cycles. Coordinates between research, engineering, and design to ship on time.", skills: ["Agile", "JIRA", "A/B Testing", "Analytics", "OKR"] },
+      { name: "Ethan", role: "QA Engineer", desc: "Ensures reliability of AI systems. Designs evaluation frameworks for LLM output quality, latency, and edge-case robustness.", skills: ["LLM Evaluation", "Pytest", "k6", "Playwright", "CI/CD"] },
+      { name: "Hana", role: "Data Analyst", desc: "Turns raw data into product insights. Builds predictive models, behavioural analytics pipelines, and executive dashboards.", skills: ["Python", "pandas", "SQL", "scikit-learn", "Tableau"] },
     ],
     contact_badge: "Contact",
     contact_h2: "Start your project",
@@ -206,14 +206,14 @@ const T = {
     team_h2: "Zuply를 만드는 사람들",
     team_sub: "AI 리서치부터 인프라까지 각 분야 전문가들이 함께합니다.",
     team: [
-      { name: "Seunghwan", role: "프로덕트 플래너" },
-      { name: "Sungjin", role: "UI/UX 디자이너" },
-      { name: "Yumi", role: "프론트엔드 엔지니어" },
-      { name: "Jaden", role: "백엔드 엔지니어" },
-      { name: "Ryan", role: "인프라" },
-      { name: "Sophie", role: "프로덕트 매니저" },
-      { name: "Ethan", role: "QA 엔지니어" },
-      { name: "Hana", role: "데이터 분석가" },
+      { name: "Seunghwan", role: "프로덕트 플래너", desc: "제품 비전과 AI 전략을 수립합니다. 복잡한 AI 기술을 사용자 중심 로드맵으로 전환하는 역할을 맡습니다.", skills: ["LLM 전략", "RAG 설계", "프로덕트 로드맵", "AI 워크플로우"] },
+      { name: "Kairo", role: "UI/UX 디자이너", desc: "AI 제품을 위한 직관적인 인터페이스를 설계합니다. 데이터 대시보드와 인터랙션 시스템 설계에 특화되어 있습니다.", skills: ["Figma", "디자인 시스템", "프로토타이핑", "대시보드 UX"] },
+      { name: "Yumi", role: "프론트엔드 엔지니어", desc: "고성능 실시간 AI 인터페이스를 구현합니다. LLM 스트리밍 출력, 인터랙티브 데이터 시각화, SSE 처리에 능숙합니다.", skills: ["Next.js", "TypeScript", "D3.js", "WebSocket", "SSE"] },
+      { name: "Jaden", role: "백엔드 엔지니어", desc: "AI 파이프라인과 API 레이어를 설계합니다. RAG 시스템, LangChain 연동, 고성능 추론 서버를 구축합니다.", skills: ["FastAPI", "LangChain", "LangGraph", "pgvector", "Redis"] },
+      { name: "Ryan", role: "인프라 엔지니어", desc: "AI 워크로드를 위한 클라우드 인프라를 운영합니다. GPU 인스턴스, 벡터 DB, 모델 서빙을 최적화합니다.", skills: ["AWS", "Docker", "Kubernetes", "MLflow", "Pinecone"] },
+      { name: "Sophie", role: "프로덕트 매니저", desc: "AI 제품 개발 사이클 전체를 조율합니다. 리서치·엔지니어링·디자인 팀 간 협업을 통해 일정 내 제품을 출시합니다.", skills: ["Agile", "JIRA", "A/B 테스팅", "Analytics", "OKR"] },
+      { name: "Ethan", role: "QA 엔지니어", desc: "AI 시스템의 안정성을 검증합니다. LLM 출력 품질, 지연 시간, 엣지케이스 견고성을 위한 평가 프레임워크를 설계합니다.", skills: ["LLM 평가", "Pytest", "k6", "Playwright", "CI/CD"] },
+      { name: "Hana", role: "데이터 분석가", desc: "원시 데이터를 제품 인사이트로 전환합니다. 예측 모델, 행동 분석 파이프라인, 경영진 대시보드를 구축합니다.", skills: ["Python", "pandas", "SQL", "scikit-learn", "Tableau"] },
     ],
     contact_badge: "연락처",
     contact_h2: "프로젝트 시작하기",
@@ -681,12 +681,18 @@ export default function Home() {
           </div>
           <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-5">
             {t.team.map((m, i) => (
-              <div key={m.name} className="rounded-2xl border border-white/5 bg-white/[0.02] hover:border-white/10 hover:bg-white/[0.04] transition-all overflow-hidden">
-                <div className={`h-1.5 bg-gradient-to-r ${TEAM_COLORS[i]}`} />
+              <div key={m.name} className="rounded-2xl border border-white/5 bg-white/[0.02] hover:border-white/10 hover:bg-white/[0.04] transition-all overflow-hidden group">
+                <div className={`h-1 bg-gradient-to-r ${TEAM_COLORS[i]}`} />
                 <div className="p-6">
-                  <div className={`w-12 h-12 rounded-xl bg-gradient-to-br ${TEAM_COLORS[i]} mb-5 flex items-center justify-center text-white font-bold text-lg`}>{m.name[0]}</div>
-                  <p className="font-semibold text-base text-white">{m.name}</p>
-                  <p className="text-gray-500 text-sm mt-1">{m.role}</p>
+                  <div className={`w-11 h-11 rounded-xl bg-gradient-to-br ${TEAM_COLORS[i]} mb-4 flex items-center justify-center text-white font-bold text-base`}>{m.name[0]}</div>
+                  <p className="font-semibold text-sm text-white">{m.name}</p>
+                  <p className="text-xs text-gray-500 mt-0.5 mb-3">{m.role}</p>
+                  <p className="text-xs text-gray-500 leading-relaxed mb-4 line-clamp-3">{m.desc}</p>
+                  <div className="flex flex-wrap gap-1.5">
+                    {m.skills.map(s => (
+                      <span key={s} className="px-2 py-0.5 rounded text-[10px] font-mono bg-white/[0.04] border border-white/8 text-gray-400">{s}</span>
+                    ))}
+                  </div>
                 </div>
               </div>
             ))}
