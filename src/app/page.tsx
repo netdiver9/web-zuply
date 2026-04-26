@@ -90,7 +90,7 @@ const T = {
     team_h2: "The people behind Zuply",
     team_sub: "Specialists across every discipline — from AI research to infrastructure.",
     team: [
-      { name: "Seunghwan", role: "Product Planner", desc: "Defines product vision and AI strategy. Translates complex AI capabilities into user-centric roadmaps.", skills: ["LLM Strategy", "RAG Design", "Product Roadmap", "AI Workflow"] },
+      { name: "Greenbi", role: "Product Planner", desc: "Defines product vision and AI strategy. Translates complex AI capabilities into user-centric roadmaps.", skills: ["LLM Strategy", "RAG Design", "Product Roadmap", "AI Workflow"] },
       { name: "Kairo", role: "UI/UX Designer", desc: "Crafts intuitive interfaces for complex AI products. Specialises in data-heavy dashboard design and interaction systems.", skills: ["Figma", "Design System", "Prototyping", "Dashboard UX"] },
       { name: "Yumi", role: "Frontend Engineer", desc: "Builds performant, real-time AI interfaces. Expert in streaming LLM output, interactive data visualisation, and SSE.", skills: ["Next.js", "TypeScript", "D3.js", "WebSocket", "SSE"] },
       { name: "Jaden", role: "Backend Engineer", desc: "Architects AI pipelines and API layers. Builds RAG systems, LangChain integrations, and high-throughput inference servers.", skills: ["FastAPI", "LangChain", "LangGraph", "pgvector", "Redis"] },
@@ -206,7 +206,7 @@ const T = {
     team_h2: "Zuply를 만드는 사람들",
     team_sub: "AI 리서치부터 인프라까지 각 분야 전문가들이 함께합니다.",
     team: [
-      { name: "Seunghwan", role: "프로덕트 플래너", desc: "제품 비전과 AI 전략을 수립합니다. 복잡한 AI 기술을 사용자 중심 로드맵으로 전환하는 역할을 맡습니다.", skills: ["LLM 전략", "RAG 설계", "프로덕트 로드맵", "AI 워크플로우"] },
+      { name: "Greenbi", role: "프로덕트 플래너", desc: "제품 비전과 AI 전략을 수립합니다. 복잡한 AI 기술을 사용자 중심 로드맵으로 전환하는 역할을 맡습니다.", skills: ["LLM 전략", "RAG 설계", "프로덕트 로드맵", "AI 워크플로우"] },
       { name: "Kairo", role: "UI/UX 디자이너", desc: "AI 제품을 위한 직관적인 인터페이스를 설계합니다. 데이터 대시보드와 인터랙션 시스템 설계에 특화되어 있습니다.", skills: ["Figma", "디자인 시스템", "프로토타이핑", "대시보드 UX"] },
       { name: "Yumi", role: "프론트엔드 엔지니어", desc: "고성능 실시간 AI 인터페이스를 구현합니다. LLM 스트리밍 출력, 인터랙티브 데이터 시각화, SSE 처리에 능숙합니다.", skills: ["Next.js", "TypeScript", "D3.js", "WebSocket", "SSE"] },
       { name: "Jaden", role: "백엔드 엔지니어", desc: "AI 파이프라인과 API 레이어를 설계합니다. RAG 시스템, LangChain 연동, 고성능 추론 서버를 구축합니다.", skills: ["FastAPI", "LangChain", "LangGraph", "pgvector", "Redis"] },
