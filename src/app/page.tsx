@@ -2,6 +2,13 @@
 
 import { useEffect, useRef, useState, useCallback } from "react";
 
+// ── 공개한 앱들 ───────────────────────────────────────────────────
+// App Store 는 앱마다 지원 URL 과 개인정보 처리방침 URL 을 요구합니다.
+// 새 앱을 낼 때 여기 한 줄 추가하고 /src/app/<slug> 에 페이지 두 개를 두면 됩니다.
+const APPS = [
+  { name: "두근", slug: "dugeun", emoji: "💗" },
+] as const;
+
 // ── i18n ─────────────────────────────────────────────────────────
 const T = {
   en: {
@@ -121,6 +128,8 @@ const T = {
     success_p: "We'll get back to you as soon as possible.",
     footer_tagline: "Personal WEB · APP · AI Studio",
     footer_copy: "© 2025 Zuply. All rights reserved.",
+    footer_apps: "Apps",
+    footer_privacy: "Privacy",
   },
   ko: {
     nav: ["소개", "서비스", "AI & 데이터", "기술", "팀", "연락처"],
@@ -239,6 +248,8 @@ const T = {
     success_p: "빠른 시일 내에 연락드리겠습니다.",
     footer_tagline: "개인을 위한 WEB · APP · AI 스튜디오",
     footer_copy: "© 2025 Zuply. All rights reserved.",
+    footer_apps: "앱",
+    footer_privacy: "개인정보 처리방침",
   },
 } as const;
 type Lang = keyof typeof T;
@@ -765,9 +776,32 @@ export default function Home() {
 
       {/* FOOTER */}
       <footer className="py-10 px-6 border-t border-white/5">
-        <div className="max-w-6xl mx-auto flex flex-col sm:flex-row items-center justify-between gap-4 text-sm text-gray-600">
-          <div><p className="text-white font-bold mb-0.5"><span className="text-indigo-400">Z</span>uply</p><p className="text-xs">{t.footer_tagline}</p></div>
-          <p className="text-xs">{t.footer_copy}</p>
+        <div className="max-w-6xl mx-auto flex flex-col gap-8 text-sm text-gray-600">
+          <div className="flex flex-col sm:flex-row sm:items-start sm:justify-between gap-8">
+            <div>
+              <p className="text-white font-bold mb-0.5"><span className="text-indigo-400">Z</span>uply</p>
+              <p className="text-xs">{t.footer_tagline}</p>
+            </div>
+
+            <div className="sm:text-right">
+              <p className="text-xs text-gray-500 mb-2">{t.footer_apps}</p>
+              <ul className="space-y-1.5">
+                {APPS.map((app) => (
+                  <li key={app.slug} className="flex items-center gap-2 sm:justify-end">
+                    <a href={`/${app.slug}`} className="text-gray-300 hover:text-white transition-colors">
+                      {app.emoji} {app.name}
+                    </a>
+                    <span className="text-gray-700">·</span>
+                    <a href={`/${app.slug}/privacy`} className="text-xs text-gray-500 hover:text-white transition-colors">
+                      {t.footer_privacy}
+                    </a>
+                  </li>
+                ))}
+              </ul>
+            </div>
+          </div>
+
+          <p className="text-xs border-t border-white/5 pt-6">{t.footer_copy}</p>
         </div>
       </footer>
     </main>
