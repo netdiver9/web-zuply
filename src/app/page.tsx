@@ -261,6 +261,8 @@ const T = {
     footer_copy: "© 2025 Zuply. All rights reserved.",
     footer_apps: "Apps",
     footer_privacy: "Privacy",
+    footer_downloads: "Downloads",
+    footer_download_link: "Get the beta APK",
   },
   ko: {
     nav: ["소개", "서비스", "앱", "AI & 데이터", "기술", "팀", "연락처"],
@@ -389,6 +391,8 @@ const T = {
     footer_copy: "© 2025 Zuply. All rights reserved.",
     footer_apps: "앱",
     footer_privacy: "개인정보 처리방침",
+    footer_downloads: "다운로드",
+    footer_download_link: "베타 APK 받기",
   },
 } as const;
 type Lang = keyof typeof T;
@@ -1232,6 +1236,12 @@ export default function Home() {
                   </li>
                 ))}
               </ul>
+
+              {/* 스토어에 올리기 전 빌드를 직접 받아 가는 곳 */}
+              <p className="text-xs text-gray-500 mt-5 mb-2">{t.footer_downloads}</p>
+              <a href="/download" className="text-gray-300 hover:text-white transition-colors">
+                ↓ {t.footer_download_link}
+              </a>
             </div>
           </div>
 
