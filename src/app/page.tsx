@@ -2,17 +2,140 @@
 
 import { useEffect, useRef, useState, useCallback } from "react";
 
-// ── 공개한 앱들 ───────────────────────────────────────────────────
-// App Store 는 앱마다 지원 URL 과 개인정보 처리방침 URL 을 요구합니다.
-// 새 앱을 낼 때 여기 한 줄 추가하고 /src/app/<slug> 에 페이지 두 개를 두면 됩니다.
-const APPS = [
-  { name: "두근", slug: "dugeun", emoji: "💗" },
-] as const;
+// ── 앱 목록 ───────────────────────────────────────────────────────
+// 앱을 하나 낼 때마다 여기 한 줄만 고치면 홈의 Apps 섹션과 푸터가 함께 갱신됩니다.
+//   status   : "soon" → 출시 예정 배지, "live" → 출시됨 배지
+//   appStore : App Store 링크. 넣으면 카드에 "App Store" 버튼이 생깁니다.
+//   page     : /src/app/<slug> 에 지원·개인정보 페이지를 둔 앱만 true.
+//              (App Store 는 앱마다 지원 URL 과 개인정보 처리방침 URL 을 요구합니다.)
+type AppCategory = "note" | "camera" | "travel" | "couple" | "language";
+
+type AppEntry = {
+  slug: string;
+  emoji: string;
+  category: AppCategory;
+  name: { en: string; ko: string };
+  tagline: { en: string; ko: string };
+  status: "live" | "soon";
+  appStore: string | null;
+  page: boolean;
+};
+
+const APPS: AppEntry[] = [
+  {
+    slug: "dugeun",
+    emoji: "💗",
+    category: "couple",
+    name: { en: "Dugeun", ko: "두근" },
+    tagline: {
+      en: "Photos that land straight on one person's Home Screen.",
+      ko: "가까운 한 사람의 홈 화면에 바로 뜨는 사진.",
+    },
+    status: "soon",
+    appStore: null,
+    page: true,
+  },
+  {
+    slug: "samenote",
+    emoji: "📝",
+    category: "note",
+    name: { en: "Samenote", ko: "Samenote" },
+    tagline: { en: "", ko: "" },
+    status: "soon",
+    appStore: null,
+    page: false,
+  },
+  {
+    slug: "tumsaenote",
+    emoji: "🗒️",
+    category: "note",
+    name: { en: "Tumsaenote", ko: "Tumsaenote" },
+    tagline: { en: "", ko: "" },
+    status: "soon",
+    appStore: null,
+    page: false,
+  },
+  {
+    slug: "mooda",
+    emoji: "📷",
+    category: "camera",
+    name: { en: "Mooda", ko: "Mooda" },
+    tagline: { en: "", ko: "" },
+    status: "soon",
+    appStore: null,
+    page: false,
+  },
+  {
+    slug: "packly",
+    emoji: "🧳",
+    category: "travel",
+    name: { en: "Packly", ko: "패클리" },
+    tagline: { en: "", ko: "" },
+    status: "soon",
+    appStore: null,
+    page: false,
+  },
+  // 언어 앱은 우선순위 순으로 둡니다 — 카드가 배열 순서대로 그려집니다.
+  // 순서 근거: 인구 × 한국어 학습 동기 × 결제력.
+  // 앱 이름은 현지 인사말 기준의 임시안이라, 정해지면 name 만 바꾸면 됩니다.
+  {
+    slug: "halo",
+    emoji: "🇮🇩",
+    category: "language",
+    name: { en: "Halo", ko: "할로" },
+    tagline: {
+      en: "Korean, taught in Indonesian.",
+      ko: "인도네시아어로 배우는 한국어.",
+    },
+    status: "soon",
+    appStore: null,
+    page: false,
+  },
+  {
+    slug: "xinchao",
+    emoji: "🇻🇳",
+    category: "language",
+    name: { en: "Xin Chào", ko: "신짜오" },
+    tagline: {
+      en: "Korean, taught in Vietnamese.",
+      ko: "베트남어로 배우는 한국어.",
+    },
+    status: "soon",
+    appStore: null,
+    page: false,
+  },
+  {
+    slug: "sawasdee",
+    emoji: "🇹🇭",
+    category: "language",
+    name: { en: "Sawasdee", ko: "사와디" },
+    tagline: {
+      en: "Korean, taught in Thai.",
+      ko: "태국어로 배우는 한국어.",
+    },
+    status: "soon",
+    appStore: null,
+    page: false,
+  },
+  {
+    slug: "kamusta",
+    emoji: "🇵🇭",
+    category: "language",
+    name: { en: "Kamusta", ko: "Kamusta" },
+    tagline: {
+      en: "Korean, taught in Filipino.",
+      ko: "필리핀어로 배우는 한국어.",
+    },
+    status: "soon",
+    appStore: null,
+    page: false,
+  },
+];
 
 // ── i18n ─────────────────────────────────────────────────────────
 const T = {
   en: {
-    nav: ["About", "Services", "AI & Data", "Stack", "Team", "Contact"],
+    nav: ["About", "Services", "Apps", "AI & Data", "Stack", "Team", "Contact"],
     cta_primary: "Get Started",
     cta_secondary: "View Services",
     badge: "Personal WEB · APP · AI Studio",
@@ -90,6 +213,14 @@ const T = {
       { icon: "🎓", title: "Education", desc: "Adaptive learning platform powered by AI tutoring.", tags: [], badge: "Coming soon" },
       { icon: "💼", title: "Career", desc: "AI-matched career paths tailored to your skills.", tags: [], badge: "Coming soon" },
     ],
+    apps_badge: "Apps",
+    apps_h2: "Apps we're shipping",
+    apps_sub: "Built one at a time, each released on the App Store.",
+    apps_all: "All",
+    apps_cats: { note: "Note", camera: "Camera", travel: "Travel", couple: "Couple", language: "Language" },
+    app_live: "On the App Store",
+    app_soon: "Coming soon",
+    app_support: "Support",
     stack_badge: "Tech Stack",
     stack_h2: "Built with modern technology",
     stack_sub: "The same tools powering the world's best AI products.",
@@ -132,7 +263,7 @@ const T = {
     footer_privacy: "Privacy",
   },
   ko: {
-    nav: ["소개", "서비스", "AI & 데이터", "기술", "팀", "연락처"],
+    nav: ["소개", "서비스", "앱", "AI & 데이터", "기술", "팀", "연락처"],
     cta_primary: "시작하기",
     cta_secondary: "서비스 보기",
     badge: "개인을 위한 WEB · APP · AI 스튜디오",
@@ -210,6 +341,14 @@ const T = {
       { icon: "🎓", title: "교육 서비스", desc: "AI 튜터링 기반 적응형 학습 플랫폼.", tags: [], badge: "개발 중" },
       { icon: "💼", title: "취업 서비스", desc: "AI가 매칭하는 나만의 커리어 경로.", tags: [], badge: "개발 중" },
     ],
+    apps_badge: "앱",
+    apps_h2: "만들고 있는 앱",
+    apps_sub: "하나씩 만들어 App Store에 차례로 올리고 있습니다.",
+    apps_all: "전체",
+    apps_cats: { note: "노트", camera: "카메라", travel: "여행", couple: "커플", language: "언어" },
+    app_live: "App Store 출시",
+    app_soon: "출시 예정",
+    app_support: "지원",
     stack_badge: "기술 스택",
     stack_h2: "최신 기술로 만들어집니다",
     stack_sub: "세계 최고 AI 제품들이 사용하는 기술 스택을 동일하게 활용합니다.",
@@ -303,6 +442,167 @@ function useInView(threshold = 0.15) {
   return { ref, inView };
 }
 
+// ── Reveal ────────────────────────────────────────────────────────
+// 스크롤 등장. CSS 스크롤 타임라인으로만 동작하므로 JS 가 없어도 본문은 보인다.
+// delay 는 등장 구간을 조금씩 밀어 형제 요소에 계단 효과를 준다.
+function Reveal({ children, delay = 0, className = "" }: { children: React.ReactNode; delay?: number; className?: string }) {
+  return (
+    <div
+      className={`reveal ${className}`}
+      style={{ "--reveal-offset": `${Math.min(delay / 30, 8)}%` } as React.CSSProperties}
+    >
+      {children}
+    </div>
+  );
+}
+
+// 첫 화면 전용 — 로드 즉시 재생되는 CSS 애니메이션.
+function Rise({ children, delay = 0, className = "" }: { children: React.ReactNode; delay?: number; className?: string }) {
+  return (
+    <div className={`rise ${className}`} style={{ animationDelay: `${delay}ms` }}>
+      {children}
+    </div>
+  );
+}
+
+// ── Backdrop ──────────────────────────────────────────────────────
+// 페이지 전체에 깔리는 고정 배경. 오로라 두 겹 + 격자 + 그레인.
+function Backdrop() {
+  return (
+    <div aria-hidden className="pointer-events-none fixed inset-0 z-0 overflow-hidden">
+      <div className="absolute -top-56 left-1/2 h-[720px] w-[720px] -translate-x-1/2 rounded-full bg-indigo-600/8 blur-[170px] animate-aurora" />
+      <div className="absolute top-1/3 -right-52 h-[520px] w-[520px] rounded-full bg-violet-600/6 blur-[160px] animate-aurora [animation-delay:-8s]" />
+      <div className="absolute bottom-0 -left-52 h-[480px] w-[480px] rounded-full bg-sky-600/5 blur-[160px] animate-aurora [animation-delay:-15s]" />
+      {/* 아래로 갈수록 옅어지는 격자 */}
+      <div
+        className="absolute inset-0 opacity-[0.045]"
+        style={{
+          backgroundImage:
+            "linear-gradient(rgba(129,140,248,0.6) 1px,transparent 1px),linear-gradient(90deg,rgba(129,140,248,0.6) 1px,transparent 1px)",
+          backgroundSize: "72px 72px",
+          maskImage: "radial-gradient(ellipse 90% 60% at 50% 0%, #000 40%, transparent 100%)",
+          WebkitMaskImage: "radial-gradient(ellipse 90% 60% at 50% 0%, #000 40%, transparent 100%)",
+        }}
+      />
+      {/* 필름 그레인 — 넓은 그라디언트의 색 띠(banding)를 덮어준다. */}
+      <div
+        className="absolute inset-0 opacity-[0.16] mix-blend-overlay"
+        style={{
+          backgroundImage:
+            "url(\"data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='140' height='140'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.85' numOctaves='3'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E\")",
+        }}
+      />
+    </div>
+  );
+}
+
+// ── Apps ──────────────────────────────────────────────────────────
+// 카테고리 칩으로 걸러 보는 앱 쇼케이스. APPS 배열만 고치면 여기가 따라옵니다.
+// eslint-disable-next-line @typescript-eslint/no-explicit-any
+function AppsGrid({ t, lang }: { t: any; lang: Lang }) {
+  const [cat, setCat] = useState<AppCategory | "all">("all");
+
+  // 실제로 앱이 있는 카테고리만 칩으로 보여준다.
+  const cats = Array.from(new Set(APPS.map(a => a.category)));
+  const shown = cat === "all" ? APPS : APPS.filter(a => a.category === cat);
+
+  return (
+    <>
+      <Reveal>
+        <div className="flex flex-wrap justify-center gap-2 mb-10">
+          {(["all", ...cats] as const).map(c => {
+            const on = cat === c;
+            return (
+              <button
+                key={c}
+                onClick={() => setCat(c as AppCategory | "all")}
+                className={`px-4 py-2 rounded-full text-sm transition-all border ${
+                  on
+                    ? "bg-white text-[#07070d] border-white font-medium"
+                    : "border-white/12 text-gray-400 hover:text-white hover:border-white/30 hover:bg-white/5"
+                }`}
+              >
+                {c === "all" ? t.apps_all : t.apps_cats[c]}
+              </button>
+            );
+          })}
+        </div>
+      </Reveal>
+
+      <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-5">
+        {shown.map((app, i) => {
+          const live = app.status === "live";
+          return (
+            <Reveal key={app.slug} delay={(i % 3) * 90}>
+              <div className="group h-full flex flex-col p-6 rounded-2xl edge-lit bg-[#0b0b16]/50 hover:bg-[#0b0b16]/80 hover:border-white/18 hover:-translate-y-1 transition-all duration-300">
+                <div className="flex items-start justify-between gap-3 mb-5">
+                  <div className="grid place-items-center w-12 h-12 rounded-xl border border-white/8 bg-white/[0.04] text-2xl group-hover:scale-110 transition-transform duration-300">
+                    {app.emoji}
+                  </div>
+                  <span
+                    className={`px-2.5 py-1 rounded-full text-[11px] border whitespace-nowrap ${
+                      live
+                        ? "bg-emerald-500/10 text-emerald-300 border-emerald-500/25"
+                        : "bg-amber-500/10 text-amber-300 border-amber-500/25"
+                    }`}
+                  >
+                    {live ? t.app_live : t.app_soon}
+                  </span>
+                </div>
+
+                <h3 className="font-semibold text-[15px] text-white">{app.name[lang]}</h3>
+                <p className="text-[11px] text-gray-500 uppercase tracking-[0.16em] mt-1">
+                  {t.apps_cats[app.category]}
+                </p>
+                {app.tagline[lang] && (
+                  <p className="text-gray-500 text-sm leading-relaxed mt-3">{app.tagline[lang]}</p>
+                )}
+
+                {(app.appStore || app.page) && (
+                  <div className="flex flex-wrap gap-2 mt-auto pt-5">
+                    {app.appStore && (
+                      <a href={app.appStore} target="_blank" rel="noopener noreferrer"
+                        className="px-3.5 py-1.5 rounded-full bg-white text-[#07070d] text-xs font-medium hover:bg-gray-200 transition-colors">
+                        App Store ↗
+                      </a>
+                    )}
+                    {app.page && (
+                      <a href={`/${app.slug}`}
+                        className="px-3.5 py-1.5 rounded-full border border-white/12 text-xs text-gray-300 hover:text-white hover:border-white/30 transition-colors">
+                        {t.app_support}
+                      </a>
+                    )}
+                  </div>
+                )}
+              </div>
+            </Reveal>
+          );
+        })}
+      </div>
+    </>
+  );
+}
+
+// ── Section heading ───────────────────────────────────────────────
+function SectionHeading({ badge, title, sub, tone = "indigo" }: { badge: string; title: string; sub: string; tone?: "indigo" | "violet" }) {
+  const ring = tone === "violet"
+    ? "bg-violet-500/10 border-violet-500/25 text-violet-300"
+    : "bg-indigo-500/10 border-indigo-500/25 text-indigo-300";
+  return (
+    <div className="text-center mb-16 sm:mb-20">
+      <Reveal>
+        <span className={`inline-block px-3.5 py-1.5 rounded-full border text-[11px] font-medium uppercase tracking-[0.18em] ${ring}`}>{badge}</span>
+      </Reveal>
+      <Reveal delay={80}>
+        <h2 className="mt-6 text-[2rem] sm:text-5xl font-semibold leading-[1.08] text-balance max-w-3xl mx-auto">{title}</h2>
+      </Reveal>
+      <Reveal delay={160}>
+        <p className="mt-5 text-gray-400 max-w-xl mx-auto leading-relaxed text-balance">{sub}</p>
+      </Reveal>
+    </div>
+  );
+}
+
 // ── Stats ─────────────────────────────────────────────────────────
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
 function Stats({ t }: { t: any }) {
@@ -318,11 +618,11 @@ function Stats({ t }: { t: any }) {
     { v: y, suf: "+", label: t.stat_labels[3] },
   ];
   return (
-    <div ref={ref} className="grid grid-cols-2 md:grid-cols-4 gap-10">
+    <div ref={ref} className="grid grid-cols-2 md:grid-cols-4 gap-x-6 gap-y-10">
       {vals.map((s) => (
         <div key={s.label} className="text-center py-4">
-          <div className="text-4xl sm:text-5xl font-bold bg-gradient-to-r from-indigo-400 to-violet-400 bg-clip-text text-transparent mb-2">{s.v}<span className="text-2xl sm:text-3xl">{s.suf}</span></div>
-          <div className="text-sm text-gray-400">{s.label}</div>
+          <div className="text-4xl sm:text-5xl font-semibold tabular-nums text-gradient mb-2">{s.v}<span className="text-2xl sm:text-3xl">{s.suf}</span></div>
+          <div className="text-[13px] text-gray-500 uppercase tracking-[0.12em]">{s.label}</div>
         </div>
       ))}
     </div>
@@ -365,7 +665,7 @@ function RagDiagram({ title }: { title: string }) {
     { label: "Response", color: "border-green-500/50 bg-green-500/10 text-green-300" },
   ];
   return (
-    <div ref={ref} className="rounded-2xl border border-white/8 bg-white/[0.02] p-6">
+    <div ref={ref} className="rounded-2xl edge-lit bg-[#0b0b16]/60 p-6">
       <p className="text-xs text-gray-500 font-mono mb-6">{`// ${title}`}</p>
       <div className="flex flex-wrap gap-2 items-center justify-center">
         {steps.map((s, i) => (
@@ -383,7 +683,7 @@ function RagDiagram({ title }: { title: string }) {
       {/* Data flow line */}
       <div className="mt-6 font-mono text-xs text-gray-600 space-y-1">
         <div><span className="text-indigo-400">query</span> <span className="text-gray-700">→</span> <span className="text-violet-400">embed()</span> <span className="text-gray-700">→</span> <span className="text-sky-400">vectorDB.search(k=5)</span> <span className="text-gray-700">→</span> <span className="text-emerald-400">llm.generate(ctx)</span></div>
-        <div><span className="text-gray-600">// similarity: cosine · model: text-embedding-3-large · top_k: 5</span></div>
+        <div><span className="text-gray-600">{"// similarity: cosine · model: text-embedding-3-large · top_k: 5"}</span></div>
       </div>
     </div>
   );
@@ -412,7 +712,7 @@ function LiveChart() {
   }).join(" ");
 
   return (
-    <div className="rounded-2xl border border-white/8 bg-white/[0.02] p-5">
+    <div className="rounded-2xl edge-lit bg-[#0b0b16]/60 p-5">
       <div className="flex items-center justify-between mb-4">
         <span className="text-xs text-gray-400 font-mono">model_accuracy · live</span>
         <span className="flex items-center gap-1.5 text-xs text-emerald-400">
@@ -502,167 +802,304 @@ export default function Home() {
     } finally { setSubmitting(false); }
   };
 
-  const navHrefs = ["#about", "#services", "#ai", "#stack", "#team", "#contact"];
+  const navHrefs = ["#about", "#services", "#apps", "#ai", "#stack", "#team", "#contact"];
+
+  // 최상단에서는 헤더를 투명하게 두고, 스크롤하면 유리판처럼 떠오르게 한다.
+  const [scrolled, setScrolled] = useState(false);
+  const [menuOpen, setMenuOpen] = useState(false);
+  const [active, setActive] = useState("");
+
+  useEffect(() => {
+    const onScroll = () => setScrolled(window.scrollY > 24);
+    onScroll();
+    window.addEventListener("scroll", onScroll, { passive: true });
+    return () => window.removeEventListener("scroll", onScroll);
+  }, []);
+
+  // 현재 보고 있는 섹션을 헤더에 표시
+  useEffect(() => {
+    const ids = navHrefs.map(h => h.slice(1));
+    const obs = new IntersectionObserver(
+      entries => {
+        const visible = entries.filter(e => e.isIntersecting).sort((a, b) => b.intersectionRatio - a.intersectionRatio)[0];
+        if (visible) setActive(visible.target.id);
+      },
+      { rootMargin: "-45% 0px -50% 0px", threshold: [0, 0.25, 0.5] },
+    );
+    ids.forEach(id => { const el = document.getElementById(id); if (el) obs.observe(el); });
+    return () => obs.disconnect();
+  }, []); // eslint-disable-line react-hooks/exhaustive-deps
+
+  // 모바일 메뉴가 열려 있는 동안 본문 스크롤 잠금
+  useEffect(() => {
+    document.body.style.overflow = menuOpen ? "hidden" : "";
+    return () => { document.body.style.overflow = ""; };
+  }, [menuOpen]);
 
   return (
-    <main className="min-h-screen bg-[#080810] text-white">
+    <main className="relative min-h-screen overflow-x-hidden bg-[#07070d] text-white">
+      <Backdrop />
 
       {/* NAV */}
-      <nav className="fixed top-0 w-full z-50 bg-[#080810]/80 backdrop-blur-xl border-b border-white/5">
-        <div className="max-w-6xl mx-auto px-6 py-4 flex items-center justify-between">
-          <a href="#" className="text-xl font-bold"><span className="text-indigo-400">Z</span>uply</a>
-          <div className="hidden md:flex gap-6 text-sm text-gray-400">
-            {t.nav.map((n, i) => <a key={i} href={navHrefs[i]} className="hover:text-white transition-colors">{n}</a>)}
+      <nav className={`fixed top-0 w-full z-50 transition-all duration-500 ${scrolled ? "bg-[#07070d]/70 backdrop-blur-xl border-b border-white/8 shadow-[0_1px_0_0_rgba(255,255,255,0.04),0_18px_40px_-24px_rgba(0,0,0,0.9)]" : "bg-transparent border-b border-transparent"}`}>
+        <div className="max-w-6xl mx-auto px-6 h-16 flex items-center justify-between">
+          <a href="#" className="text-lg font-semibold tracking-tight flex items-center gap-2.5">
+            <span className="grid place-items-center w-7 h-7 rounded-lg bg-gradient-to-br from-indigo-500 to-violet-600 text-[13px] font-bold shadow-lg shadow-indigo-500/25">Z</span>
+            <span>Zuply</span>
+          </a>
+
+          <div className="hidden md:flex items-center gap-1 text-sm">
+            {t.nav.map((n, i) => {
+              const id = navHrefs[i].slice(1);
+              return (
+                <a key={i} href={navHrefs[i]}
+                  className={`relative px-3 py-2 rounded-lg transition-colors ${active === id ? "text-white" : "text-gray-400 hover:text-white"}`}>
+                  {n}
+                  {active === id && <span className="absolute inset-x-3 -bottom-px h-px bg-gradient-to-r from-transparent via-indigo-400 to-transparent" />}
+                </a>
+              );
+            })}
           </div>
-          <div className="flex items-center gap-3">
+
+          <div className="flex items-center gap-2">
             <button onClick={() => setLang(l => l === "en" ? "ko" : "en")}
-              className="px-3 py-1.5 rounded-lg border border-white/10 text-xs text-gray-400 hover:text-white hover:border-white/20 transition-all">
+              className="px-3 py-1.5 rounded-lg border border-white/10 text-xs text-gray-400 hover:text-white hover:border-white/25 hover:bg-white/5 transition-all">
               {lang === "en" ? "한국어" : "English"}
             </button>
-            <a href="#contact" className="hidden sm:block px-5 py-2 bg-indigo-600 hover:bg-indigo-500 rounded-full text-sm font-medium transition-all">{t.cta_primary}</a>
+            <a href="#contact" className="hidden sm:block px-4 py-2 rounded-full text-sm font-medium bg-white text-[#07070d] hover:bg-gray-200 transition-all">{t.cta_primary}</a>
+            <button onClick={() => setMenuOpen(o => !o)} aria-label="Menu" aria-expanded={menuOpen}
+              className="md:hidden grid place-items-center w-9 h-9 rounded-lg border border-white/10 text-gray-300 hover:text-white hover:border-white/25 transition-all">
+              <span className="relative block w-4 h-3">
+                <span className={`absolute left-0 h-px w-4 bg-current transition-all duration-300 ${menuOpen ? "top-1.5 rotate-45" : "top-0"}`} />
+                <span className={`absolute left-0 top-1.5 h-px w-4 bg-current transition-all duration-300 ${menuOpen ? "opacity-0" : "opacity-100"}`} />
+                <span className={`absolute left-0 h-px w-4 bg-current transition-all duration-300 ${menuOpen ? "top-1.5 -rotate-45" : "top-3"}`} />
+              </span>
+            </button>
+          </div>
+        </div>
+
+        {/* 모바일 메뉴 */}
+        <div className={`md:hidden overflow-hidden border-t border-white/8 bg-[#07070d]/95 backdrop-blur-xl transition-[max-height,opacity] duration-400 ${menuOpen ? "max-h-96 opacity-100" : "max-h-0 opacity-0"}`}>
+          <div className="px-6 py-4 flex flex-col">
+            {t.nav.map((n, i) => (
+              <a key={i} href={navHrefs[i]} onClick={() => setMenuOpen(false)}
+                className="py-3 text-sm text-gray-300 hover:text-white border-b border-white/5 last:border-0 transition-colors">
+                {n}
+              </a>
+            ))}
+            <a href="#contact" onClick={() => setMenuOpen(false)}
+              className="mt-4 py-3 rounded-full bg-white text-[#07070d] text-sm font-medium text-center">
+              {t.cta_primary}
+            </a>
           </div>
         </div>
       </nav>
 
       {/* HERO */}
-      <section className="relative min-h-screen flex items-center justify-center overflow-hidden">
-        <div className="absolute inset-0">
-          <div className="absolute top-1/4 left-1/3 w-[600px] h-[600px] bg-indigo-600/10 rounded-full blur-[140px]" />
-          <div className="absolute bottom-1/3 right-1/4 w-[400px] h-[400px] bg-violet-600/8 rounded-full blur-[100px]" />
-          <div className="absolute inset-0 opacity-[0.025]" style={{ backgroundImage: "linear-gradient(rgba(99,102,241,0.5) 1px,transparent 1px),linear-gradient(90deg,rgba(99,102,241,0.5) 1px,transparent 1px)", backgroundSize: "80px 80px" }} />
-        </div>
-        <div className="relative z-10 max-w-6xl mx-auto px-6 pt-24 pb-16 grid grid-cols-1 lg:grid-cols-2 gap-16 items-center">
+      <section className="relative z-10 min-h-[100svh] flex items-center justify-center">
+        <div className="max-w-6xl mx-auto px-6 pt-32 pb-20 grid grid-cols-1 lg:grid-cols-[1.05fr_0.95fr] gap-14 lg:gap-16 items-center">
           <div>
-            <div className="inline-flex items-center gap-2 px-3 py-1.5 rounded-full bg-indigo-500/10 border border-indigo-500/20 text-indigo-400 text-xs mb-8">
-              <span className="w-1.5 h-1.5 rounded-full bg-indigo-400 animate-pulse" />{t.badge}
-            </div>
-            <h1 className="text-5xl sm:text-6xl font-bold leading-tight mb-6">
-              {t.hero_h1.map((line, i) => (
-                <span key={i} className={i === 1 ? "block bg-gradient-to-r from-indigo-400 via-violet-400 to-sky-400 bg-clip-text text-transparent" : "block"}>{line}</span>
-              ))}
-            </h1>
-            <p className="text-gray-400 leading-relaxed mb-8 max-w-lg">{t.hero_sub}</p>
-            <div className="flex flex-wrap gap-4">
-              <a href="#contact" className="px-6 py-3 bg-indigo-600 hover:bg-indigo-500 rounded-full text-sm font-medium transition-all hover:shadow-lg hover:shadow-indigo-500/25">{t.cta_primary}</a>
-              <a href="#services" className="px-6 py-3 border border-white/10 hover:border-white/25 rounded-full text-sm text-gray-300 hover:text-white transition-all">{t.cta_secondary}</a>
-            </div>
+            <Rise>
+              <div className="inline-flex items-center gap-2.5 px-3.5 py-1.5 rounded-full bg-white/[0.04] border border-white/10 text-gray-300 text-xs backdrop-blur">
+                <span className="relative flex w-1.5 h-1.5">
+                  <span className="absolute inline-flex w-full h-full rounded-full bg-indigo-400 opacity-70 animate-ping" />
+                  <span className="relative inline-flex w-1.5 h-1.5 rounded-full bg-indigo-400" />
+                </span>
+                {t.badge}
+              </div>
+            </Rise>
+
+            <Rise delay={90}>
+              <h1 className="mt-8 text-[2.75rem] leading-[1.04] sm:text-6xl lg:text-[4.25rem] font-semibold text-balance">
+                {t.hero_h1.map((line, i) => (
+                  <span key={i} className={i === 1 ? "block text-gradient" : "block"}>{line}</span>
+                ))}
+              </h1>
+            </Rise>
+
+            <Rise delay={170}>
+              <p className="mt-7 text-[15px] sm:text-base text-gray-400 leading-relaxed max-w-lg">{t.hero_sub}</p>
+            </Rise>
+
+            <Rise delay={240}>
+              <div className="mt-9 flex flex-wrap gap-3">
+                <a href="#contact"
+                  className="group px-6 py-3.5 rounded-full bg-white text-[#07070d] text-sm font-semibold transition-all hover:shadow-[0_10px_40px_-10px_rgba(255,255,255,0.5)] hover:-translate-y-0.5">
+                  {t.cta_primary}
+                  <span className="inline-block ml-1.5 transition-transform group-hover:translate-x-0.5">→</span>
+                </a>
+                <a href="#services"
+                  className="px-6 py-3.5 rounded-full border border-white/12 bg-white/[0.02] text-sm text-gray-300 hover:text-white hover:border-white/25 hover:bg-white/[0.06] transition-all">
+                  {t.cta_secondary}
+                </a>
+              </div>
+            </Rise>
           </div>
+
           {/* Terminal */}
-          <div className="rounded-2xl border border-white/8 bg-white/[0.03] backdrop-blur overflow-hidden">
-            <div className="flex items-center gap-2 px-4 py-3 border-b border-white/5 bg-white/[0.02]">
-              <span className="w-3 h-3 rounded-full bg-red-500/60" /><span className="w-3 h-3 rounded-full bg-amber-500/60" /><span className="w-3 h-3 rounded-full bg-green-500/60" />
-              <span className="ml-3 text-xs text-gray-500 font-mono">zuply — terminal</span>
+          <Rise delay={300}>
+            <div className="relative">
+              {/* 카드 뒤에 깔리는 발광 */}
+              <div aria-hidden className="absolute -inset-px rounded-2xl bg-gradient-to-b from-indigo-400/25 to-transparent blur-[1px]" />
+              <div className="relative rounded-2xl edge-lit bg-[#0b0b16]/80 backdrop-blur-xl overflow-hidden shadow-[0_40px_80px_-30px_rgba(0,0,0,0.9)]">
+                <div className="flex items-center gap-2 px-4 py-3 border-b border-white/6">
+                  <span className="w-2.5 h-2.5 rounded-full bg-red-500/70" /><span className="w-2.5 h-2.5 rounded-full bg-amber-500/70" /><span className="w-2.5 h-2.5 rounded-full bg-green-500/70" />
+                  <span className="ml-3 text-xs text-gray-500 font-mono">zuply — terminal</span>
+                </div>
+                <div className="p-6 min-h-[210px]"><Typewriter lines={t.terminal_lines} /></div>
+              </div>
             </div>
-            <div className="p-6 min-h-[200px]"><Typewriter lines={t.terminal_lines} /></div>
-          </div>
+          </Rise>
         </div>
       </section>
 
       {/* STATS */}
-      <section className="py-16 px-6 border-y border-white/5 bg-white/[0.01]">
+      <section className="relative z-10 py-16 px-6 border-y border-white/6 bg-white/[0.015] backdrop-blur-sm">
         <div className="max-w-4xl mx-auto"><Stats t={t} /></div>
       </section>
 
       {/* ABOUT */}
-      <section id="about" className="py-32 px-6">
-        <div className="max-w-6xl mx-auto grid grid-cols-1 lg:grid-cols-2 gap-16 items-center">
+      <section id="about" className="relative z-10 py-28 sm:py-36 px-6">
+        <div className="max-w-6xl mx-auto grid grid-cols-1 lg:grid-cols-2 gap-14 lg:gap-20 items-center">
           <div>
-            <div className="inline-block px-3 py-1 rounded-full bg-indigo-500/10 border border-indigo-500/20 text-indigo-400 text-xs mb-6">{t.about_badge}</div>
-            <h2 className="text-3xl sm:text-4xl font-bold mb-6 leading-tight">
-              {t.about_h2.map((line, i) => <span key={i} className={i === 1 ? "block text-indigo-400" : "block"}>{line}</span>)}
-            </h2>
-            <p className="text-gray-400 leading-relaxed mb-4">{t.about_p1}</p>
-            <p className="text-gray-400 leading-relaxed mb-8">{t.about_p2}</p>
-            <div className="flex flex-wrap gap-2">
-              {t.about_tags.map(tag => <span key={tag} className="px-3 py-1.5 rounded-full border border-white/10 text-xs text-gray-300 bg-white/[0.03]">{tag}</span>)}
-            </div>
+            <Reveal>
+              <span className="inline-block px-3.5 py-1.5 rounded-full bg-indigo-500/10 border border-indigo-500/25 text-indigo-300 text-[11px] font-medium uppercase tracking-[0.18em]">{t.about_badge}</span>
+            </Reveal>
+            <Reveal delay={80}>
+              <h2 className="mt-6 text-[2rem] sm:text-[2.75rem] font-semibold leading-[1.1]">
+                {t.about_h2.map((line, i) => <span key={i} className={i === 1 ? "block text-gradient" : "block"}>{line}</span>)}
+              </h2>
+            </Reveal>
+            <Reveal delay={150}>
+              <p className="mt-6 text-gray-400 leading-relaxed">{t.about_p1}</p>
+              <p className="mt-4 text-gray-400 leading-relaxed">{t.about_p2}</p>
+            </Reveal>
+            <Reveal delay={220}>
+              <div className="mt-8 flex flex-wrap gap-2">
+                {t.about_tags.map(tag => (
+                  <span key={tag} className="px-3.5 py-1.5 rounded-full border border-white/10 text-xs text-gray-300 bg-white/[0.03] hover:bg-white/[0.07] hover:border-white/20 transition-all cursor-default">{tag}</span>
+                ))}
+              </div>
+            </Reveal>
           </div>
           <div className="space-y-5">
-            <div className="rounded-2xl border border-white/8 bg-white/[0.03] p-8">
-              <h3 className="text-sm font-medium text-gray-400 mb-6">{t.graph_title}</h3>
-              <Graph t={t} />
-            </div>
-            <LiveChart />
+            <Reveal delay={120}>
+              <div className="rounded-2xl edge-lit bg-[#0b0b16]/60 backdrop-blur-sm p-8">
+                <h3 className="text-xs font-medium text-gray-500 uppercase tracking-[0.16em] mb-7">{t.graph_title}</h3>
+                <Graph t={t} />
+              </div>
+            </Reveal>
+            <Reveal delay={200}><LiveChart /></Reveal>
           </div>
+        </div>
+      </section>
+
+      {/* APPS */}
+      <section id="apps" className="relative z-10 py-28 sm:py-36 px-6 bg-white/[0.015] border-y border-white/6">
+        <div className="max-w-6xl mx-auto">
+          <SectionHeading badge={t.apps_badge} title={t.apps_h2} sub={t.apps_sub} />
+          <AppsGrid t={t} lang={lang} />
         </div>
       </section>
 
       {/* AI & DATA */}
-      <section id="ai" className="py-32 px-6 bg-white/[0.015] border-y border-white/5">
+      <section id="ai" className="relative z-10 py-28 sm:py-36 px-6">
         <div className="max-w-6xl mx-auto">
-          <div className="text-center mb-16">
-            <div className="inline-block px-3 py-1 rounded-full bg-violet-500/10 border border-violet-500/20 text-violet-400 text-xs mb-4">{t.ai_badge}</div>
-            <h2 className="text-3xl sm:text-4xl font-bold mb-4">{t.ai_h2}</h2>
-            <p className="text-gray-500 max-w-lg mx-auto">{t.ai_sub}</p>
-          </div>
+          <SectionHeading badge={t.ai_badge} title={t.ai_h2} sub={t.ai_sub} tone="violet" />
 
           {/* AI Cards */}
-          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-5 mb-12">
-            {t.ai_cards.map((card) => (
-              <div key={card.title} className="p-6 rounded-2xl border border-white/5 bg-white/[0.02] hover:border-violet-500/20 hover:bg-white/[0.04] transition-all group">
-                <div className="text-3xl mb-4">{card.icon}</div>
-                <h3 className="font-bold text-base mb-2 text-white">{card.title}</h3>
-                <p className="text-gray-500 text-sm leading-relaxed mb-4">{card.desc}</p>
-                <div className="flex flex-wrap gap-1.5">
-                  {card.tags.map(tag => <span key={tag} className="px-2 py-0.5 rounded text-xs bg-violet-500/10 text-violet-400 border border-violet-500/20 font-mono">{tag}</span>)}
+          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-5 mb-14">
+            {t.ai_cards.map((card, i) => (
+              <Reveal key={card.title} delay={(i % 3) * 90}>
+                <div className="group relative h-full p-6 rounded-2xl edge-lit bg-[#0b0b16]/50 hover:bg-[#0b0b16]/80 hover:border-violet-400/30 hover:-translate-y-1 transition-all duration-300">
+                  <div className="grid place-items-center w-12 h-12 rounded-xl border border-white/8 bg-white/[0.04] text-2xl mb-5 group-hover:scale-110 group-hover:border-violet-400/30 transition-all duration-300">{card.icon}</div>
+                  <h3 className="font-semibold text-[15px] mb-2 text-white">{card.title}</h3>
+                  <p className="text-gray-500 text-sm leading-relaxed mb-5">{card.desc}</p>
+                  <div className="flex flex-wrap gap-1.5">
+                    {card.tags.map(tag => <span key={tag} className="px-2 py-0.5 rounded text-[11px] bg-violet-500/10 text-violet-300 border border-violet-500/20 font-mono">{tag}</span>)}
+                  </div>
                 </div>
-              </div>
+              </Reveal>
             ))}
           </div>
 
           {/* RAG Diagram */}
-          <RagDiagram title={t.pipeline_title} />
+          <Reveal><RagDiagram title={t.pipeline_title} /></Reveal>
         </div>
       </section>
 
       {/* SERVICES */}
-      <section id="services" className="py-32 px-6">
+      <section id="services" className="relative z-10 py-28 sm:py-36 px-6 bg-white/[0.015] border-y border-white/6">
         <div className="max-w-6xl mx-auto">
-          <div className="text-center mb-16">
-            <div className="inline-block px-3 py-1 rounded-full bg-indigo-500/10 border border-indigo-500/20 text-indigo-400 text-xs mb-4">{t.services_badge}</div>
-            <h2 className="text-3xl sm:text-4xl font-bold mb-4">{t.services_h2}</h2>
-            <p className="text-gray-500 max-w-lg mx-auto">{t.services_sub}</p>
-          </div>
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-6 mb-8">
+          <SectionHeading badge={t.services_badge} title={t.services_h2} sub={t.services_sub} />
+
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-5 mb-5">
             {[
-              { title: t.web_title, desc: t.web_desc, features: t.web_features, icon: "🌐", border: "border-indigo-500/20", bg: "from-indigo-500/10", accent: "text-indigo-400", dot: "▸" },
-              { title: t.app_title, desc: t.app_desc, features: t.app_features, icon: "📱", border: "border-violet-500/20", bg: "from-violet-500/10", accent: "text-violet-400", dot: "▸" },
-            ].map(s => (
-              <div key={s.title} className={`relative p-8 rounded-2xl overflow-hidden border ${s.border} bg-gradient-to-br ${s.bg} to-transparent hover:border-opacity-60 transition-all group`}>
-                <div className="w-11 h-11 rounded-xl border border-white/10 bg-white/5 flex items-center justify-center text-xl mb-6">{s.icon}</div>
-                <h3 className="text-xl font-bold mb-3">{s.title}</h3>
-                <p className="text-gray-400 text-sm leading-relaxed mb-6">{s.desc}</p>
-                <ul className="space-y-2">{s.features.map(f => <li key={f} className={`flex items-center gap-2 text-sm text-gray-300`}><span className={`${s.accent} text-xs`}>{s.dot}</span>{f}</li>)}</ul>
-              </div>
+              { title: t.web_title, desc: t.web_desc, features: t.web_features, icon: "🌐", glow: "from-indigo-500/16", ring: "hover:border-indigo-400/35", accent: "text-indigo-300" },
+              { title: t.app_title, desc: t.app_desc, features: t.app_features, icon: "📱", glow: "from-violet-500/16", ring: "hover:border-violet-400/35", accent: "text-violet-300" },
+            ].map((s, i) => (
+              <Reveal key={s.title} delay={i * 100}>
+                <div className={`group relative h-full p-8 rounded-2xl overflow-hidden edge-lit ${s.ring} transition-all duration-300 hover:-translate-y-1`}>
+                  <div aria-hidden className={`absolute -top-24 -right-24 w-64 h-64 rounded-full bg-gradient-to-br ${s.glow} to-transparent blur-2xl opacity-70 group-hover:opacity-100 transition-opacity`} />
+                  <div className="relative">
+                    <div className="grid place-items-center w-12 h-12 rounded-xl border border-white/10 bg-white/[0.05] text-xl mb-6">{s.icon}</div>
+                    <h3 className="text-xl font-semibold mb-3">{s.title}</h3>
+                    <p className="text-gray-400 text-sm leading-relaxed mb-6">{s.desc}</p>
+                    <ul className="space-y-2.5">
+                      {s.features.map(f => (
+                        <li key={f} className="flex items-start gap-2.5 text-sm text-gray-300">
+                          <span className={`${s.accent} mt-0.5 text-xs`}>▸</span>{f}
+                        </li>
+                      ))}
+                    </ul>
+                  </div>
+                </div>
+              </Reveal>
             ))}
           </div>
+
           <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-5">
-            {t.other_services.map((s) => (
-              <div key={s.title} className="p-7 rounded-2xl border border-white/5 bg-white/[0.02] hover:border-white/10 hover:bg-white/[0.04] transition-all">
-                <div className="text-3xl mb-5">{s.icon}</div>
-                <h3 className="font-bold text-base mb-2">{s.title}</h3>
-                <p className="text-gray-500 text-sm leading-relaxed mb-5">{s.desc}</p>
-                {s.badge && <span className="px-3 py-1.5 rounded-full text-xs bg-amber-500/10 text-amber-400 border border-amber-500/20">{s.badge}</span>}
-                {s.tags.length > 0 && <div className="flex flex-wrap gap-2">{s.tags.map(tag => <span key={tag} className="px-3 py-1.5 rounded-full text-xs bg-indigo-500/10 text-indigo-400 border border-indigo-500/20">{tag}</span>)}</div>}
-              </div>
+            {t.other_services.map((s, i) => (
+              <Reveal key={s.title} delay={i * 90}>
+                <div className="h-full p-7 rounded-2xl edge-lit bg-[#0b0b16]/40 hover:bg-[#0b0b16]/70 hover:border-white/18 hover:-translate-y-1 transition-all duration-300">
+                  <div className="text-3xl mb-5">{s.icon}</div>
+                  <h3 className="font-semibold text-[15px] mb-2">{s.title}</h3>
+                  <p className="text-gray-500 text-sm leading-relaxed mb-5">{s.desc}</p>
+                  {s.badge && <span className="px-3 py-1.5 rounded-full text-xs bg-amber-500/10 text-amber-300 border border-amber-500/25">{s.badge}</span>}
+                  {s.tags.length > 0 && <div className="flex flex-wrap gap-2">{s.tags.map(tag => <span key={tag} className="px-3 py-1.5 rounded-full text-xs bg-indigo-500/10 text-indigo-300 border border-indigo-500/25">{tag}</span>)}</div>}
+                </div>
+              </Reveal>
             ))}
           </div>
         </div>
       </section>
 
       {/* TECH STACK */}
-      <section id="stack" className="py-32 px-6 bg-white/[0.015] border-y border-white/5">
-        <div className="max-w-6xl mx-auto">
-          <div className="text-center mb-16">
-            <div className="inline-block px-3 py-1 rounded-full bg-indigo-500/10 border border-indigo-500/20 text-indigo-400 text-xs mb-4">{t.stack_badge}</div>
-            <h2 className="text-3xl sm:text-4xl font-bold mb-4">{t.stack_h2}</h2>
-            <p className="text-gray-500 max-w-lg mx-auto">{t.stack_sub}</p>
+      <section id="stack" className="relative z-10 py-28 sm:py-36 bg-white/[0.015] border-y border-white/6">
+        <div className="px-6">
+          <div className="max-w-6xl mx-auto">
+            <SectionHeading badge={t.stack_badge} title={t.stack_h2} sub={t.stack_sub} />
           </div>
-          <div className="flex flex-wrap gap-3 justify-center mb-16">
-            {STACK.map(s => <span key={s.label} className={`px-4 py-2 rounded-full border text-sm font-mono ${s.color} bg-white/[0.02] hover:bg-white/[0.05] transition-all cursor-default`}>{s.label}</span>)}
-          </div>
+        </div>
+
+        {/* 좌우로 흐르는 두 줄. 양끝은 배경으로 페이드시킨다. */}
+        {/* overflow-hidden 필수 — w-max 트랙이 페이지 가로폭을 늘리면
+            max-w-6xl mx-auto 로 잡힌 헤더까지 화면 밖으로 밀려난다. */}
+        <div className="relative mb-16 overflow-hidden [mask-image:linear-gradient(90deg,transparent,#000_12%,#000_88%,transparent)] [-webkit-mask-image:linear-gradient(90deg,transparent,#000_12%,#000_88%,transparent)]">
+          {[0, 1].map(row => (
+            <div key={row} className="flex w-max animate-marquee gap-3 py-1.5" style={{ animationDirection: row ? "reverse" : "normal", animationDuration: row ? "52s" : "44s" }}>
+              {[...STACK, ...STACK].map((s, i) => (
+                <span key={`${row}-${i}`} className={`shrink-0 px-4 py-2 rounded-full border text-sm font-mono ${s.color} bg-white/[0.03] backdrop-blur-sm`}>{s.label}</span>
+              ))}
+            </div>
+          ))}
+        </div>
+
+        <div className="px-6">
+          <div className="max-w-6xl mx-auto">
           {/* Architecture */}
-          <div className="rounded-2xl border border-white/8 bg-white/[0.02] p-6 font-mono text-xs text-gray-500 overflow-x-auto">
+          <Reveal>
+          <div className="rounded-2xl edge-lit bg-[#0b0b16]/60 p-6 font-mono text-xs text-gray-500 overflow-x-auto">
             <div className="text-gray-600 mb-3">{`// AI application architecture`}</div>
             <div className="space-y-1.5">
               <div><span className="text-indigo-400">Client</span> <span className="text-gray-700">(React / React Native)</span></div>
@@ -684,60 +1121,56 @@ export default function Home() {
               <div><span className="text-teal-400">Deploy</span> <span className="text-gray-700">(Vercel + Docker + AWS Lambda)</span></div>
             </div>
           </div>
+          </Reveal>
+          </div>
         </div>
       </section>
 
       {/* TEAM */}
-      <section id="team" className="py-32 px-6">
+      <section id="team" className="relative z-10 py-28 sm:py-36 px-6">
         <div className="max-w-6xl mx-auto">
-          <div className="text-center mb-16">
-            <div className="inline-block px-3 py-1 rounded-full bg-indigo-500/10 border border-indigo-500/20 text-indigo-400 text-xs mb-4">{t.team_badge}</div>
-            <h2 className="text-3xl sm:text-4xl font-bold mb-4">{t.team_h2}</h2>
-            <p className="text-gray-500 max-w-md mx-auto">{t.team_sub}</p>
-          </div>
+          <SectionHeading badge={t.team_badge} title={t.team_h2} sub={t.team_sub} />
           <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-5">
             {t.team.map((m, i) => (
-              <div key={m.name} className="rounded-2xl border border-white/5 bg-white/[0.02] hover:border-white/10 hover:bg-white/[0.04] transition-all overflow-hidden group">
-                <div className={`h-1 bg-gradient-to-r ${TEAM_COLORS[i]}`} />
-                <div className="p-6">
-                  <div className={`w-11 h-11 rounded-xl bg-gradient-to-br ${TEAM_COLORS[i]} mb-4 flex items-center justify-center text-white font-bold text-base`}>{m.name[0]}</div>
-                  <p className="font-semibold text-sm text-white">{m.name}</p>
-                  <p className="text-xs text-gray-500 mt-0.5 mb-3">{m.role}</p>
-                  <p className="text-xs text-gray-500 leading-relaxed mb-4 line-clamp-3">{m.desc}</p>
-                  <div className="flex flex-wrap gap-1.5">
-                    {m.skills.map(s => (
-                      <span key={s} className="px-2 py-0.5 rounded text-[10px] font-mono bg-white/[0.04] border border-white/8 text-gray-400">{s}</span>
-                    ))}
+              <Reveal key={m.name} delay={(i % 4) * 80}>
+                <div className="group h-full rounded-2xl edge-lit bg-[#0b0b16]/40 hover:bg-[#0b0b16]/75 hover:border-white/18 hover:-translate-y-1 transition-all duration-300 overflow-hidden">
+                  <div className={`h-0.5 bg-gradient-to-r ${TEAM_COLORS[i]} opacity-70 group-hover:opacity-100 transition-opacity`} />
+                  <div className="p-6">
+                    <div className={`grid place-items-center w-11 h-11 rounded-xl bg-gradient-to-br ${TEAM_COLORS[i]} mb-4 text-white font-semibold text-base shadow-lg shadow-black/40 group-hover:scale-105 transition-transform`}>{m.name[0]}</div>
+                    <p className="font-semibold text-sm text-white">{m.name}</p>
+                    <p className="text-xs text-gray-500 mt-0.5 mb-3">{m.role}</p>
+                    <p className="text-xs text-gray-500 leading-relaxed mb-4 line-clamp-3">{m.desc}</p>
+                    <div className="flex flex-wrap gap-1.5">
+                      {m.skills.map(s => (
+                        <span key={s} className="px-2 py-0.5 rounded text-[10px] font-mono bg-white/[0.04] border border-white/8 text-gray-400">{s}</span>
+                      ))}
+                    </div>
                   </div>
                 </div>
-              </div>
+              </Reveal>
             ))}
           </div>
         </div>
       </section>
 
       {/* CONTACT */}
-      <section id="contact" className="py-32 px-6 bg-white/[0.015] border-t border-white/5">
+      <section id="contact" className="relative z-10 py-28 sm:py-36 px-6 bg-white/[0.015] border-t border-white/6">
         <div className="max-w-2xl mx-auto">
-          <div className="text-center mb-12">
-            <div className="inline-block px-3 py-1 rounded-full bg-indigo-500/10 border border-indigo-500/20 text-indigo-400 text-xs mb-4">{t.contact_badge}</div>
-            <h2 className="text-3xl sm:text-4xl font-bold mb-4">{t.contact_h2}</h2>
-            <p className="text-gray-500">{t.contact_sub}</p>
-          </div>
+          <SectionHeading badge={t.contact_badge} title={t.contact_h2} sub={t.contact_sub} />
           {submitted ? (
-            <div className="text-center py-16 rounded-2xl border border-emerald-500/20 bg-emerald-500/5">
+            <div className="text-center py-16 rounded-2xl border border-emerald-500/25 bg-emerald-500/5">
               <div className="text-5xl mb-4">✅</div>
-              <h3 className="text-xl font-bold mb-2">{t.success_h}</h3>
+              <h3 className="text-xl font-semibold mb-2">{t.success_h}</h3>
               <p className="text-gray-500 text-sm">{t.success_p}</p>
             </div>
           ) : (
-            <form onSubmit={handleSubmit} className="space-y-5 rounded-2xl border border-white/8 bg-white/[0.02] p-8">
+            <form onSubmit={handleSubmit} className="space-y-5 rounded-2xl edge-lit bg-[#0b0b16]/60 backdrop-blur-sm p-7 sm:p-8">
               <div className="grid grid-cols-1 sm:grid-cols-2 gap-5">
                 {[{ key: "name", label: t.form_name, ph: t.form_name_ph, type: "text" }, { key: "email", label: t.form_email, ph: t.form_email_ph, type: "email" }].map(f => (
                   <div key={f.key}>
                     <label className="block text-xs font-medium text-gray-400 mb-1.5">{f.label} <span className="text-red-400">*</span></label>
                     <input type={f.type} value={form[f.key as keyof typeof form]} onChange={e => setForm(p => ({ ...p, [f.key]: e.target.value }))} placeholder={f.ph}
-                      className={`w-full px-4 py-3 rounded-xl bg-white/[0.04] border ${errors[f.key] ? "border-red-500/40" : "border-white/8"} text-white placeholder-gray-600 focus:outline-none focus:border-indigo-500/50 focus:ring-1 focus:ring-indigo-500/20 transition-all text-sm`} />
+                      className={`w-full px-4 py-3 rounded-xl bg-white/[0.04] border ${errors[f.key] ? "border-red-500/40" : "border-white/8"} text-white placeholder-gray-600 focus:outline-none focus:border-indigo-500/50 focus:ring-1 focus:ring-indigo-500/20 transition-all text-[16px] sm:text-sm`} />
                     {errors[f.key] && <p className="text-red-400 text-xs mt-1">{errors[f.key]}</p>}
                   </div>
                 ))}
@@ -745,13 +1178,13 @@ export default function Home() {
               <div>
                 <label className="block text-xs font-medium text-gray-400 mb-1.5">{t.form_subject} <span className="text-red-400">*</span></label>
                 <input type="text" value={form.subject} onChange={e => setForm(p => ({ ...p, subject: e.target.value }))} placeholder={t.form_subject_ph}
-                  className={`w-full px-4 py-3 rounded-xl bg-white/[0.04] border ${errors.subject ? "border-red-500/40" : "border-white/8"} text-white placeholder-gray-600 focus:outline-none focus:border-indigo-500/50 focus:ring-1 focus:ring-indigo-500/20 transition-all text-sm`} />
+                  className={`w-full px-4 py-3 rounded-xl bg-white/[0.04] border ${errors.subject ? "border-red-500/40" : "border-white/8"} text-white placeholder-gray-600 focus:outline-none focus:border-indigo-500/50 focus:ring-1 focus:ring-indigo-500/20 transition-all text-[16px] sm:text-sm`} />
                 {errors.subject && <p className="text-red-400 text-xs mt-1">{errors.subject}</p>}
               </div>
               <div>
                 <label className="block text-xs font-medium text-gray-400 mb-1.5">{t.form_message} <span className="text-red-400">*</span></label>
                 <textarea value={form.message} rows={5} onChange={e => setForm(p => ({ ...p, message: e.target.value }))} placeholder={t.form_message_ph}
-                  className={`w-full px-4 py-3 rounded-xl bg-white/[0.04] border ${errors.message ? "border-red-500/40" : "border-white/8"} text-white placeholder-gray-600 focus:outline-none focus:border-indigo-500/50 focus:ring-1 focus:ring-indigo-500/20 transition-all resize-none text-sm`} />
+                  className={`w-full px-4 py-3 rounded-xl bg-white/[0.04] border ${errors.message ? "border-red-500/40" : "border-white/8"} text-white placeholder-gray-600 focus:outline-none focus:border-indigo-500/50 focus:ring-1 focus:ring-indigo-500/20 transition-all resize-none text-[16px] sm:text-sm`} />
                 <div className="flex justify-between mt-1">
                   {errors.message ? <p className="text-red-400 text-xs">{errors.message}</p> : <span />}
                   <p className="text-xs text-gray-600">{form.message.length} chars</p>
@@ -766,7 +1199,7 @@ export default function Home() {
                 {errors.agreed && <p className="text-red-400 text-xs mt-1">{errors.agreed}</p>}
               </div>
               <button type="submit" disabled={submitting}
-                className="w-full py-3.5 bg-indigo-600 hover:bg-indigo-500 disabled:opacity-50 rounded-xl text-sm font-medium transition-all hover:shadow-lg hover:shadow-indigo-500/20">
+                className="w-full py-3.5 rounded-xl bg-white text-[#07070d] text-sm font-semibold disabled:opacity-50 disabled:cursor-not-allowed transition-all hover:shadow-[0_10px_36px_-10px_rgba(255,255,255,0.45)] hover:-translate-y-0.5 active:translate-y-0">
                 {submitting ? t.submitting : t.submit}
               </button>
             </form>
@@ -775,7 +1208,7 @@ export default function Home() {
       </section>
 
       {/* FOOTER */}
-      <footer className="py-10 px-6 border-t border-white/5">
+      <footer className="relative z-10 py-12 px-6 border-t border-white/6">
         <div className="max-w-6xl mx-auto flex flex-col gap-8 text-sm text-gray-600">
           <div className="flex flex-col sm:flex-row sm:items-start sm:justify-between gap-8">
             <div>
@@ -786,10 +1219,11 @@ export default function Home() {
             <div className="sm:text-right">
               <p className="text-xs text-gray-500 mb-2">{t.footer_apps}</p>
               <ul className="space-y-1.5">
-                {APPS.map((app) => (
+                {/* 지원·개인정보 페이지가 있는 앱만. 없는 앱을 걸면 404 로 간다. */}
+                {APPS.filter((app) => app.page).map((app) => (
                   <li key={app.slug} className="flex items-center gap-2 sm:justify-end">
                     <a href={`/${app.slug}`} className="text-gray-300 hover:text-white transition-colors">
-                      {app.emoji} {app.name}
+                      {app.emoji} {app.name[lang]}
                     </a>
                     <span className="text-gray-700">·</span>
                     <a href={`/${app.slug}/privacy`} className="text-xs text-gray-500 hover:text-white transition-colors">

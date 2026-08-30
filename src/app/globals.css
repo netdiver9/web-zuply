@@ -1,16 +1,156 @@
 @import "tailwindcss";
 
+/* ── 디자인 토큰 ──────────────────────────────────────────────── */
+@theme {
+  /* 한글은 Geist에 글리프가 없으므로 Noto Sans KR로 자연스럽게 넘어간다. */
+  --font-sans: var(--font-geist), var(--font-noto-kr), ui-sans-serif, system-ui,
+    sans-serif;
+  --font-mono: var(--font-geist-mono), ui-monospace, SFMono-Regular, monospace;
+
+  --color-ink: #07070d;
+  --color-ink-raised: #0c0c16;
+
+  --animate-aurora: aurora 22s ease-in-out infinite alternate;
+  --animate-marquee: marquee 40s linear infinite;
+  --animate-sheen: sheen 2.6s ease-in-out infinite;
+}
+
 @layer base {
   html {
     scroll-behavior: smooth;
+    /* 고정 헤더에 앵커 타깃이 가려지지 않도록. */
+    scroll-padding-top: 5.5rem;
   }
 
   body {
-    font-family: system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI",
-      Roboto, "Helvetica Neue", Arial, sans-serif;
+    font-family: var(--font-sans);
+    /* Geist는 광학 보정이 들어간 서체라 살짝 조여야 제 인상이 난다. */
+    letter-spacing: -0.011em;
+    text-rendering: optimizeLegibility;
+  }
+
+  h1,
+  h2,
+  h3 {
+    letter-spacing: -0.033em;
   }
 
   ::selection {
-    background-color: rgba(99, 102, 241, 0.3);
+    background-color: rgba(99, 102, 241, 0.32);
+  }
+
+  /* 데스크톱 스크롤바도 어두운 톤에 맞춘다. */
+  * {
+    scrollbar-width: thin;
+    scrollbar-color: rgba(255, 255, 255, 0.14) transparent;
+  }
+}
+
+/* ── 유틸리티 ────────────────────────────────────────────────── */
+@utility text-gradient {
+  background-image: linear-gradient(
+    100deg,
+    #a5b4fc 0%,
+    #818cf8 28%,
+    #c4b5fd 58%,
+    #7dd3fc 100%
+  );
+  background-clip: text;
+  -webkit-background-clip: text;
+  color: transparent;
+}
+
+/* 카드 테두리를 위쪽만 밝게 — 조명이 위에서 떨어지는 느낌. */
+@utility edge-lit {
+  border: 1px solid rgba(255, 255, 255, 0.07);
+  background-image: linear-gradient(
+    to bottom,
+    rgba(255, 255, 255, 0.045),
+    rgba(255, 255, 255, 0.012) 42%,
+    rgba(255, 255, 255, 0) 100%
+  );
+}
+
+/* ── 애니메이션 ──────────────────────────────────────────────── */
+@keyframes aurora {
+  0% {
+    transform: translate3d(-6%, -4%, 0) scale(1);
+  }
+  50% {
+    transform: translate3d(5%, 6%, 0) scale(1.14);
+  }
+  100% {
+    transform: translate3d(-3%, 5%, 0) scale(1.04);
+  }
+}
+
+@keyframes marquee {
+  from {
+    transform: translateX(0);
+  }
+  to {
+    transform: translateX(-50%);
+  }
+}
+
+@keyframes sheen {
+  0%,
+  100% {
+    opacity: 0.35;
+  }
+  50% {
+    opacity: 1;
+  }
+}
+
+/* ── 등장 애니메이션 ─────────────────────────────────────────────
+   전부 CSS 로만 처리한다. 스크립트로 요소를 숨겨 두고 JS 가 다시 보여주는
+   방식은, 번들이 늦거나 실패하면 본문 전체가 빈 화면으로 남는다. */
+@keyframes rise-in {
+  from {
+    opacity: 0;
+    transform: translateY(22px);
+  }
+  to {
+    opacity: 1;
+    transform: none;
+  }
+}
+
+/* 첫 화면 — 로드되자마자 한 번 재생. */
+.rise {
+  animation: rise-in 0.75s cubic-bezier(0.22, 1, 0.36, 1) both;
+}
+
+/* 스크롤 등장 — 지원하는 브라우저에서만 켜진다.
+   미지원 브라우저는 규칙 자체가 적용되지 않아 그냥 처음부터 보인다. */
+@supports (animation-timeline: view()) {
+  .reveal {
+    animation: rise-in linear both;
+    animation-timeline: view();
+    animation-range-start: entry var(--reveal-offset, 0%);
+    animation-range-end: cover calc(22% + var(--reveal-offset, 0%));
+  }
+}
+
+/* 움직임 최소화 설정을 켠 사용자에게는 전부 정지시킨다. */
+@media (prefers-reduced-motion: reduce) {
+  html {
+    scroll-behavior: auto;
+  }
+
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.001ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.001ms !important;
+  }
+
+  .rise,
+  .reveal {
+    animation: none !important;
+    opacity: 1;
+    transform: none;
   }
 }
