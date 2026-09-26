@@ -87,6 +87,20 @@ const APPS: AppEntry[] = [
     page: true,
     icon: true,
   },
+  {
+    slug: "nona",
+    emoji: "➗",
+    category: "travel",
+    name: { en: "Nona", ko: "노나" },
+    tagline: {
+      en: "Trip expenses, settled with the fewest transfers.",
+      ko: "여행 경비를 적으면 최소 송금 정산안이 바로.",
+    },
+    status: "soon",
+    appStore: null,
+    page: true,
+    icon: true,
+  },
   // 언어 앱: 현재는 필리핀어(Kamusta)만 노출합니다.
   // 다른 언어 앱을 추가할 때는 아래에 항목을 이어 붙이면 됩니다.
   {
