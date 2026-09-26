@@ -11,11 +11,11 @@ import { useState } from "react";
  *
  * 현재 사실관계:
  *  - 회원가입·서버 없음. 학습 기록은 기기 안(UserDefaults / SharedPreferences)에만 저장.
- *  - iOS: Google AdMob 배너 광고 + ATT 팝업 (SDK 가 링크된 빌드에 한함).
- *  - Android: 광고 없음, INTERNET 권한 없음 → 어떤 데이터도 기기 밖으로 나가지 않음.
+ *  - v1.0 은 iOS·Android 모두 광고 없음. Android 는 INTERNET 권한 자체가 없음.
+ *  - 나중에 AdMob 을 넣으면 2항을 광고 기준으로 다시 써야 한다.
  */
 
-const EFFECTIVE = "2026-09-26";
+const EFFECTIVE = "2026-09-27";
 const CONTACT = "greenbi@gmail.com";
 
 const T = {
@@ -35,18 +35,17 @@ const T = {
         ],
       },
       {
-        h: "2. 플랫폼별 차이 (광고)",
+        h: "2. 광고와 추적",
         body: [
-          "**Android 버전** — 광고가 없고 인터넷 권한 자체가 없습니다. 어떤 데이터도 기기 밖으로 나가지 않으며, 이 방침의 3·4·5항만 해당됩니다.",
-          "**iOS 버전** — 일부 목록 화면 하단에 **Google AdMob** 배너 광고를 표시합니다. Google은 광고를 보여 주기 위해 기기 광고 식별자(IDFA), IP 주소, 기기 정보를 수집할 수 있습니다.",
-          "iOS에서 맞춤 광고 허용 여부는 **앱 추적 투명성(ATT)** 팝업에서 이용자가 직접 선택합니다. 거부해도 앱의 모든 기능을 그대로 쓸 수 있습니다.",
-          "Google의 데이터 처리는 Google 개인정보처리방침(policies.google.com/privacy)을 따릅니다.",
+          "현재 버전의 Kamusta는 **iOS와 Android 모두 광고가 없습니다.** 광고 식별자(IDFA/GAID)를 읽지 않고, 이용자를 추적하지 않으며, 분석 도구도 넣지 않았습니다.",
+          "**Android 버전**은 인터넷 권한 자체가 없어 어떤 데이터도 기기 밖으로 나갈 수 없습니다.",
+          "앞으로 광고를 넣게 되면 이 방침을 먼저 갱신하고 시행일을 바꿔 알립니다.",
         ],
       },
       {
         h: "3. 다른 회사와의 관계",
         body: [
-          "위 광고 서비스(iOS 한정) 외에는 어떤 제3자에게도 정보를 넘기지 않습니다. 분석 도구나 마케팅 목적의 공유는 없습니다.",
+          "어떤 제3자에게도 정보를 넘기지 않습니다. 분석·광고·마케팅 목적의 공유는 없습니다.",
         ],
       },
       {
@@ -97,18 +96,17 @@ const T = {
         ],
       },
       {
-        h: "2. Platform differences (advertising)",
+        h: "2. Advertising and tracking",
         body: [
-          "**Android version** — no ads and no internet permission at all. No data ever leaves your device; only sections 3 to 5 of this policy apply.",
-          "**iOS version** — shows **Google AdMob** banner ads at the bottom of some list screens. To serve ads, Google may collect the device advertising identifier (IDFA), IP address, and device information.",
-          "On iOS you decide whether to allow personalized ads through **App Tracking Transparency (ATT)**. Declining does not limit any feature of the app.",
-          "Google's handling of data is described in the Google Privacy Policy (policies.google.com/privacy).",
+          "The current version of Kamusta has **no ads on either iOS or Android.** It does not read the advertising identifier (IDFA/GAID), does not track you, and includes no analytics SDKs.",
+          "**The Android version** has no internet permission at all, so no data can leave your device.",
+          "If we ever add ads, we will update this policy first and change the effective date.",
         ],
       },
       {
         h: "3. Third parties",
         body: [
-          "Apart from the advertising service above (iOS only), no one receives your data. There is no sharing for analytics or marketing.",
+          "No one receives your data. There is no sharing for analytics, advertising, or marketing.",
         ],
       },
       {
