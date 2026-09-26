@@ -35,12 +35,12 @@ const T = {
         ],
       },
       {
-        h: "2. 광고 (iOS 버전)",
+        h: "2. 플랫폼별 차이 (광고)",
         body: [
-          "iOS 버전은 일부 목록 화면 하단에 **Google AdMob** 배너 광고를 표시합니다. Google은 광고를 보여 주기 위해 기기 광고 식별자(IDFA), IP 주소, 기기 정보를 수집할 수 있습니다.",
-          "맞춤 광고 허용 여부는 iOS의 **앱 추적 투명성(ATT)** 팝업에서 이용자가 직접 선택합니다. 거부해도 앱의 모든 기능을 그대로 쓸 수 있습니다.",
+          "**Android 버전** — 광고가 없고 인터넷 권한 자체가 없습니다. 어떤 데이터도 기기 밖으로 나가지 않으며, 이 방침의 3·4·5항만 해당됩니다.",
+          "**iOS 버전** — 일부 목록 화면 하단에 **Google AdMob** 배너 광고를 표시합니다. Google은 광고를 보여 주기 위해 기기 광고 식별자(IDFA), IP 주소, 기기 정보를 수집할 수 있습니다.",
+          "iOS에서 맞춤 광고 허용 여부는 **앱 추적 투명성(ATT)** 팝업에서 이용자가 직접 선택합니다. 거부해도 앱의 모든 기능을 그대로 쓸 수 있습니다.",
           "Google의 데이터 처리는 Google 개인정보처리방침(policies.google.com/privacy)을 따릅니다.",
-          "**Android 버전에는 광고가 없으며 인터넷 권한 자체가 없습니다.** 어떤 데이터도 기기 밖으로 나가지 않습니다.",
         ],
       },
       {
@@ -97,12 +97,12 @@ const T = {
         ],
       },
       {
-        h: "2. Advertising (iOS version)",
+        h: "2. Platform differences (advertising)",
         body: [
-          "The iOS version shows **Google AdMob** banner ads at the bottom of some list screens. To serve ads, Google may collect the device advertising identifier (IDFA), IP address, and device information.",
-          "You decide whether to allow personalized ads through iOS **App Tracking Transparency (ATT)**. Declining does not limit any feature of the app.",
+          "**Android version** — no ads and no internet permission at all. No data ever leaves your device; only sections 3 to 5 of this policy apply.",
+          "**iOS version** — shows **Google AdMob** banner ads at the bottom of some list screens. To serve ads, Google may collect the device advertising identifier (IDFA), IP address, and device information.",
+          "On iOS you decide whether to allow personalized ads through **App Tracking Transparency (ATT)**. Declining does not limit any feature of the app.",
           "Google's handling of data is described in the Google Privacy Policy (policies.google.com/privacy).",
-          "**The Android version has no ads and no internet permission at all.** No data ever leaves your device.",
         ],
       },
       {
