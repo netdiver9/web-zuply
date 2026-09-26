@@ -9,7 +9,7 @@ import { AppIcon, AppNav } from "@/components/AppNav";
  * App Store · Play 의 지원 URL 로 씁니다. 앱 기능이 바뀌면 여기도 같이 고칩니다.
  */
 
-const CONTACT = "greenbi@gmail.com";
+const CONTACT = "divekimdev@gmail.com";
 
 const T = {
   ko: {

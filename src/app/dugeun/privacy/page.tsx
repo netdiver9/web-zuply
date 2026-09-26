@@ -10,7 +10,7 @@ import { useState } from "react";
  */
 
 const EFFECTIVE = "2026-08-29";
-const CONTACT = "greenbi@gmail.com";
+const CONTACT = "divekimdev@gmail.com";
 
 const T = {
   ko: {
