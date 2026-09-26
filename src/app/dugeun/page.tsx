@@ -10,7 +10,7 @@ import { AppIcon, AppNav } from "@/components/AppNav";
  * 앱이 늘어나면 /<앱이름> 아래에 같은 형태로 하나씩 추가합니다.
  */
 
-const CONTACT = "greenbi@gmail.com";
+const CONTACT = "divekimdev@gmail.com";
 
 const T = {
   ko: {
