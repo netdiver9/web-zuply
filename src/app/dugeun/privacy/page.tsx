@@ -201,11 +201,9 @@ export default function DugeunPrivacyPage() {
         <header className="mb-14">
           <div className="mb-8 flex items-center justify-between">
             <Link
-              href="/"
+              href="/dugeun"
               className="text-sm text-white/50 transition-colors hover:text-white"
-            >
-              ← Zuply
-            </Link>
+            >{lang === "ko" ? "← 두근" : "← Dugeun"}</Link>
             <button
               onClick={() => setLang(lang === "ko" ? "en" : "ko")}
               className="rounded-full border border-white/15 px-4 py-1.5 text-sm text-white/70 transition-colors hover:border-white/40 hover:text-white"

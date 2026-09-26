@@ -171,11 +171,9 @@ export default function KamustaPrivacyPage() {
         <header className="mb-14">
           <div className="mb-8 flex items-center justify-between">
             <Link
-              href="/"
+              href="/kamusta"
               className="text-sm text-white/50 transition-colors hover:text-white"
-            >
-              ← Zuply
-            </Link>
+            >{lang === "ko" ? "← Kamusta" : "← Kamusta"}</Link>
             <button
               onClick={() => setLang(lang === "ko" ? "en" : "ko")}
               className="rounded-full border border-white/15 px-4 py-1.5 text-sm text-white/70 transition-colors hover:border-white/40 hover:text-white"
