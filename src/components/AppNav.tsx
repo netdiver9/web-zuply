@@ -8,7 +8,9 @@ import Link from "next/link";
 export const APP_LINKS = [
   { slug: "dugeun", name: "Dugeun", icon: "/icons/dugeun.png" },
   { slug: "hueday", name: "Hueday", icon: "/icons/hueday.png" },
+  { slug: "chalna", name: "Chalna", icon: "/icons/chalna.png" },
   { slug: "kamusta", name: "Kamusta", icon: "/icons/kamusta.png" },
+  { slug: "dailyten", name: "Daily Ten", icon: "/icons/dailyten.png" },
   { slug: "packly", name: "Packly", icon: "/icons/packly.png" },
   { slug: "nona", name: "Nona", icon: "/icons/nona.png" },
   { slug: "oneuldo", name: "Oneuldo", icon: "/icons/oneuldo.png" },
