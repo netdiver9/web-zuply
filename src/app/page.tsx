@@ -5,11 +5,11 @@ import { AppIcon } from "@/components/AppNav";
 
 // ── 앱 목록 ───────────────────────────────────────────────────────
 // 앱을 하나 낼 때마다 여기 한 줄만 고치면 홈의 Apps 섹션과 푸터가 함께 갱신됩니다.
-//   status   : "soon" → 출시 예정 배지, "live" → 출시됨 배지
+//   status   : "wip" → 작업 중 배지(스토어 미등록), "soon" → 출시 예정 배지(업로드·심사 중), "live" → 출시됨 배지
 //   appStore : App Store 링크. 넣으면 카드에 "App Store" 버튼이 생깁니다.
 //   page     : /src/app/<slug> 에 지원·개인정보 페이지를 둔 앱만 true.
 //              (App Store 는 앱마다 지원 URL 과 개인정보 처리방침 URL 을 요구합니다.)
-type AppCategory = "note" | "camera" | "travel" | "couple" | "language";
+type AppCategory = "note" | "camera" | "travel" | "couple" | "language" | "habit" | "focus";
 
 type AppEntry = {
   slug: string;
@@ -17,7 +17,7 @@ type AppEntry = {
   category: AppCategory;
   name: { en: string; ko: string };
   tagline: { en: string; ko: string };
-  status: "live" | "soon";
+  status: "live" | "soon" | "wip";
   appStore: string | null;
   page: boolean;
   /** public/icons/<slug>.png 가 있으면 true — 카드에 이모지 대신 실제 앱 아이콘을 보여줍니다. */
@@ -48,7 +48,7 @@ const APPS: AppEntry[] = [
       en: "18 mini games for two. One phone or a phone each.",
       ko: "둘이서 하는 18가지 미니게임. 한 폰으로도, 각자 폰으로도.",
     },
-    status: "soon",
+    status: "wip",
     appStore: null,
     page: true,
     icon: true,
@@ -62,7 +62,7 @@ const APPS: AppEntry[] = [
       en: "D-days and anniversaries on your Lock Screen and Home Screen widgets.",
       ko: "디데이와 기념일을 잠금화면·홈 화면 위젯에 담아두세요.",
     },
-    status: "soon",
+    status: "wip",
     appStore: null,
     page: true,
     icon: true,
@@ -76,7 +76,7 @@ const APPS: AppEntry[] = [
       en: "Snap it, say it, jot it down. Notes from photos, voice or typing.",
       ko: "찍고, 말하고, 적어서 바로 저장. 사진·음성·직접 작성 메모.",
     },
-    status: "soon",
+    status: "wip",
     appStore: null,
     page: true,
     icon: true,
@@ -118,7 +118,7 @@ const APPS: AppEntry[] = [
       en: "Concept · A film-roll camera. 24 frames, one look, developed the next morning.",
       ko: "컨셉 · 필름 롤처럼 찍는 카메라. 24컷, 룩 하나, 다음 날 아침에 현상.",
     },
-    status: "soon",
+    status: "wip",
     appStore: null,
     page: true,
     icon: true,
@@ -175,7 +175,37 @@ const APPS: AppEntry[] = [
       en: "Concept · Ten spoken English sentences a day, shadowed in your own voice.",
       ko: "컨셉 · 하루 영어 열 문장, 내 목소리로 따라 말하기.",
     },
-    status: "soon",
+    status: "wip",
+    appStore: null,
+    page: true,
+    icon: true,
+  },
+  // 습관 앱: 컨셉 단계인 꾸준. 연속 기록·알림 엔진은 Kamusta 와 공유.
+  {
+    slug: "kkujun",
+    emoji: "🌱",
+    category: "habit",
+    name: { en: "Kkujun", ko: "꾸준" },
+    tagline: {
+      en: "Concept · A few habits, one tap a day. Streaks, reminders and widgets, all on the device.",
+      ko: "컨셉 · 몇 가지 습관, 하루 한 번의 탭. 연속 기록·알림·위젯, 전부 기기 안에서.",
+    },
+    status: "wip",
+    appStore: null,
+    page: true,
+    icon: true,
+  },
+  // 집중 앱: 컨셉 단계인 몰입.
+  {
+    slug: "molip",
+    emoji: "⏳",
+    category: "focus",
+    name: { en: "Molip", ko: "몰입" },
+    tagline: {
+      en: "Concept · A focus timer with bundled sounds and a study-proof card. Fully offline.",
+      ko: "컨셉 · 내장 소리와 공부 인증 카드가 있는 집중 타이머. 인터넷 없이.",
+    },
+    status: "wip",
     appStore: null,
     page: true,
     icon: true,
@@ -268,9 +298,10 @@ const T = {
     apps_h2: "Apps we're shipping",
     apps_sub: "Built one at a time, each released on the App Store.",
     apps_all: "All",
-    apps_cats: { note: "Note", camera: "Camera", travel: "Travel", couple: "Couple", language: "Language" },
+    apps_cats: { note: "Note", camera: "Camera", travel: "Travel", couple: "Couple", language: "Language", habit: "Habit", focus: "Focus" },
     app_live: "On the App Store",
     app_soon: "Coming soon",
+    app_wip: "In progress",
     app_overview: "Overview",
     app_support: "Guide",
     stack_badge: "Tech Stack",
@@ -398,9 +429,10 @@ const T = {
     apps_h2: "만들고 있는 앱",
     apps_sub: "하나씩 만들어 App Store에 차례로 올리고 있습니다.",
     apps_all: "전체",
-    apps_cats: { note: "노트", camera: "카메라", travel: "여행", couple: "커플", language: "언어" },
+    apps_cats: { note: "노트", camera: "카메라", travel: "여행", couple: "커플", language: "언어", habit: "습관", focus: "집중" },
     app_live: "App Store 출시",
     app_soon: "출시 예정",
+    app_wip: "작업 중",
     app_overview: "소개",
     app_support: "설명서",
     stack_badge: "기술 스택",
@@ -586,6 +618,7 @@ function AppsGrid({ t, lang }: { t: any; lang: Lang }) {
       <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-5">
         {shown.map((app, i) => {
           const live = app.status === "live";
+          const wip = app.status === "wip";
           return (
             <Reveal key={app.slug} delay={(i % 3) * 90}>
               <div className="group h-full flex flex-col p-6 rounded-2xl edge-lit bg-[#0b0b16]/50 hover:bg-[#0b0b16]/80 hover:border-white/18 hover:-translate-y-1 transition-all duration-300">
@@ -597,10 +630,12 @@ function AppsGrid({ t, lang }: { t: any; lang: Lang }) {
                     className={`px-2.5 py-1 rounded-full text-[11px] border whitespace-nowrap ${
                       live
                         ? "bg-emerald-500/10 text-emerald-300 border-emerald-500/25"
-                        : "bg-amber-500/10 text-amber-300 border-amber-500/25"
+                        : wip
+                          ? "bg-white/[0.05] text-gray-400 border-white/15"
+                          : "bg-amber-500/10 text-amber-300 border-amber-500/25"
                     }`}
                   >
-                    {live ? t.app_live : t.app_soon}
+                    {live ? t.app_live : wip ? t.app_wip : t.app_soon}
                   </span>
                 </div>
 
