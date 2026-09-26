@@ -189,7 +189,8 @@ const T = {
     apps_cats: { note: "Note", camera: "Camera", travel: "Travel", couple: "Couple", language: "Language" },
     app_live: "On the App Store",
     app_soon: "Coming soon",
-    app_support: "Guide & Support",
+    app_overview: "Overview",
+    app_support: "Guide",
     stack_badge: "Tech Stack",
     stack_h2: "Built with modern technology",
     stack_sub: "The same tools powering the world's best AI products.",
@@ -317,7 +318,8 @@ const T = {
     apps_cats: { note: "노트", camera: "카메라", travel: "여행", couple: "커플", language: "언어" },
     app_live: "App Store 출시",
     app_soon: "출시 예정",
-    app_support: "사용 설명서",
+    app_overview: "소개",
+    app_support: "설명서",
     stack_badge: "기술 스택",
     stack_h2: "최신 기술로 만들어집니다",
     stack_sub: "세계 최고 AI 제품들이 사용하는 기술 스택을 동일하게 활용합니다.",
@@ -519,7 +521,9 @@ function AppsGrid({ t, lang }: { t: any; lang: Lang }) {
                   </span>
                 </div>
 
-                <h3 className="font-semibold text-[15px] text-white">{app.name[lang]}</h3>
+                <h3 className="font-semibold text-[15px] text-white">
+                  {app.page ? <a href={`/${app.slug}`} className="hover:underline underline-offset-4">{app.name[lang]}</a> : app.name[lang]}
+                </h3>
                 <p className="text-[11px] text-gray-500 uppercase tracking-[0.16em] mt-1">
                   {t.apps_cats[app.category]}
                 </p>
@@ -538,6 +542,10 @@ function AppsGrid({ t, lang }: { t: any; lang: Lang }) {
                     {app.page && (
                       <>
                         <a href={`/${app.slug}`}
+                          className="px-3.5 py-1.5 rounded-full border border-white/12 text-xs text-gray-300 hover:text-white hover:border-white/30 transition-colors">
+                          {t.app_overview}
+                        </a>
+                        <a href={`/${app.slug}/guide`}
                           className="px-3.5 py-1.5 rounded-full border border-white/12 text-xs text-gray-300 hover:text-white hover:border-white/30 transition-colors">
                           {t.app_support}
                         </a>
