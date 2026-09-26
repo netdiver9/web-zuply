@@ -77,11 +77,15 @@ const APPS: AppEntry[] = [
     slug: "packly",
     emoji: "🧳",
     category: "travel",
-    name: { en: "Packly", ko: "패클리" },
-    tagline: { en: "", ko: "" },
+    name: { en: "Packly", ko: "Packly" },
+    tagline: {
+      en: "Pack smart. Travel light. A weather-aware packing list in 3 minutes.",
+      ko: "여행은 설레게, 짐은 간단하게. 날씨를 반영한 준비물 목록을 3분 안에.",
+    },
     status: "soon",
     appStore: null,
-    page: false,
+    page: true,
+    icon: true,
   },
   // 언어 앱: 현재는 필리핀어(Kamusta)만 노출합니다.
   // 다른 언어 앱을 추가할 때는 아래에 항목을 이어 붙이면 됩니다.

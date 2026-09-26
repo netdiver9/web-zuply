@@ -9,6 +9,7 @@ export const APP_LINKS = [
   { slug: "dugeun", name: "Dugeun", icon: "/icons/dugeun.png" },
   { slug: "hueday", name: "Hueday", icon: "/icons/hueday.png" },
   { slug: "kamusta", name: "Kamusta", icon: "/icons/kamusta.png" },
+  { slug: "packly", name: "Packly", icon: "/icons/packly.png" },
 ] as const;
 
 export function AppIcon({ slug, size = 48, className = "" }: { slug: string; size?: number; className?: string }) {
