@@ -5,7 +5,8 @@ import { AppIcon } from "@/components/AppNav";
 
 // ── 앱 목록 ───────────────────────────────────────────────────────
 // 앱을 하나 낼 때마다 여기 한 줄만 고치면 홈의 Apps 섹션과 푸터가 함께 갱신됩니다.
-//   status   : "wip" → 작업 중 배지(스토어 미등록), "soon" → 출시 예정 배지(업로드·심사 중), "live" → 출시됨 배지
+//   status   : "wip" → 작업 중 배지(스토어 미등록), "review" → 심사 중 배지(App Store Connect 등록·심사 진행),
+//              "soon" → 출시 예정 배지(등록 전·업로드 준비), "live" → 출시됨 배지
 //   appStore : App Store 링크. 넣으면 카드에 "App Store" 버튼이 생깁니다.
 //   page     : /src/app/<slug> 에 지원·개인정보 페이지를 둔 앱만 true.
 //              (App Store 는 앱마다 지원 URL 과 개인정보 처리방침 URL 을 요구합니다.)
@@ -17,7 +18,7 @@ type AppEntry = {
   category: AppCategory;
   name: { en: string; ko: string };
   tagline: { en: string; ko: string };
-  status: "live" | "soon" | "wip";
+  status: "live" | "review" | "soon" | "wip";
   appStore: string | null;
   page: boolean;
   /** public/icons/<slug>.png 가 있으면 true — 카드에 이모지 대신 실제 앱 아이콘을 보여줍니다. */
@@ -34,7 +35,7 @@ const APPS: AppEntry[] = [
       en: "Photos that land straight on one person's Home Screen.",
       ko: "가까운 한 사람의 홈 화면에 바로 뜨는 사진.",
     },
-    status: "soon",
+    status: "review",
     appStore: null,
     page: true,
     icon: true,
@@ -48,7 +49,7 @@ const APPS: AppEntry[] = [
       en: "18 mini games for two. One phone or a phone each.",
       ko: "둘이서 하는 18가지 미니게임. 한 폰으로도, 각자 폰으로도.",
     },
-    status: "wip",
+    status: "review",
     appStore: null,
     page: true,
     icon: true,
@@ -62,7 +63,7 @@ const APPS: AppEntry[] = [
       en: "D-days and anniversaries on your Lock Screen and Home Screen widgets.",
       ko: "디데이와 기념일을 잠금화면·홈 화면 위젯에 담아두세요.",
     },
-    status: "wip",
+    status: "review",
     appStore: null,
     page: true,
     icon: true,
@@ -76,7 +77,7 @@ const APPS: AppEntry[] = [
       en: "Snap it, say it, jot it down. Notes from photos, voice or typing.",
       ko: "찍고, 말하고, 적어서 바로 저장. 사진·음성·직접 작성 메모.",
     },
-    status: "wip",
+    status: "review",
     appStore: null,
     page: true,
     icon: true,
@@ -90,7 +91,7 @@ const APPS: AppEntry[] = [
       en: "A mood and one line a day. Your calendar fills with color.",
       ko: "기분 하나, 한 줄이면 충분해요. 달력이 기분 색으로 채워집니다.",
     },
-    status: "soon",
+    status: "review",
     appStore: null,
     page: true,
     icon: true,
@@ -104,7 +105,7 @@ const APPS: AppEntry[] = [
       en: "A camera where you pick the mood first.",
       ko: "무드를 먼저 고르고 찍는 카메라.",
     },
-    status: "soon",
+    status: "review",
     appStore: null,
     page: true,
     icon: true,
@@ -132,7 +133,7 @@ const APPS: AppEntry[] = [
       en: "Pack smart. Travel light. A weather-aware packing list in 3 minutes.",
       ko: "여행은 설레게, 짐은 간단하게. 날씨를 반영한 준비물 목록을 3분 안에.",
     },
-    status: "soon",
+    status: "review",
     appStore: null,
     page: true,
     icon: true,
@@ -146,7 +147,7 @@ const APPS: AppEntry[] = [
       en: "Trip expenses, settled with the fewest transfers.",
       ko: "여행 경비를 적으면 최소 송금 정산안이 바로.",
     },
-    status: "soon",
+    status: "review",
     appStore: null,
     page: true,
     icon: true,
@@ -161,7 +162,7 @@ const APPS: AppEntry[] = [
       en: "Korean for Filipinos, Filipino for Koreans. Fully offline.",
       ko: "한글 발음으로 배우는 필리핀어. 인터넷 없이.",
     },
-    status: "soon",
+    status: "review",
     appStore: null,
     page: true,
     icon: true,
@@ -301,6 +302,7 @@ const T = {
     apps_cats: { note: "Note", camera: "Camera", travel: "Travel", couple: "Couple", language: "Language", habit: "Habit", focus: "Focus" },
     app_live: "On the App Store",
     app_soon: "Coming soon",
+    app_review: "In review",
     app_wip: "In progress",
     app_overview: "Overview",
     app_support: "Guide",
@@ -432,6 +434,7 @@ const T = {
     apps_cats: { note: "노트", camera: "카메라", travel: "여행", couple: "커플", language: "언어", habit: "습관", focus: "집중" },
     app_live: "App Store 출시",
     app_soon: "출시 예정",
+    app_review: "심사 중",
     app_wip: "작업 중",
     app_overview: "소개",
     app_support: "설명서",
@@ -618,6 +621,7 @@ function AppsGrid({ t, lang }: { t: any; lang: Lang }) {
       <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-5">
         {shown.map((app, i) => {
           const live = app.status === "live";
+          const review = app.status === "review";
           const wip = app.status === "wip";
           return (
             <Reveal key={app.slug} delay={(i % 3) * 90}>
@@ -630,12 +634,14 @@ function AppsGrid({ t, lang }: { t: any; lang: Lang }) {
                     className={`px-2.5 py-1 rounded-full text-[11px] border whitespace-nowrap ${
                       live
                         ? "bg-emerald-500/10 text-emerald-300 border-emerald-500/25"
-                        : wip
-                          ? "bg-white/[0.05] text-gray-400 border-white/15"
-                          : "bg-amber-500/10 text-amber-300 border-amber-500/25"
+                        : review
+                          ? "bg-sky-500/10 text-sky-300 border-sky-400/30"
+                          : wip
+                            ? "bg-white/[0.05] text-gray-400 border-white/15"
+                            : "bg-amber-500/10 text-amber-300 border-amber-500/25"
                     }`}
                   >
-                    {live ? t.app_live : wip ? t.app_wip : t.app_soon}
+                    {live ? t.app_live : review ? t.app_review : wip ? t.app_wip : t.app_soon}
                   </span>
                 </div>
 
