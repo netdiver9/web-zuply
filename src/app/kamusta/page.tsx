@@ -82,7 +82,7 @@ const T = {
 } as const;
 
 export default function KamustaPage() {
-  const [lang, setLang] = useState<"ko" | "en">("ko");
+  const [lang, setLang] = useState<"ko" | "en">("en");
   const t = T[lang];
 
   return (
