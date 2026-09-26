@@ -2,6 +2,7 @@
 
 import Link from "next/link";
 import { useState } from "react";
+import { AppIcon, AppNav } from "@/components/AppNav";
 
 /**
  * Hueday 앱 사용 설명서 겸 지원 페이지 (한국어 / 영어).
@@ -117,12 +118,7 @@ export default function HuedayPage() {
         </div>
 
         <header className="mb-16">
-          <div
-            className="mb-6 flex h-20 w-20 items-center justify-center rounded-[22px] text-4xl"
-            style={{ background: "linear-gradient(135deg,#D9A273,#C5AEE4 55%,#8FC7C0)" }}
-          >
-            📷
-          </div>
+          <AppIcon slug="hueday" size={80} className="mb-6 shadow-lg shadow-black/40" />
           <h1 className="text-4xl font-bold tracking-tight sm:text-5xl">Hueday</h1>
           <p className="mt-3 text-lg text-[#D9A273]">{t.tagline}</p>
           <p className="mt-6 text-[15px] leading-relaxed text-white/65">{t.intro}</p>
@@ -188,13 +184,14 @@ export default function HuedayPage() {
           </a>
         </section>
 
-        <footer className="flex gap-6 border-t border-white/10 pt-8 text-sm text-white/40">
+        <footer className="flex gap-6 border-t border-white/10 pt-8 text-sm text-white/40 flex flex-wrap items-center justify-between gap-4">
           <Link href="/hueday/privacy" className="underline underline-offset-4 transition-colors hover:text-white">
             {t.privacy}
           </Link>
           <Link href="/hueday/terms" className="underline underline-offset-4 transition-colors hover:text-white">
             {t.terms}
           </Link>
+          <AppNav current="hueday" label={lang === "ko" ? "다른 앱" : "Other apps"} />
         </footer>
       </div>
     </main>
