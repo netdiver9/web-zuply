@@ -13,6 +13,8 @@ export const APP_LINKS = [
   { slug: "nona", name: "Nona", icon: "/icons/nona.png" },
   { slug: "oneuldo", name: "Oneuldo", icon: "/icons/oneuldo.png" },
   { slug: "teumsaenote", name: "Teumsae Note", icon: "/icons/teumsaenote.png" },
+  { slug: "pitapat", name: "Pitapat", icon: "/icons/pitapat.png" },
+  { slug: "damda", name: "Damda", icon: "/icons/damda.png" },
 ] as const;
 
 export function AppIcon({ slug, size = 48, className = "" }: { slug: string; size?: number; className?: string }) {
