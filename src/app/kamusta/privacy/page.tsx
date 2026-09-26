@@ -162,7 +162,7 @@ function RichText({ text }: { text: string }) {
 }
 
 export default function KamustaPrivacyPage() {
-  const [lang, setLang] = useState<"ko" | "en">("ko");
+  const [lang, setLang] = useState<"ko" | "en">("en");
   const t = T[lang];
 
   return (

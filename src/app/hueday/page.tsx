@@ -98,7 +98,7 @@ const T = {
 } as const;
 
 export default function HuedayPage() {
-  const [lang, setLang] = useState<"ko" | "en">("ko");
+  const [lang, setLang] = useState<"ko" | "en">("en");
   const t = T[lang];
 
   return (
