@@ -56,14 +56,17 @@ const APPS: AppEntry[] = [
     page: false,
   },
   {
-    slug: "mooda",
+    slug: "hueday",
     emoji: "📷",
     category: "camera",
-    name: { en: "Mooda", ko: "Mooda" },
-    tagline: { en: "", ko: "" },
+    name: { en: "Hueday", ko: "Hueday" },
+    tagline: {
+      en: "A camera where you pick the mood first.",
+      ko: "무드를 먼저 고르고 찍는 카메라.",
+    },
     status: "soon",
     appStore: null,
-    page: false,
+    page: true,
   },
   {
     slug: "packly",
@@ -83,12 +86,12 @@ const APPS: AppEntry[] = [
     category: "language",
     name: { en: "Kamusta", ko: "Kamusta" },
     tagline: {
-      en: "Korean, taught in Filipino.",
-      ko: "필리핀어로 배우는 한국어.",
+      en: "Korean for Filipinos, Filipino for Koreans. Fully offline.",
+      ko: "한글 발음으로 배우는 필리핀어. 인터넷 없이.",
     },
     status: "soon",
     appStore: null,
-    page: false,
+    page: true,
   },
 ];
 
@@ -180,7 +183,7 @@ const T = {
     apps_cats: { note: "Note", camera: "Camera", travel: "Travel", couple: "Couple", language: "Language" },
     app_live: "On the App Store",
     app_soon: "Coming soon",
-    app_support: "Support",
+    app_support: "Guide & Support",
     stack_badge: "Tech Stack",
     stack_h2: "Built with modern technology",
     stack_sub: "The same tools powering the world's best AI products.",
@@ -308,7 +311,7 @@ const T = {
     apps_cats: { note: "노트", camera: "카메라", travel: "여행", couple: "커플", language: "언어" },
     app_live: "App Store 출시",
     app_soon: "출시 예정",
-    app_support: "지원",
+    app_support: "사용 설명서",
     stack_badge: "기술 스택",
     stack_h2: "최신 기술로 만들어집니다",
     stack_sub: "세계 최고 AI 제품들이 사용하는 기술 스택을 동일하게 활용합니다.",
@@ -527,10 +530,16 @@ function AppsGrid({ t, lang }: { t: any; lang: Lang }) {
                       </a>
                     )}
                     {app.page && (
-                      <a href={`/${app.slug}`}
-                        className="px-3.5 py-1.5 rounded-full border border-white/12 text-xs text-gray-300 hover:text-white hover:border-white/30 transition-colors">
-                        {t.app_support}
-                      </a>
+                      <>
+                        <a href={`/${app.slug}`}
+                          className="px-3.5 py-1.5 rounded-full border border-white/12 text-xs text-gray-300 hover:text-white hover:border-white/30 transition-colors">
+                          {t.app_support}
+                        </a>
+                        <a href={`/${app.slug}/privacy`}
+                          className="px-3.5 py-1.5 rounded-full border border-white/12 text-xs text-gray-500 hover:text-white hover:border-white/30 transition-colors">
+                          {t.footer_privacy}
+                        </a>
+                      </>
                     )}
                   </div>
                 )}
