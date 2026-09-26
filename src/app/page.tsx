@@ -120,6 +120,20 @@ const APPS: AppEntry[] = [
     icon: true,
   },
   {
+    slug: "chalna",
+    emoji: "🎞️",
+    category: "camera",
+    name: { en: "Chalna", ko: "찰나" },
+    tagline: {
+      en: "Concept · A film-roll camera. 24 frames, one look, developed the next morning.",
+      ko: "컨셉 · 필름 롤처럼 찍는 카메라. 24컷, 룩 하나, 다음 날 아침에 현상.",
+    },
+    status: "soon",
+    appStore: null,
+    page: true,
+    icon: true,
+  },
+  {
     slug: "packly",
     emoji: "🧳",
     category: "travel",
@@ -147,8 +161,7 @@ const APPS: AppEntry[] = [
     page: true,
     icon: true,
   },
-  // 언어 앱: 현재는 필리핀어(Kamusta)만 노출합니다.
-  // 다른 언어 앱을 추가할 때는 아래에 항목을 이어 붙이면 됩니다.
+  // 언어 앱: Kamusta(필리핀어) 와 컨셉 단계인 Daily Ten(영어).
   {
     slug: "kamusta",
     emoji: "🇵🇭",
@@ -157,6 +170,20 @@ const APPS: AppEntry[] = [
     tagline: {
       en: "Korean for Filipinos, Filipino for Koreans. Fully offline.",
       ko: "한글 발음으로 배우는 필리핀어. 인터넷 없이.",
+    },
+    status: "soon",
+    appStore: null,
+    page: true,
+    icon: true,
+  },
+  {
+    slug: "dailyten",
+    emoji: "🔟",
+    category: "language",
+    name: { en: "Daily Ten", ko: "데일리 텐" },
+    tagline: {
+      en: "Concept · Ten spoken English sentences a day, shadowed in your own voice.",
+      ko: "컨셉 · 하루 영어 열 문장, 내 목소리로 따라 말하기.",
     },
     status: "soon",
     appStore: null,

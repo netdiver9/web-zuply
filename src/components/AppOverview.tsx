@@ -13,6 +13,7 @@ export type Lang = "ko" | "en";
 export type Bilingual = { ko: string; en: string };
 
 export type HistoryEntry = {
+  /** "1.0" 처럼 숫자로 시작하면 v 를 붙여 보여주고, "Concept" 같은 말은 그대로 보여줍니다. */
   version: string;
   /** YYYY-MM-DD. 아직 심사 중이면 status 로 표시 */
   date: string;
@@ -95,7 +96,7 @@ export function AppOverview({ app }: { app: AppOverviewData }) {
             {app.history.map((h) => (
               <li key={h.version} className="border-l-2 pl-5" style={{ borderColor: `${app.accent}66` }}>
                 <div className="mb-1.5 flex flex-wrap items-center gap-2">
-                  <span className="font-semibold">v{h.version}</span>
+                  <span className="font-semibold">{/^\d/.test(h.version) ? `v${h.version}` : h.version}</span>
                   <span className="text-xs text-white/40">{h.date}</span>
                   {h.status && h.status !== "released" && (
                     <span className="rounded-full border border-amber-500/25 bg-amber-500/10 px-2 py-0.5 text-[11px] text-amber-300">
