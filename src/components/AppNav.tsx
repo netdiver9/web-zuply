@@ -10,6 +10,7 @@ export const APP_LINKS = [
   { slug: "hueday", name: "Hueday", icon: "/icons/hueday.png" },
   { slug: "kamusta", name: "Kamusta", icon: "/icons/kamusta.png" },
   { slug: "packly", name: "Packly", icon: "/icons/packly.png" },
+  { slug: "nona", name: "Nona", icon: "/icons/nona.png" },
 ] as const;
 
 export function AppIcon({ slug, size = 48, className = "" }: { slug: string; size?: number; className?: string }) {
