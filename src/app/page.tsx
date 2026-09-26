@@ -68,16 +68,6 @@ const APPS: AppEntry[] = [
     icon: true,
   },
   {
-    slug: "samenote",
-    emoji: "📝",
-    category: "note",
-    name: { en: "Samenote", ko: "Samenote" },
-    tagline: { en: "", ko: "" },
-    status: "soon",
-    appStore: null,
-    page: false,
-  },
-  {
     slug: "teumsaenote",
     emoji: "🗒️",
     category: "note",
@@ -269,6 +259,7 @@ const T = {
     app_desc: "iOS & Android apps that fit your daily life — automation, notifications, personal dashboards, and more.",
     app_features: ["iOS & Android support", "Personalised UX design", "Push & automation", "App store deployment"],
     other_services: [
+      { icon: "📒", title: "Ssamnote", desc: "Class notes, attendance and tuition records for private tutors — parents see every lesson.", tags: ["Tutors", "Class notes", "Attendance", "Parents"], badge: "Live", href: "/ssamnote" },
       { icon: "📰", title: "Morning Briefing", desc: "AI-curated daily digest of stocks, crypto, weather & news.", tags: ["Stocks", "Crypto", "Weather", "News"], badge: null },
       { icon: "🎓", title: "Education", desc: "Adaptive learning platform powered by AI tutoring.", tags: [], badge: "Coming soon" },
       { icon: "💼", title: "Career", desc: "AI-matched career paths tailored to your skills.", tags: [], badge: "Coming soon" },
@@ -398,6 +389,7 @@ const T = {
     app_desc: "일상을 편리하게 만드는 iOS·Android 앱 — 자동화, 알림, 개인 대시보드 등.",
     app_features: ["iOS & Android 지원", "개인 맞춤 UX 설계", "푸시·자동화 기능", "앱스토어 배포"],
     other_services: [
+      { icon: "📒", title: "쌤노트", desc: "공부방·과외 선생님을 위한 수업노트·출결·수업료 기록. 학부모는 수업 내용을 바로 확인합니다.", tags: ["선생님", "수업노트", "출결", "학부모"], badge: "운영 중", href: "/ssamnote" },
       { icon: "📰", title: "모닝브리핑", desc: "AI가 큐레이션한 주식·코인·날씨·뉴스 일일 요약.", tags: ["주식", "코인", "날씨", "뉴스"], badge: null },
       { icon: "🎓", title: "교육 서비스", desc: "AI 튜터링 기반 적응형 학습 플랫폼.", tags: [], badge: "개발 중" },
       { icon: "💼", title: "취업 서비스", desc: "AI가 매칭하는 나만의 커리어 경로.", tags: [], badge: "개발 중" },
@@ -1133,17 +1125,25 @@ export default function Home() {
           </div>
 
           <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-5">
-            {t.other_services.map((s, i) => (
-              <Reveal key={s.title} delay={i * 90}>
-                <div className="h-full p-7 rounded-2xl edge-lit bg-[#0b0b16]/40 hover:bg-[#0b0b16]/70 hover:border-white/18 hover:-translate-y-1 transition-all duration-300">
+            {t.other_services.map((s, i) => {
+              const href = "href" in s ? s.href : undefined;
+              const cardClass = "block h-full p-7 rounded-2xl edge-lit bg-[#0b0b16]/40 hover:bg-[#0b0b16]/70 hover:border-white/18 hover:-translate-y-1 transition-all duration-300";
+              const body = (
+                <>
                   <div className="text-3xl mb-5">{s.icon}</div>
                   <h3 className="font-semibold text-[15px] mb-2">{s.title}</h3>
                   <p className="text-gray-500 text-sm leading-relaxed mb-5">{s.desc}</p>
-                  {s.badge && <span className="px-3 py-1.5 rounded-full text-xs bg-amber-500/10 text-amber-300 border border-amber-500/25">{s.badge}</span>}
+                  {s.badge && <span className={`inline-block px-3 py-1.5 rounded-full text-xs bg-amber-500/10 text-amber-300 border border-amber-500/25 ${s.tags.length > 0 ? "mb-3" : ""}`}>{s.badge}</span>}
                   {s.tags.length > 0 && <div className="flex flex-wrap gap-2">{s.tags.map(tag => <span key={tag} className="px-3 py-1.5 rounded-full text-xs bg-indigo-500/10 text-indigo-300 border border-indigo-500/25">{tag}</span>)}</div>}
-                </div>
-              </Reveal>
-            ))}
+                </>
+              );
+              return (
+                <Reveal key={s.title} delay={i * 90}>
+                  {/* href 가 있는 서비스(예: 쌤노트)는 카드 전체가 소개 페이지 링크 */}
+                  {href ? <a href={href} className={cardClass}>{body}</a> : <div className={cardClass}>{body}</div>}
+                </Reveal>
+              );
+            })}
           </div>
         </div>
       </section>
