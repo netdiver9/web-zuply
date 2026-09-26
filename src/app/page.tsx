@@ -75,48 +75,8 @@ const APPS: AppEntry[] = [
     appStore: null,
     page: false,
   },
-  // 언어 앱은 우선순위 순으로 둡니다 — 카드가 배열 순서대로 그려집니다.
-  // 순서 근거: 인구 × 한국어 학습 동기 × 결제력.
-  // 앱 이름은 현지 인사말 기준의 임시안이라, 정해지면 name 만 바꾸면 됩니다.
-  {
-    slug: "halo",
-    emoji: "🇮🇩",
-    category: "language",
-    name: { en: "Halo", ko: "할로" },
-    tagline: {
-      en: "Korean, taught in Indonesian.",
-      ko: "인도네시아어로 배우는 한국어.",
-    },
-    status: "soon",
-    appStore: null,
-    page: false,
-  },
-  {
-    slug: "xinchao",
-    emoji: "🇻🇳",
-    category: "language",
-    name: { en: "Xin Chào", ko: "신짜오" },
-    tagline: {
-      en: "Korean, taught in Vietnamese.",
-      ko: "베트남어로 배우는 한국어.",
-    },
-    status: "soon",
-    appStore: null,
-    page: false,
-  },
-  {
-    slug: "sawasdee",
-    emoji: "🇹🇭",
-    category: "language",
-    name: { en: "Sawasdee", ko: "사와디" },
-    tagline: {
-      en: "Korean, taught in Thai.",
-      ko: "태국어로 배우는 한국어.",
-    },
-    status: "soon",
-    appStore: null,
-    page: false,
-  },
+  // 언어 앱: 현재는 필리핀어(Kamusta)만 노출합니다.
+  // 다른 언어 앱을 추가할 때는 아래에 항목을 이어 붙이면 됩니다.
   {
     slug: "kamusta",
     emoji: "🇵🇭",
