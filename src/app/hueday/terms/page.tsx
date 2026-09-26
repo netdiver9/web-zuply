@@ -1,5 +1,6 @@
 "use client";
 
+import Link from "next/link";
 import { useState } from "react";
 
 /**
@@ -209,12 +210,12 @@ export default function HuedayTermsPage() {
       <div className="mx-auto max-w-3xl px-6 py-16 sm:py-24">
         <header className="mb-14">
           <div className="mb-8 flex items-center justify-between">
-            <a
+            <Link
               href="/"
               className="text-sm text-white/50 transition-colors hover:text-white"
             >
               ← Zuply
-            </a>
+            </Link>
             <button
               onClick={() => setLang(lang === "ko" ? "en" : "ko")}
               className="rounded-full border border-white/15 px-4 py-1.5 text-sm text-white/70 transition-colors hover:border-white/40 hover:text-white"
