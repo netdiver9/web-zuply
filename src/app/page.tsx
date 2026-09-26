@@ -1,6 +1,7 @@
 "use client";
 
 import { useEffect, useRef, useState, useCallback } from "react";
+import { AppIcon } from "@/components/AppNav";
 
 // ── 앱 목록 ───────────────────────────────────────────────────────
 // 앱을 하나 낼 때마다 여기 한 줄만 고치면 홈의 Apps 섹션과 푸터가 함께 갱신됩니다.
@@ -19,6 +20,8 @@ type AppEntry = {
   status: "live" | "soon";
   appStore: string | null;
   page: boolean;
+  /** public/icons/<slug>.png 가 있으면 true — 카드에 이모지 대신 실제 앱 아이콘을 보여줍니다. */
+  icon?: boolean;
 };
 
 const APPS: AppEntry[] = [
@@ -34,6 +37,7 @@ const APPS: AppEntry[] = [
     status: "soon",
     appStore: null,
     page: true,
+    icon: true,
   },
   {
     slug: "samenote",
@@ -67,6 +71,7 @@ const APPS: AppEntry[] = [
     status: "soon",
     appStore: null,
     page: true,
+    icon: true,
   },
   {
     slug: "packly",
@@ -92,6 +97,7 @@ const APPS: AppEntry[] = [
     status: "soon",
     appStore: null,
     page: true,
+    icon: true,
   },
 ];
 
@@ -499,8 +505,8 @@ function AppsGrid({ t, lang }: { t: any; lang: Lang }) {
             <Reveal key={app.slug} delay={(i % 3) * 90}>
               <div className="group h-full flex flex-col p-6 rounded-2xl edge-lit bg-[#0b0b16]/50 hover:bg-[#0b0b16]/80 hover:border-white/18 hover:-translate-y-1 transition-all duration-300">
                 <div className="flex items-start justify-between gap-3 mb-5">
-                  <div className="grid place-items-center w-12 h-12 rounded-xl border border-white/8 bg-white/[0.04] text-2xl group-hover:scale-110 transition-transform duration-300">
-                    {app.emoji}
+                  <div className="grid place-items-center w-12 h-12 rounded-xl border border-white/8 bg-white/[0.04] text-2xl group-hover:scale-110 transition-transform duration-300 overflow-hidden">
+                    {app.icon ? <AppIcon slug={app.slug} size={48} className="rounded-xl" /> : app.emoji}
                   </div>
                   <span
                     className={`px-2.5 py-1 rounded-full text-[11px] border whitespace-nowrap ${
