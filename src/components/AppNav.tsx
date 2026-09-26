@@ -11,12 +11,14 @@ export const APP_LINKS = [
   { slug: "chalna", name: "Chalna", icon: "/icons/chalna.png" },
   { slug: "kamusta", name: "Kamusta", icon: "/icons/kamusta.png" },
   { slug: "dailyten", name: "Daily Ten", icon: "/icons/dailyten.png" },
+  { slug: "kkujun", name: "Kkujun", icon: "/icons/kkujun.png" },
   { slug: "packly", name: "Packly", icon: "/icons/packly.png" },
   { slug: "nona", name: "Nona", icon: "/icons/nona.png" },
   { slug: "oneuldo", name: "Oneuldo", icon: "/icons/oneuldo.png" },
   { slug: "teumsaenote", name: "Teumsae Note", icon: "/icons/teumsaenote.png" },
   { slug: "pitapat", name: "Pitapat", icon: "/icons/pitapat.png" },
   { slug: "damda", name: "Damda", icon: "/icons/damda.png" },
+  { slug: "molip", name: "Molip", icon: "/icons/molip.png" },
 ] as const;
 
 export function AppIcon({ slug, size = 48, className = "" }: { slug: string; size?: number; className?: string }) {
