@@ -3,6 +3,7 @@ import { AppOverview, type AppOverviewData } from "@/components/AppOverview";
 /** 담다 소개 페이지. 새 버전을 낼 때 history 맨 위에 한 항목 추가하세요. */
 const app: AppOverviewData = {
   slug: "damda",
+  appStore: "https://apps.apple.com/kr/app/id6816445939",
   name: "담다 · Damda",
   accent: "#E8607A",
   tagline: { ko: "소중한 날을 가장 가까이에.", en: "Keep your special days close." },
@@ -18,7 +19,7 @@ const app: AppOverviewData = {
   ],
   history: [
     {
-      version: "1.0", date: "2026-09-26", status: "in-review",
+      version: "1.0", date: "2026-10-01", status: "released",
       notes: {
         ko: ["첫 출시. 잠금화면·홈 화면 디데이 위젯, 매년 반복 기념일, 다가오는 기념일 미리보기, 알림", "6가지 테마와 사진 꾸미기, JSON 백업 내보내기·가져오기, Damda Pro(1회 구입)", "계정·서버·광고·분석 없음"],
         en: ["First release: Lock Screen and Home Screen D-day widgets, yearly anniversaries, upcoming milestones, reminders", "Six themes and photo decoration, JSON backup export and import, Damda Pro (one-time purchase)", "No account, server, ads or analytics"],

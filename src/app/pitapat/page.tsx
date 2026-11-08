@@ -3,6 +3,7 @@ import { AppOverview, type AppOverviewData } from "@/components/AppOverview";
 /** 피타팟 소개 페이지. 새 버전을 낼 때 history 맨 위에 한 항목 추가하세요. */
 const app: AppOverviewData = {
   slug: "pitapat",
+  appStore: "https://apps.apple.com/kr/app/id6816445508",
   name: "피타팟 · Pitapat",
   accent: "#FF7EA0",
   tagline: { ko: "열면 3분, 웃음은 하루 종일.", en: "Three minutes to play. Laughing about it all day." },
@@ -18,7 +19,7 @@ const app: AppOverviewData = {
   ],
   history: [
     {
-      version: "1.0", date: "2026-09-26", status: "in-review",
+      version: "1.0", date: "2026-10-01", status: "released",
       notes: {
         ko: ["첫 출시. 18가지 미니게임, 오늘의 밸런스와 공유 카드", "완전 오프라인: 서버·계정·결제 없음, 어떤 데이터도 수집하지 않음", "iPhone 두 대가 같은 방에 있으면 인터넷 없이 직접 연결", "한국어·영어"],
         en: ["First release: 18 mini games, today's balance and a shareable score card", "Fully offline: no server, no account, no purchases, no data collected", "Two iPhones in the same room link directly, no internet needed", "Korean and English"],

@@ -3,6 +3,7 @@ import { AppOverview, type AppOverviewData } from "@/components/AppOverview";
 /** Kamusta 소개 페이지. 새 버전을 낼 때 history 맨 위에 한 항목 추가하세요. */
 const app: AppOverviewData = {
   slug: "kamusta",
+  appStore: "https://apps.apple.com/kr/app/id6816351542",
   name: "Kamusta",
   accent: "#FF9A6B",
   tagline: {
@@ -21,7 +22,7 @@ const app: AppOverviewData = {
   ],
   history: [
     {
-      version: "1.0", date: "2026-09-26", status: "in-review",
+      version: "1.0", date: "2026-10-01", status: "released",
       notes: {
         ko: ["첫 출시. 회화 8개 상황 144문장, 단어 10개 주제 188개, 기초 단원, 통합 사전", "오늘의 문장과 연속 학습일, 매일 학습 알림", "한국어 ↔ 필리핀어 양방향 학습 방향", "광고·계정·서버 없음, 완전 오프라인"],
         en: ["First release: 144 phrases in 8 situations, 188 words in 10 topics, basics lessons, built-in dictionary", "Phrase of the day, study streak and daily reminder", "Two-way direction: Korean ↔ Filipino", "No ads, no account, no server — fully offline"],

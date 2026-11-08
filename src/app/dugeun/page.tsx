@@ -3,6 +3,7 @@ import { AppOverview, type AppOverviewData } from "@/components/AppOverview";
 /** 두근 소개 페이지. 새 버전을 낼 때 history 맨 위에 한 항목 추가하세요. */
 const app: AppOverviewData = {
   slug: "dugeun",
+  appStore: "https://apps.apple.com/kr/app/id6816421764",
   name: "두근 · Dugeun",
   accent: "#FF8FA3",
   tagline: { ko: "휴대폰을 열 때마다 둘만의 순간이 먼저 보이도록.", en: "So the moments you share are the first thing you see." },
@@ -18,7 +19,7 @@ const app: AppOverviewData = {
   ],
   history: [
     {
-      version: "1.0", date: "2026-09", status: "planned",
+      version: "1.0", date: "2026-10-11", status: "released",
       notes: {
         ko: ["첫 출시 준비 중. 사진 위젯, D-Day, 오늘의 감정·상태, 오늘의 질문, 타임라인과 이모지 반응", "Apple 로그인과 6자리 초대 코드로 연결, 신고·연결 해제·계정 삭제"],
         en: ["First release in preparation: photo widget, D-Day, today's mood and status, question of the day, timeline with emoji reactions", "Sign in with Apple, 6-character invite code pairing, report / disconnect / delete account"],

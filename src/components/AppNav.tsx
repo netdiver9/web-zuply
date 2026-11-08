@@ -6,6 +6,8 @@ import Link from "next/link";
  * 지원·설명서 페이지가 있는 앱만 넣습니다. 앱을 추가하면 여기와 홈의 APPS 에 함께 넣으세요.
  */
 export const APP_LINKS = [
+  { slug: "beforepay", name: "Beforepay", icon: "/icons/beforepay.svg" },
+  { slug: "meonjeo", name: "Meonjeo", icon: "/icons/meonjeo.svg" },
   { slug: "dugeun", name: "Dugeun", icon: "/icons/dugeun.png" },
   { slug: "hueday", name: "Hueday", icon: "/icons/hueday.png" },
   { slug: "chalna", name: "Chalna", icon: "/icons/chalna.png" },
@@ -38,7 +40,7 @@ export function AppIcon({ slug, size = 48, className = "" }: { slug: string; siz
 
 export function AppNav({ current, label = "Other apps" }: { current: string; label?: string }) {
   return (
-    <nav aria-label={label} className="flex items-center gap-3">
+    <nav aria-label={label} className="flex flex-wrap items-center gap-3">
       <span className="text-xs text-white/40">{label}</span>
       {APP_LINKS.map((app) => (
         <Link

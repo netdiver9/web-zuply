@@ -3,6 +3,7 @@ import { AppOverview, type AppOverviewData } from "@/components/AppOverview";
 /** 틈새 노트 소개 페이지. 새 버전을 낼 때 history 맨 위에 한 항목 추가하세요. */
 const app: AppOverviewData = {
   slug: "teumsaenote",
+  appStore: "https://apps.apple.com/kr/app/id6816445238",
   name: "틈새 노트 · Teumsae Note",
   accent: "#4FC3B0",
   tagline: { ko: "찍고, 말하고, 적어서 바로 저장.", en: "Snap it, say it, jot it down." },
@@ -18,7 +19,7 @@ const app: AppOverviewData = {
   ],
   history: [
     {
-      version: "1.0", date: "2026-09-26", status: "in-review",
+      version: "1.0", date: "2026-10-01", status: "released",
       notes: {
         ko: ["첫 출시. 촬영 스캔(기기 내 글자 인식), 음성 메모(실시간 받아쓰기·원본 녹음 보관), 직접 작성", "자동 분류 태그, 읽어주기, Face ID 잠금, 홈 화면 위젯, 복사·PDF 내보내기", "iCloud 개인 데이터베이스 동기화, 계정·서버·광고·분석 없음"],
         en: ["First release: scan (on-device text recognition), voice notes (live dictation with the original recording kept), typed notes", "Auto tags, read-aloud, Face ID lock, Home Screen widget, copy and PDF export", "Sync through your iCloud private database; no account, server, ads or analytics"],

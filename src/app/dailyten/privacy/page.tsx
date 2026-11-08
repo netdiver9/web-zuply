@@ -4,47 +4,45 @@ import Link from "next/link";
 import { useState } from "react";
 
 /**
- * 데일리 텐 개인정보 처리방침 — 컨셉 단계의 약속입니다. 출시 전에 실제 앱과 맞춰 갱신하고 시행일을 새로 적습니다.
- * 원칙: 계정·광고·분석 없음. 녹음은 기기 안에서만 비교, 전송 없음. 레슨 팩 내려받기만 네트워크 사용(식별값 없음).
- * 알림은 로컬 알림. 기록은 iOS 기기 백업에 포함될 수 있음(개발자 서버 아님).
+ * 데일리 텐 개인정보 처리방침. App Store · Google Play 의 개인정보처리방침 URL.
+ * 사실관계: 계정·광고·분석·결제·서버 없음, 네트워크 사용 없음(900문장 앱 내장, 원음은 시스템 TTS). 녹음은 기기 안에서만,
+ * 백업 제외. 학습 기록(progress.json)은 기기 백업에 포함될 수 있음(개발자 서버 아님). 알림은 로컬 알림.
  */
 
-const EFFECTIVE = "2026-09-26";
+const EFFECTIVE = "2026-09-27";
 const CONTACT = "divekimdev@gmail.com";
 
 const T = {
   ko: {
-    lang: "EN", app: "데일리 텐 · Daily Ten", title: "개인정보 처리방침", updated: `시행일 ${EFFECTIVE} · 출시 전에 갱신됩니다`,
-    intro: "데일리 텐은 하루 열 문장을 듣고 따라 말하는 영어 학습 앱입니다. 회원가입이 없고, 내 목소리 녹음은 이 기기 밖으로 나가지 않으며, 인터넷은 레슨 팩을 내려받을 때만 씁니다. 아래는 데일리 텐이 출시될 때 지키기로 한 원칙입니다.",
+    lang: "EN", app: "데일리 텐 · Daily Ten", title: "개인정보 처리방침", updated: `시행일 ${EFFECTIVE}`,
+    intro: "데일리 텐은 하루 열 문장을 듣고 따라 말하는 영어 학습 앱입니다. 회원가입이 없고, 서버가 없으며, 인터넷을 쓰지 않습니다. 모든 문장은 앱 안에 들어 있고, 내 목소리 녹음은 이 기기 밖으로 나가지 않습니다.",
     sections: [
-      { h: "1. 이 문서에 대해", body: ["데일리 텐은 아직 개발 중인 컨셉입니다. 이 방침은 **출시 시점에 지킬 약속**을 미리 적은 것이며, 출시 전에 실제 앱의 동작과 맞춰 갱신하고 시행일을 새로 적습니다."] },
-      { h: "2. 받는 정보", body: ["이름, 이메일, 전화번호, 주소록, 위치 정보를 **받지 않습니다.** 계정이 없으므로 이용자를 식별하지 않습니다.", "**학습 기록과 설정** — 문장별 ‘됐다/아직’ 표시, 복습 일정, 연속 학습일, 알림 시각 같은 설정. 모두 이 기기 안에만 저장되며 어디로도 전송되지 않습니다.", "광고 식별자를 읽지 않고, 분석 도구도 없습니다."] },
-      { h: "3. 마이크와 녹음", body: ["**마이크 권한**은 따라 말하기를 녹음하는 데만 씁니다. 녹음은 이용자가 카드를 열어 말하는 동안에만 이루어집니다.", "녹음 파일은 **이 기기에만** 저장됩니다. 서버로 보내지 않고, 원음과의 비교도 기기 안에서 처리합니다. 음성 인식이나 외부 API 를 쓰지 않습니다.", "녹음은 30일 뒤 자동으로 지워지며(설정에서 변경), 설정에서 언제든 모두 지울 수 있습니다."] },
-      { h: "4. 레슨 팩 내려받기", body: ["레슨 팩을 내려받을 때만 개발자가 운영하는 서버에 연결합니다. 요청에 담기는 것은 **팩 이름과 앱 버전**뿐이며, 이용자를 식별하는 값은 없습니다.", "서버는 어떤 기기가 어떤 팩을 받았는지 이용자와 연결해 저장하지 않습니다. 내려받은 뒤의 학습은 인터넷 없이 이루어집니다."] },
-      { h: "5. 알림", body: ["‘오늘의 열 문장’ 알림은 기기 안에서 예약하는 **로컬 알림**입니다. 서버 푸시가 아니며, 알림 권한을 거절해도 앱은 동작합니다."] },
-      { h: "6. 백업", body: ["학습 기록은 iOS 기기 백업(iCloud 백업)에 포함될 수 있습니다. 이는 이용자의 Apple 계정 안에서 이루어지며, 개발자는 접근할 수 없습니다. 녹음 파일은 기본적으로 백업에서 제외합니다."] },
-      { h: "7. 광고와 추적", body: ["광고가 없고, 광고 식별자를 읽지 않으며, 분석 도구나 제3자 SDK 도 없습니다. 이용자를 추적하지 않습니다."] },
-      { h: "8. 삭제", body: ["앱을 삭제하면 기기 안의 학습 기록, 설정, 녹음, 레슨 팩이 모두 지워집니다.", "서버에 이용자와 연결된 정보가 없으므로 별도의 삭제 요청 절차가 필요 없습니다."] },
-      { h: "9. 아동", body: ["데일리 텐은 만 14세 미만 아동을 대상으로 하지 않으며, 아동의 정보를 의도적으로 수집하지 않습니다."] },
-      { h: "10. 변경", body: ["출시 전에 실제 앱과 맞춰 이 방침을 갱신합니다. 바뀌면 이 페이지에 시행일과 함께 올립니다."] },
-      { h: "11. 문의", body: [`${CONTACT}`] },
+      { h: "1. 받는 정보", body: ["이름, 이메일, 전화번호, 주소록, 위치 정보를 **받지 않습니다.** 계정이 없으므로 이용자를 식별하지 않습니다.", "**학습 기록과 설정** — 고른 레슨 팩과 진행 일수, 문장별 ‘됐다/아직’ 표시, 복습 일정, 연속 학습일과 되살리기 기록, 읽기 속도·알림 시각·녹음 자동 삭제 같은 설정. 모두 이 기기 안에만 저장되며 어디로도 전송되지 않습니다.", "광고 식별자를 읽지 않고, 분석 도구도 없습니다."] },
+      { h: "2. 마이크와 녹음", body: ["**마이크 권한**은 따라 말하기를 녹음하는 데만 씁니다. 권한은 처음 ‘듣고 따라 말하기’를 누를 때 묻고, 녹음은 이용자가 그 버튼을 누른 뒤 멈출 때까지(최대 12초)만 이루어집니다.", "녹음 파일은 **이 기기에만** 저장됩니다. 서버로 보내지 않고, 원음과의 비교도 기기 안에서 처리합니다. 음성 인식이나 외부 API 를 쓰지 않습니다.", "녹음은 30일 뒤 자동으로 지워지며(설정에서 끌 수 있음), 설정에서 언제든 모두 지울 수 있습니다."] },
+      { h: "3. 네트워크", body: ["데일리 텐은 **인터넷을 쓰지 않습니다.** 세 레슨 팩 900문장이 모두 앱에 들어 있어 내려받을 것이 없습니다.", "원음은 기기에 들어 있는 영어 음성(시스템 TTS)이 기기 안에서 읽습니다."] },
+      { h: "4. 알림", body: ["‘오늘의 열 문장’ 알림은 기기 안에서 예약하는 **로컬 알림**입니다. 서버 푸시가 아니며, 알림 권한을 거절해도 앱은 동작합니다. Android에서는 기기를 다시 켠 뒤 알림을 다시 예약하기 위해 부팅 완료 신호를 받습니다."] },
+      { h: "5. 백업", body: ["학습 기록은 기기 백업(iCloud 백업, Android 백업)에 포함될 수 있습니다. 이는 이용자의 Apple 또는 Google 계정 안에서 이루어지며, 개발자는 접근할 수 없습니다. 녹음 파일은 백업에서 제외합니다."] },
+      { h: "6. 광고와 추적", body: ["광고와 인앱 구입이 없고, 광고 식별자를 읽지 않으며, 분석 도구나 제3자 SDK 도 없습니다. 이용자를 추적하지 않습니다."] },
+      { h: "7. 삭제", body: ["설정에서 녹음을 모두 지우거나 진행 기록을 초기화할 수 있습니다. 앱을 삭제하면 기기 안의 학습 기록, 설정, 녹음이 모두 지워집니다.", "서버에 저장된 정보가 없으므로 별도의 삭제 요청 절차가 필요 없습니다."] },
+      { h: "8. 아동", body: ["데일리 텐은 만 14세 미만 아동을 대상으로 하지 않으며, 아동의 정보를 의도적으로 수집하지 않습니다."] },
+      { h: "9. 변경", body: ["이 방침이 바뀌면 이 페이지에 시행일과 함께 올립니다."] },
+      { h: "10. 문의", body: [`${CONTACT}`] },
     ],
   },
   en: {
-    lang: "한국어", app: "데일리 텐 · Daily Ten", title: "Privacy Policy", updated: `Effective ${EFFECTIVE} · to be updated before release`,
-    intro: "Daily Ten is an English-learning app built around listening to and shadowing ten sentences a day. There is no sign-up, your voice recordings never leave this device, and the internet is used only to download lesson packs. Below are the commitments Daily Ten will keep when it ships.",
+    lang: "한국어", app: "데일리 텐 · Daily Ten", title: "Privacy Policy", updated: `Effective ${EFFECTIVE}`,
+    intro: "Daily Ten is an English-learning app built around listening to and shadowing ten sentences a day. There is no sign-up, no server, and the app never uses the internet. Every sentence is built into the app, and your voice recordings never leave this device.",
     sections: [
-      { h: "1. About this document", body: ["Daily Ten is a concept still in development. This policy states the **commitments the app will keep at release.** It will be revised to match the actual app before release, with a new effective date."] },
-      { h: "2. What we collect", body: ["We **do not** collect your name, email, phone number, contacts or location. There is no account, so you are never identified.", "**Study records and settings** — “Got it / Not yet” marks per sentence, the review schedule, your streak, and settings such as reminder time. All of it is stored only on your device and is never uploaded.", "No advertising identifier is read and there are no analytics."] },
-      { h: "3. Microphone and recordings", body: ["**Microphone access** is used only to record your shadowing. Recording happens only while you have a card open and are speaking.", "Recordings are stored **on this device only.** They are not uploaded, and the comparison with the original is processed on the device. No speech recognition or external API is used.", "Recordings are deleted automatically after 30 days (adjustable in Settings), and you can delete them all at any time."] },
-      { h: "4. Downloading lesson packs", body: ["The app connects to a server operated by the developer only when you download a lesson pack. The request carries **the pack name and the app version** and nothing that identifies you.", "The server does not keep a record linking a device or person to the packs they downloaded. After the download, studying happens offline."] },
-      { h: "5. Notifications", body: ["The “today's ten” reminder is a **local notification** scheduled on the device. It is not a server push, and the app works if you decline notifications."] },
-      { h: "6. Backup", body: ["Study records may be included in your iOS device backup (iCloud Backup). That happens inside your Apple account; the developer has no access to it. Recordings are excluded from backup by default."] },
-      { h: "7. Advertising and tracking", body: ["No ads, no advertising identifier, no analytics, no third-party SDKs, no tracking."] },
-      { h: "8. Deletion", body: ["Deleting the app removes every study record, setting, recording and lesson pack on the device.", "Because nothing linked to you is stored on a server, no separate deletion request is needed."] },
-      { h: "9. Children", body: ["Daily Ten is not directed at children under 14, and we do not knowingly collect their information."] },
-      { h: "10. Changes", body: ["This policy will be updated to match the actual app before release. Any change is posted on this page with a new effective date."] },
-      { h: "11. Contact", body: [`${CONTACT}`] },
+      { h: "1. What we collect", body: ["We **do not** collect your name, email, phone number, contacts or location. There is no account, so you are never identified.", "**Study records and settings** — your lesson pack and how far you are, “Got it / Not yet” marks per sentence, the review schedule, your streak and repairs, and settings such as speech rate, reminder time and recording auto-delete. All of it is stored only on your device and is never uploaded.", "No advertising identifier is read and there are no analytics."] },
+      { h: "2. Microphone and recordings", body: ["**Microphone access** is used only to record your shadowing. It is requested the first time you tap “Listen and shadow”, and recording happens only from that tap until you stop (up to 12 seconds).", "Recordings are stored **on this device only.** They are not uploaded, and the comparison with the original is processed on the device. No speech recognition or external API is used.", "Recordings are deleted automatically after 30 days (you can turn this off in Settings), and you can delete them all at any time."] },
+      { h: "3. Network", body: ["Daily Ten **never uses the internet.** All three lesson packs — 900 sentences — are built into the app, so there is nothing to download.", "The original audio is read on the device by its built-in English voice (system text-to-speech)."] },
+      { h: "4. Notifications", body: ["The “today's ten” reminder is a **local notification** scheduled on the device. It is not a server push, and the app works if you decline notifications. On Android the app listens for the boot-completed signal to reschedule the reminder after a restart."] },
+      { h: "5. Backup", body: ["Study records may be included in your device backup (iCloud Backup or Android backup). That happens inside your Apple or Google account; the developer has no access to it. Recordings are excluded from backup."] },
+      { h: "6. Advertising and tracking", body: ["No ads, no in-app purchases, no advertising identifier, no analytics, no third-party SDKs, no tracking."] },
+      { h: "7. Deletion", body: ["Settings lets you delete every recording or reset your progress. Deleting the app removes every study record, setting and recording on the device.", "Because nothing is stored on a server, no separate deletion request is needed."] },
+      { h: "8. Children", body: ["Daily Ten is not directed at children under 14, and we do not knowingly collect their information."] },
+      { h: "9. Changes", body: ["Any change is posted on this page with a new effective date."] },
+      { h: "10. Contact", body: [`${CONTACT}`] },
     ],
   },
 } as const;

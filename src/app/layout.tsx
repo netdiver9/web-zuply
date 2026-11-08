@@ -24,13 +24,13 @@ const notoKR = Noto_Sans_KR({
 });
 
 export const metadata: Metadata = {
-  title: "Zuply — We zuply what you need",
-  description: "AI 기반 앱 스튜디오. 사람들에게 필요한 것을 만듭니다.",
+  title: "Zuply Studio — WEB · APP · AI 제작 스튜디오",
+  description: "아이디어를 실제 제품으로. 전략, UX/UI, 웹·앱 개발, AI 자동화, 배포까지 하나의 팀으로 만듭니다.",
 };
 
 // 모바일 브라우저 상단/하단 크롬을 페이지 배경과 같은 색으로 맞춘다.
 export const viewport: Viewport = {
-  themeColor: "#07070d",
+  themeColor: "#080b12",
   colorScheme: "dark",
 };
 
@@ -44,7 +44,7 @@ export default function RootLayout({
       lang="ko"
       className={`scroll-smooth ${geist.variable} ${geistMono.variable} ${notoKR.variable}`}
     >
-      <body className="bg-[#07070d] text-white antialiased">{children}</body>
+      <body className="bg-[#080b12] text-white antialiased">{children}</body>
     </html>
   );
 }
