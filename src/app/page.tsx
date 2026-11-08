@@ -886,13 +886,48 @@ const STACK = [
   { label: "React Native", color: "border-violet-400/40 text-violet-300" },
 ];
 
-const TEAM_COLORS = [
-  "from-indigo-500 to-indigo-600", "from-rose-500 to-pink-600",
-  "from-violet-500 to-purple-600", "from-sky-500 to-blue-600",
-  "from-slate-400 to-slate-600", "from-emerald-500 to-teal-600",
-  "from-amber-500 to-orange-500", "from-cyan-500 to-sky-500",
-  "from-red-500 to-rose-600", "from-fuchsia-500 to-pink-500",
-];
+// 팀 카드마다 고유 색 — 회전 테두리·아바타 링·스포트라이트에 쓰인다.
+const TEAM_ACCENTS = ["#9effb2", "#a5b4fc", "#dfff72", "#7dd3fc"];
+
+// 커서 위치를 CSS 변수로 넘겨 카드 위에 빛이 따라다니게 한다.
+function TeamCard({ m, i }: { m: { name: string; role: string; desc: string; skills: readonly string[] }; i: number }) {
+  const ref = useRef<HTMLDivElement>(null);
+  const onMove = (e: React.PointerEvent<HTMLDivElement>) => {
+    const el = ref.current;
+    if (!el) return;
+    const r = el.getBoundingClientRect();
+    el.style.setProperty("--mx", `${e.clientX - r.left}px`);
+    el.style.setProperty("--my", `${e.clientY - r.top}px`);
+  };
+  const initials = m.name.split(" ").map(w => w[0]).join("").slice(0, 2).toUpperCase();
+  const id = String(i + 1).padStart(2, "0");
+  return (
+    <div ref={ref} onPointerMove={onMove} className="team-node group h-full" style={{ "--accent": TEAM_ACCENTS[i % TEAM_ACCENTS.length] } as React.CSSProperties}>
+      <div className="team-node__inner">
+        <div className="flex items-center justify-between font-mono text-[10px] tracking-[0.14em] uppercase text-gray-500">
+          <span>node_{id}</span>
+          <span className="flex items-center gap-1.5 text-[color:var(--accent)]"><i className="team-node__pulse" />online</span>
+        </div>
+        <div className="mt-6 flex items-center gap-4">
+          <div className="team-node__avatar"><span>{initials}</span></div>
+          <div className="min-w-0">
+            <p className="font-semibold text-[15px] text-white tracking-tight">{m.name}</p>
+            <p className="text-[11px] text-gray-400 mt-0.5 leading-snug">{m.role}</p>
+          </div>
+        </div>
+        <p className="mt-5 text-xs text-gray-500 leading-relaxed">{m.desc}</p>
+        <div className="mt-auto pt-5">
+          <p className="font-mono text-[10px] text-gray-600 mb-2"><span className="text-[color:var(--accent)]">$</span> stack --list</p>
+          <div className="flex flex-wrap gap-1.5">
+            {m.skills.map(s => (
+              <span key={s} className="team-node__chip">{s}</span>
+            ))}
+          </div>
+        </div>
+      </div>
+    </div>
+  );
+}
 
 // ── Main ──────────────────────────────────────────────────────────
 export default function Home() {
@@ -1253,23 +1288,15 @@ export default function Home() {
       <section id="team" className="relative z-10 py-28 sm:py-36 px-6">
         <div className="max-w-6xl mx-auto">
           <SectionHeading badge={t.team_badge} title={t.team_h2} sub={t.team_sub} />
+          <div className="team-console mb-5">
+            <span className="flex gap-1.5"><i /><i /><i /></span>
+            <span className="truncate">zuply://team</span>
+            <span className="ml-auto flex items-center gap-1.5 text-[#9effb2]"><i className="team-node__pulse" style={{ "--accent": "#9effb2" } as React.CSSProperties} />{t.team.length} nodes · synced</span>
+          </div>
           <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-5">
             {t.team.map((m, i) => (
-              <Reveal key={m.name} delay={(i % 4) * 80}>
-                <div className="group h-full rounded-2xl edge-lit bg-[#0b0b16]/40 hover:bg-[#0b0b16]/75 hover:border-white/18 hover:-translate-y-1 transition-all duration-300 overflow-hidden">
-                  <div className={`h-0.5 bg-gradient-to-r ${TEAM_COLORS[i]} opacity-70 group-hover:opacity-100 transition-opacity`} />
-                  <div className="p-6">
-                    <div className={`grid place-items-center w-11 h-11 rounded-xl bg-gradient-to-br ${TEAM_COLORS[i]} mb-4 text-white font-semibold text-base shadow-lg shadow-black/40 group-hover:scale-105 transition-transform`}>{m.name[0]}</div>
-                    <p className="font-semibold text-sm text-white">{m.name}</p>
-                    <p className="text-xs text-gray-500 mt-0.5 mb-3">{m.role}</p>
-                    <p className="text-xs text-gray-500 leading-relaxed mb-4 line-clamp-3">{m.desc}</p>
-                    <div className="flex flex-wrap gap-1.5">
-                      {m.skills.map(s => (
-                        <span key={s} className="px-2 py-0.5 rounded text-[10px] font-mono bg-white/[0.04] border border-white/8 text-gray-400">{s}</span>
-                      ))}
-                    </div>
-                  </div>
-                </div>
+              <Reveal key={m.name} delay={(i % 4) * 80} className="h-full">
+                <TeamCard m={m} i={i} />
               </Reveal>
             ))}
           </div>
