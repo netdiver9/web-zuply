@@ -3,6 +3,7 @@ import { AppOverview, type AppOverviewData } from "@/components/AppOverview";
 /** Hueday 소개 페이지. 새 버전을 낼 때 history 맨 위에 한 항목 추가하세요. */
 const app: AppOverviewData = {
   slug: "hueday",
+  appStore: "https://apps.apple.com/kr/app/id6810281774",
   name: "Hueday",
   accent: "#D9A273",
   hasTerms: true,
@@ -19,7 +20,7 @@ const app: AppOverviewData = {
   ],
   history: [
     {
-      version: "1.0", date: "2026-09-26", status: "in-review",
+      version: "1.0", date: "2026-10-01", status: "released",
       notes: {
         ko: ["첫 출시. 무드 9종, 무드 먼저 고르는 카메라, 갤러리 불러오기", "편집: 무드·강도, 밝기·대비·채도·색온도 보정, 날짜 스탬프, 한 줄 메모", "무드 다이어리", "Hueday Plus: 월간·연간 구독(2주 무료 체험), 평생 이용권"],
         en: ["First release: nine moods, mood-first camera, gallery import", "Editor: mood and intensity, brightness/contrast/saturation/warmth, date stamp, one-line caption", "Mood diary", "Hueday Plus: monthly and yearly subscriptions (2-week free trial) or lifetime purchase"],

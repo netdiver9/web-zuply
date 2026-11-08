@@ -10,7 +10,7 @@ import { AppIcon } from "@/components/AppNav";
 //   appStore : App Store 링크. 넣으면 카드에 "App Store" 버튼이 생깁니다.
 //   page     : /src/app/<slug> 에 지원·개인정보 페이지를 둔 앱만 true.
 //              (App Store 는 앱마다 지원 URL 과 개인정보 처리방침 URL 을 요구합니다.)
-type AppCategory = "note" | "camera" | "travel" | "couple" | "language" | "habit" | "focus";
+type AppCategory = "note" | "camera" | "travel" | "couple" | "language" | "habit" | "focus" | "food" | "money";
 
 type AppEntry = {
   slug: string;
@@ -35,8 +35,8 @@ const APPS: AppEntry[] = [
       en: "Photos that land straight on one person's Home Screen.",
       ko: "가까운 한 사람의 홈 화면에 바로 뜨는 사진.",
     },
-    status: "review",
-    appStore: null,
+    status: "live",
+    appStore: "https://apps.apple.com/kr/app/id6816421764",
     page: true,
     icon: true,
   },
@@ -49,8 +49,8 @@ const APPS: AppEntry[] = [
       en: "18 mini games for two. One phone or a phone each.",
       ko: "둘이서 하는 18가지 미니게임. 한 폰으로도, 각자 폰으로도.",
     },
-    status: "review",
-    appStore: null,
+    status: "live",
+    appStore: "https://apps.apple.com/kr/app/id6816445508",
     page: true,
     icon: true,
   },
@@ -63,8 +63,8 @@ const APPS: AppEntry[] = [
       en: "D-days and anniversaries on your Lock Screen and Home Screen widgets.",
       ko: "디데이와 기념일을 잠금화면·홈 화면 위젯에 담아두세요.",
     },
-    status: "review",
-    appStore: null,
+    status: "live",
+    appStore: "https://apps.apple.com/kr/app/id6816445939",
     page: true,
     icon: true,
   },
@@ -77,8 +77,8 @@ const APPS: AppEntry[] = [
       en: "Snap it, say it, jot it down. Notes from photos, voice or typing.",
       ko: "찍고, 말하고, 적어서 바로 저장. 사진·음성·직접 작성 메모.",
     },
-    status: "review",
-    appStore: null,
+    status: "live",
+    appStore: "https://apps.apple.com/kr/app/id6816445238",
     page: true,
     icon: true,
   },
@@ -91,8 +91,8 @@ const APPS: AppEntry[] = [
       en: "A mood and one line a day. Your calendar fills with color.",
       ko: "기분 하나, 한 줄이면 충분해요. 달력이 기분 색으로 채워집니다.",
     },
-    status: "review",
-    appStore: null,
+    status: "live",
+    appStore: "https://apps.apple.com/kr/app/id6816432597",
     page: true,
     icon: true,
   },
@@ -105,8 +105,8 @@ const APPS: AppEntry[] = [
       en: "A camera where you pick the mood first.",
       ko: "무드를 먼저 고르고 찍는 카메라.",
     },
-    status: "review",
-    appStore: null,
+    status: "live",
+    appStore: "https://apps.apple.com/kr/app/id6810281774",
     page: true,
     icon: true,
   },
@@ -116,11 +116,11 @@ const APPS: AppEntry[] = [
     category: "camera",
     name: { en: "Chalna", ko: "찰나" },
     tagline: {
-      en: "Concept · A film-roll camera. 24 frames, one look, developed the next morning.",
-      ko: "컨셉 · 필름 롤처럼 찍는 카메라. 24컷, 룩 하나, 다음 날 아침에 현상.",
+      en: "A film-roll camera. 24 frames, one look, developed the next morning.",
+      ko: "필름 롤처럼 찍는 카메라. 24컷, 룩 하나, 다음 날 아침에 현상.",
     },
-    status: "wip",
-    appStore: null,
+    status: "live",
+    appStore: "https://apps.apple.com/kr/app/id6816465526",
     page: true,
     icon: true,
   },
@@ -133,8 +133,8 @@ const APPS: AppEntry[] = [
       en: "Pack smart. Travel light. A weather-aware packing list in 3 minutes.",
       ko: "여행은 설레게, 짐은 간단하게. 날씨를 반영한 준비물 목록을 3분 안에.",
     },
-    status: "review",
-    appStore: null,
+    status: "live",
+    appStore: "https://apps.apple.com/kr/app/id6816399100",
     page: true,
     icon: true,
   },
@@ -147,12 +147,12 @@ const APPS: AppEntry[] = [
       en: "Trip expenses, settled with the fewest transfers.",
       ko: "여행 경비를 적으면 최소 송금 정산안이 바로.",
     },
-    status: "review",
-    appStore: null,
+    status: "live",
+    appStore: "https://apps.apple.com/kr/app/id6816402139",
     page: true,
     icon: true,
   },
-  // 언어 앱: Kamusta(필리핀어) 와 컨셉 단계인 Daily Ten(영어).
+  // 언어 앱: Kamusta(필리핀어) 와 Daily Ten(영어).
   {
     slug: "kamusta",
     emoji: "🇵🇭",
@@ -162,8 +162,8 @@ const APPS: AppEntry[] = [
       en: "Korean for Filipinos, Filipino for Koreans. Fully offline.",
       ko: "한글 발음으로 배우는 필리핀어. 인터넷 없이.",
     },
-    status: "review",
-    appStore: null,
+    status: "live",
+    appStore: "https://apps.apple.com/kr/app/id6816351542",
     page: true,
     icon: true,
   },
@@ -173,41 +173,71 @@ const APPS: AppEntry[] = [
     category: "language",
     name: { en: "Daily Ten", ko: "데일리 텐" },
     tagline: {
-      en: "Concept · Ten spoken English sentences a day, shadowed in your own voice.",
-      ko: "컨셉 · 하루 영어 열 문장, 내 목소리로 따라 말하기.",
+      en: "Ten spoken English sentences a day, shadowed in your own voice.",
+      ko: "하루 영어 열 문장, 내 목소리로 따라 말하기.",
     },
-    status: "wip",
-    appStore: null,
+    status: "live",
+    appStore: "https://apps.apple.com/kr/app/id6816465364",
     page: true,
     icon: true,
   },
-  // 습관 앱: 컨셉 단계인 꾸준. 연속 기록·알림 엔진은 Kamusta 와 공유.
+  // 습관 앱: 꾸준. 연속 기록·되살리기 규칙은 Kamusta·Daily Ten 과 같음.
   {
     slug: "kkujun",
     emoji: "🌱",
     category: "habit",
     name: { en: "Kkujun", ko: "꾸준" },
     tagline: {
-      en: "Concept · A few habits, one tap a day. Streaks, reminders and widgets, all on the device.",
-      ko: "컨셉 · 몇 가지 습관, 하루 한 번의 탭. 연속 기록·알림·위젯, 전부 기기 안에서.",
+      en: "A few habits, one tap a day. Streaks, reminders and widgets, all on the device.",
+      ko: "몇 가지 습관, 하루 한 번의 탭. 연속 기록·알림·위젯, 전부 기기 안에서.",
     },
-    status: "wip",
-    appStore: null,
+    status: "live",
+    appStore: "https://apps.apple.com/kr/app/id6816464730",
     page: true,
     icon: true,
   },
-  // 집중 앱: 컨셉 단계인 몰입.
+  // 집중 앱: 몰입.
   {
     slug: "molip",
     emoji: "⏳",
     category: "focus",
     name: { en: "Molip", ko: "몰입" },
     tagline: {
-      en: "Concept · A focus timer with bundled sounds and a study-proof card. Fully offline.",
-      ko: "컨셉 · 내장 소리와 공부 인증 카드가 있는 집중 타이머. 인터넷 없이.",
+      en: "A focus timer with bundled sounds and a study-proof card. Fully offline.",
+      ko: "내장 소리와 공부 인증 카드가 있는 집중 타이머. 인터넷 없이.",
     },
-    status: "wip",
-    appStore: null,
+    status: "live",
+    appStore: "https://apps.apple.com/kr/app/id6816463485",
+    page: true,
+    icon: true,
+  },
+  // 식생활 앱: 먼저먹기.
+  {
+    slug: "meonjeo",
+    emoji: "🥬",
+    category: "food",
+    name: { en: "Meonjeo", ko: "먼저먹기" },
+    tagline: {
+      en: "Use what you have, before you forget. Food dates and shopping lists together.",
+      ko: "냉장고 속 재료, 잊기 전에 먼저. 소비기한 알림과 장보기 목록을 한곳에.",
+    },
+    status: "live",
+    appStore: "https://apps.apple.com/kr/app/id6816552872",
+    page: true,
+    icon: true,
+  },
+  // 구독 관리 앱: 결제전.
+  {
+    slug: "beforepay",
+    emoji: "🔔",
+    category: "money",
+    name: { en: "Beforepay", ko: "결제전" },
+    tagline: {
+      en: "Review before the next charge. Subscription reminders, trial deadlines and monthly totals.",
+      ko: "구독료가 나가기 전에 한 번 더. 결제 알림, 무료체험과 월별 합계를 한곳에.",
+    },
+    status: "live",
+    appStore: "https://apps.apple.com/kr/app/id6816553051",
     page: true,
     icon: true,
   },
@@ -299,7 +329,7 @@ const T = {
     apps_h2: "Apps we're shipping",
     apps_sub: "Built one at a time, each released on the App Store.",
     apps_all: "All",
-    apps_cats: { note: "Note", camera: "Camera", travel: "Travel", couple: "Couple", language: "Language", habit: "Habit", focus: "Focus" },
+    apps_cats: { note: "Note", camera: "Camera", travel: "Travel", couple: "Couple", language: "Language", habit: "Habit", focus: "Focus", food: "Food", money: "Subscriptions" },
     app_live: "On the App Store",
     app_soon: "Coming soon",
     app_review: "In review",
@@ -311,18 +341,12 @@ const T = {
     stack_sub: "The same tools powering the world's best AI products.",
     team_badge: "Team",
     team_h2: "The people behind Zuply",
-    team_sub: "Specialists across every discipline — from AI research to infrastructure.",
+    team_sub: "A small team covering every discipline — from AI research to infrastructure.",
     team: [
-      { name: "Greenbi", role: "Product Planner · AI/ML Engineer", desc: "Defines product vision and AI strategy. Also leads model fine-tuning, custom training pipelines, and LLM evaluation frameworks.", skills: ["LLM Strategy", "RAG Design", "Fine-tuning", "PyTorch", "AI Workflow"] },
-      { name: "Kairo", role: "UI/UX Designer", desc: "Crafts intuitive interfaces for complex AI products. Specialises in data-heavy dashboard design and interaction systems.", skills: ["Figma", "Design System", "Prototyping", "Dashboard UX"] },
-      { name: "Yumi", role: "Frontend Engineer", desc: "Builds performant, real-time AI interfaces. Expert in streaming LLM output, interactive data visualisation, and SSE.", skills: ["Next.js", "TypeScript", "D3.js", "WebSocket", "SSE"] },
-      { name: "Jaden", role: "Backend Engineer", desc: "Architects AI pipelines and API layers. Builds RAG systems, LangChain integrations, and high-throughput inference servers.", skills: ["FastAPI", "LangChain", "LangGraph", "pgvector", "Redis"] },
-      { name: "Ryan", role: "Infrastructure Engineer", desc: "Manages cloud infrastructure for AI workloads. Optimises GPU instances, vector DBs, and model serving at scale.", skills: ["AWS", "Docker", "Kubernetes", "MLflow", "Pinecone"] },
-      { name: "Sophie", role: "Product Manager", desc: "Drives delivery across AI product cycles. Coordinates between research, engineering, and design to ship on time.", skills: ["Agile", "JIRA", "A/B Testing", "Analytics", "OKR"] },
-      { name: "Ethan", role: "QA Engineer", desc: "Ensures reliability of AI systems. Designs evaluation frameworks for LLM output quality, latency, and edge-case robustness.", skills: ["LLM Evaluation", "Pytest", "k6", "Playwright", "CI/CD"] },
-      { name: "Hana", role: "Data Analyst", desc: "Turns raw data into product insights. Builds predictive models, behavioural analytics pipelines, and executive dashboards.", skills: ["Python", "pandas", "SQL", "scikit-learn", "Tableau"] },
-      { name: "Marcus", role: "DevSecOps Engineer", desc: "Owns security posture across all AI systems. Manages API key vaulting, compliance audits, threat modelling, and zero-trust architecture.", skills: ["Vault", "SIEM", "Zero Trust", "API Security", "Compliance"] },
-      { name: "Nora", role: "Technical Writer", desc: "Produces API documentation, user manuals, and compliance deliverables for public-sector clients. Bridges technical depth with clear communication.", skills: ["API Docs", "Swagger", "Confluence", "공공기관 납품문서", "Markdown"] },
+      { name: "Josh Kim", role: "Product Lead · AI/ML Engineer", desc: "Sets product vision, AI strategy, and delivery. Leads model fine-tuning, LLM evaluation, and data-driven product decisions.", skills: ["LLM Strategy", "RAG Design", "Fine-tuning", "PyTorch", "Agile", "Analytics"] },
+      { name: "Kairo", role: "UI/UX Designer · Technical Writer", desc: "Crafts intuitive interfaces for complex AI products, and turns them into clear guides, API docs, and deliverables.", skills: ["Figma", "Design System", "Prototyping", "API Docs", "Markdown"] },
+      { name: "Greenbi", role: "Frontend Engineer · QA", desc: "Builds performant, real-time AI interfaces with streaming LLM output, and owns end-to-end testing and release quality.", skills: ["Next.js", "TypeScript", "SSE", "Playwright", "CI/CD"] },
+      { name: "Jaden", role: "Backend · Infrastructure Engineer", desc: "Architects AI pipelines, APIs, and RAG systems, and runs secure cloud infrastructure and model serving at scale.", skills: ["FastAPI", "LangChain", "pgvector", "AWS", "Docker", "Zero Trust"] },
     ],
     contact_badge: "Contact",
     contact_h2: "Start your project",
@@ -431,7 +455,7 @@ const T = {
     apps_h2: "만들고 있는 앱",
     apps_sub: "하나씩 만들어 App Store에 차례로 올리고 있습니다.",
     apps_all: "전체",
-    apps_cats: { note: "노트", camera: "카메라", travel: "여행", couple: "커플", language: "언어", habit: "습관", focus: "집중" },
+    apps_cats: { note: "노트", camera: "카메라", travel: "여행", couple: "커플", language: "언어", habit: "습관", focus: "집중", food: "식생활", money: "구독 관리" },
     app_live: "App Store 출시",
     app_soon: "출시 예정",
     app_review: "심사 중",
@@ -443,18 +467,12 @@ const T = {
     stack_sub: "세계 최고 AI 제품들이 사용하는 기술 스택을 동일하게 활용합니다.",
     team_badge: "팀",
     team_h2: "Zuply를 만드는 사람들",
-    team_sub: "AI 리서치부터 인프라까지 각 분야 전문가들이 함께합니다.",
+    team_sub: "작은 팀이 AI 리서치부터 인프라까지 모든 분야를 함께 맡습니다.",
     team: [
-      { name: "Greenbi", role: "프로덕트 플래너 · AI/ML 엔지니어", desc: "제품 비전과 AI 전략을 수립합니다. 모델 파인튜닝, 커스텀 학습 파이프라인, LLM 평가 프레임워크 구축도 담당합니다.", skills: ["LLM 전략", "RAG 설계", "파인튜닝", "PyTorch", "AI 워크플로우"] },
-      { name: "Kairo", role: "UI/UX 디자이너", desc: "AI 제품을 위한 직관적인 인터페이스를 설계합니다. 데이터 대시보드와 인터랙션 시스템 설계에 특화되어 있습니다.", skills: ["Figma", "디자인 시스템", "프로토타이핑", "대시보드 UX"] },
-      { name: "Yumi", role: "프론트엔드 엔지니어", desc: "고성능 실시간 AI 인터페이스를 구현합니다. LLM 스트리밍 출력, 인터랙티브 데이터 시각화, SSE 처리에 능숙합니다.", skills: ["Next.js", "TypeScript", "D3.js", "WebSocket", "SSE"] },
-      { name: "Jaden", role: "백엔드 엔지니어", desc: "AI 파이프라인과 API 레이어를 설계합니다. RAG 시스템, LangChain 연동, 고성능 추론 서버를 구축합니다.", skills: ["FastAPI", "LangChain", "LangGraph", "pgvector", "Redis"] },
-      { name: "Ryan", role: "인프라 엔지니어", desc: "AI 워크로드를 위한 클라우드 인프라를 운영합니다. GPU 인스턴스, 벡터 DB, 모델 서빙을 최적화합니다.", skills: ["AWS", "Docker", "Kubernetes", "MLflow", "Pinecone"] },
-      { name: "Sophie", role: "프로덕트 매니저", desc: "AI 제품 개발 사이클 전체를 조율합니다. 리서치·엔지니어링·디자인 팀 간 협업을 통해 일정 내 제품을 출시합니다.", skills: ["Agile", "JIRA", "A/B 테스팅", "Analytics", "OKR"] },
-      { name: "Ethan", role: "QA 엔지니어", desc: "AI 시스템의 안정성을 검증합니다. LLM 출력 품질, 지연 시간, 엣지케이스 견고성을 위한 평가 프레임워크를 설계합니다.", skills: ["LLM 평가", "Pytest", "k6", "Playwright", "CI/CD"] },
-      { name: "Hana", role: "데이터 분석가", desc: "원시 데이터를 제품 인사이트로 전환합니다. 예측 모델, 행동 분석 파이프라인, 경영진 대시보드를 구축합니다.", skills: ["Python", "pandas", "SQL", "scikit-learn", "Tableau"] },
-      { name: "Marcus", role: "DevSecOps 엔지니어", desc: "AI 시스템 전체의 보안을 책임집니다. API 키 보관, 컴플라이언스 감사, 위협 모델링, 제로트러스트 아키텍처를 담당합니다.", skills: ["Vault", "SIEM", "Zero Trust", "API 보안", "컴플라이언스"] },
-      { name: "Nora", role: "테크니컬 라이터", desc: "API 문서, 사용자 매뉴얼, 공공기관 납품 문서를 작성합니다. 기술적 깊이와 명확한 커뮤니케이션을 연결하는 역할을 합니다.", skills: ["API 문서", "Swagger", "Confluence", "납품문서", "Markdown"] },
+      { name: "Josh Kim", role: "프로덕트 리드 · AI/ML 엔지니어", desc: "제품 비전과 AI 전략, 출시 일정을 책임집니다. 모델 파인튜닝, LLM 평가, 데이터 기반 의사결정을 이끕니다.", skills: ["LLM 전략", "RAG 설계", "파인튜닝", "PyTorch", "Agile", "Analytics"] },
+      { name: "Kairo", role: "UI/UX 디자이너 · 테크니컬 라이터", desc: "AI 제품을 위한 직관적인 인터페이스를 설계하고, 이를 명확한 가이드·API 문서·납품 문서로 정리합니다.", skills: ["Figma", "디자인 시스템", "프로토타이핑", "API 문서", "Markdown"] },
+      { name: "Greenbi", role: "프론트엔드 엔지니어 · QA", desc: "LLM 스트리밍을 포함한 고성능 실시간 AI 인터페이스를 구현하고, E2E 테스트와 릴리스 품질을 책임집니다.", skills: ["Next.js", "TypeScript", "SSE", "Playwright", "CI/CD"] },
+      { name: "Jaden", role: "백엔드 · 인프라 엔지니어", desc: "AI 파이프라인, API, RAG 시스템을 설계하고 안전한 클라우드 인프라와 모델 서빙을 운영합니다.", skills: ["FastAPI", "LangChain", "pgvector", "AWS", "Docker", "제로트러스트"] },
     ],
     contact_badge: "연락처",
     contact_h2: "프로젝트 시작하기",
@@ -483,41 +501,49 @@ const T = {
 type Lang = keyof typeof T;
 
 // ── Typewriter ────────────────────────────────────────────────────
-function Typewriter({ lines }: { lines: readonly string[] }) {
-  const [displayed, setDisplayed] = useState<string[]>([]);
-  const [cur, setCur] = useState("");
-  const [lineIdx, setLineIdx] = useState(0);
-  const [charIdx, setCharIdx] = useState(0);
-  useEffect(() => {
-    if (lineIdx >= lines.length) return;
-    if (charIdx < lines[lineIdx].length) {
-      const t = setTimeout(() => { setCur(lines[lineIdx].slice(0, charIdx + 1)); setCharIdx(c => c + 1); }, 25);
-      return () => clearTimeout(t);
-    } else {
-      const t = setTimeout(() => { setDisplayed(d => [...d, lines[lineIdx]]); setCur(""); setCharIdx(0); setLineIdx(l => l + 1); }, 350);
-      return () => clearTimeout(t);
-    }
-  }, [charIdx, lineIdx, lines]);
+function StudioPreview({ lang }: { lang: Lang }) {
+  const ko = lang === "ko";
   return (
-    <div className="font-mono text-sm leading-7">
-      {displayed.map((l, i) => (
-        <div key={i} className={l.includes("🚀") ? "text-emerald-400" : l.includes("✓") ? "text-indigo-400" : "text-gray-300"}>{l}</div>
-      ))}
-      {lineIdx < lines.length && <div className="text-gray-300">{cur}<span className="animate-pulse">▌</span></div>}
+    <div className="studio-window">
+      <div className="studio-window__bar">
+        <div className="flex items-center gap-1.5" aria-hidden><span /><span /><span /></div>
+        <p>PROJECT / ZUPLY-042</p>
+        <span className="studio-live"><i /> LIVE</span>
+      </div>
+      <div className="studio-window__body">
+        <div className="studio-sidebar" aria-hidden><b>Z</b><span className="is-active" /><span /><span /><span /></div>
+        <div className="studio-content">
+          <div className="studio-heading">
+            <div><p>{ko ? "프로젝트 워크스페이스" : "PROJECT WORKSPACE"}</p><h3>{ko ? "아이디어에서 출시까지" : "From idea to launch"}</h3></div>
+            <span>{ko ? "진행 중" : "IN PROGRESS"}</span>
+          </div>
+          <div className="studio-grid">
+            <div className="studio-card studio-card--wide">
+              <div className="flex items-center justify-between"><p>{ko ? "제품 완성도" : "PRODUCT READINESS"}</p><strong>84%</strong></div>
+              <div className="studio-progress"><i /></div>
+              <div className="studio-phases">
+                {[ko ? "전략" : "Strategy", "UX/UI", ko ? "개발" : "Build", ko ? "출시" : "Launch"].map((step, i) => (
+                  <span key={step} className={i < 3 ? "is-done" : ""}><i>{i < 3 ? "✓" : "4"}</i>{step}</span>
+                ))}
+              </div>
+            </div>
+            <div className="studio-card studio-card--metric">
+              <p>{ko ? "이번 주 배포" : "SHIPPED THIS WEEK"}</p><strong>12</strong><span>builds</span>
+              <div className="mini-bars" aria-hidden>{[38,55,46,74,60,82,92].map((v,i)=><i key={i} style={{height:`${v}%`}} />)}</div>
+            </div>
+            <div className="studio-card studio-card--activity">
+              <p>{ko ? "실시간 워크플로" : "LIVE WORKFLOW"}</p>
+              {[["01", ko ? "제품 전략" : "Product strategy", "Done"], ["02", ko ? "디자인 시스템" : "Design system", "Done"], ["03", ko ? "핵심 기능 개발" : "Core development", "Active"]].map(([n,label,state]) => <div key={n}><i>{n}</i><span>{label}</span><b className={state === "Active" ? "active" : ""}>{state}</b></div>)}
+            </div>
+            <div className="studio-card studio-card--stack">
+              <p>{ko ? "연결된 기술" : "CONNECTED STACK"}</p><div><b>Next.js</b><b>AI</b><b>Cloud</b></div>
+              <span>{ko ? "확장 가능한 제품 아키텍처" : "Scalable product architecture"}</span>
+            </div>
+          </div>
+        </div>
+      </div>
     </div>
   );
-}
-
-// ── CountUp ───────────────────────────────────────────────────────
-function useCountUp(target: number, dur = 2000, active = false) {
-  const [n, setN] = useState(0);
-  useEffect(() => {
-    if (!active) return;
-    let t0: number | null = null;
-    const tick = (ts: number) => { if (!t0) t0 = ts; const p = Math.min((ts - t0) / dur, 1); setN(Math.floor((1 - Math.pow(1 - p, 3)) * target)); if (p < 1) requestAnimationFrame(tick); };
-    requestAnimationFrame(tick);
-  }, [active, target, dur]);
-  return n;
 }
 
 function useInView(threshold = 0.15) {
@@ -713,23 +739,15 @@ function SectionHeading({ badge, title, sub, tone = "indigo" }: { badge: string;
 // ── Stats ─────────────────────────────────────────────────────────
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
 function Stats({ t }: { t: any }) {
-  const { ref, inView } = useInView(0.1);
-  const u = useCountUp(12400, 2000, inView);
-  const a = useCountUp(38, 1800, inView);
-  const s = useCountUp(97, 1600, inView);
-  const y = useCountUp(5, 1200, inView);
   const vals = [
-    { v: u.toLocaleString(), suf: "+", label: t.stat_labels[0] },
-    { v: a, suf: "+", label: t.stat_labels[1] },
-    { v: s, suf: "%", label: t.stat_labels[2] },
-    { v: y, suf: "+", label: t.stat_labels[3] },
+    { v: "WEB", label: t.web_title }, { v: "APP", label: t.app_title },
+    { v: "AI", label: t.ai_badge }, { v: "DATA", label: t.ai_cards[2].title },
   ];
   return (
-    <div ref={ref} className="grid grid-cols-2 md:grid-cols-4 gap-x-6 gap-y-10">
-      {vals.map((s) => (
-        <div key={s.label} className="text-center py-4">
-          <div className="text-4xl sm:text-5xl font-semibold tabular-nums text-gradient mb-2">{s.v}<span className="text-2xl sm:text-3xl">{s.suf}</span></div>
-          <div className="text-[13px] text-gray-500 uppercase tracking-[0.12em]">{s.label}</div>
+    <div className="capability-strip">
+      {vals.map((s, i) => (
+        <div key={s.v}>
+          <span>0{i + 1}</span><div><strong>{s.v}</strong><p>{s.label}</p></div>
         </div>
       ))}
     </div>
@@ -868,13 +886,48 @@ const STACK = [
   { label: "React Native", color: "border-violet-400/40 text-violet-300" },
 ];
 
-const TEAM_COLORS = [
-  "from-indigo-500 to-indigo-600", "from-rose-500 to-pink-600",
-  "from-violet-500 to-purple-600", "from-sky-500 to-blue-600",
-  "from-slate-400 to-slate-600", "from-emerald-500 to-teal-600",
-  "from-amber-500 to-orange-500", "from-cyan-500 to-sky-500",
-  "from-red-500 to-rose-600", "from-fuchsia-500 to-pink-500",
-];
+// 팀 카드마다 고유 색 — 회전 테두리·아바타 링·스포트라이트에 쓰인다.
+const TEAM_ACCENTS = ["#9effb2", "#a5b4fc", "#dfff72", "#7dd3fc"];
+
+// 커서 위치를 CSS 변수로 넘겨 카드 위에 빛이 따라다니게 한다.
+function TeamCard({ m, i }: { m: { name: string; role: string; desc: string; skills: readonly string[] }; i: number }) {
+  const ref = useRef<HTMLDivElement>(null);
+  const onMove = (e: React.PointerEvent<HTMLDivElement>) => {
+    const el = ref.current;
+    if (!el) return;
+    const r = el.getBoundingClientRect();
+    el.style.setProperty("--mx", `${e.clientX - r.left}px`);
+    el.style.setProperty("--my", `${e.clientY - r.top}px`);
+  };
+  const initials = m.name.split(" ").map(w => w[0]).join("").slice(0, 2).toUpperCase();
+  const id = String(i + 1).padStart(2, "0");
+  return (
+    <div ref={ref} onPointerMove={onMove} className="team-node group h-full" style={{ "--accent": TEAM_ACCENTS[i % TEAM_ACCENTS.length] } as React.CSSProperties}>
+      <div className="team-node__inner">
+        <div className="flex items-center justify-between font-mono text-[10px] tracking-[0.14em] uppercase text-gray-500">
+          <span>node_{id}</span>
+          <span className="flex items-center gap-1.5 text-[color:var(--accent)]"><i className="team-node__pulse" />online</span>
+        </div>
+        <div className="mt-6 flex items-center gap-4">
+          <div className="team-node__avatar"><span>{initials}</span></div>
+          <div className="min-w-0">
+            <p className="font-semibold text-[15px] text-white tracking-tight">{m.name}</p>
+            <p className="text-[11px] text-gray-400 mt-0.5 leading-snug">{m.role}</p>
+          </div>
+        </div>
+        <p className="mt-5 text-xs text-gray-500 leading-relaxed">{m.desc}</p>
+        <div className="mt-auto pt-5">
+          <p className="font-mono text-[10px] text-gray-600 mb-2"><span className="text-[color:var(--accent)]">$</span> stack --list</p>
+          <div className="flex flex-wrap gap-1.5">
+            {m.skills.map(s => (
+              <span key={s} className="team-node__chip">{s}</span>
+            ))}
+          </div>
+        </div>
+      </div>
+    </div>
+  );
+}
 
 // ── Main ──────────────────────────────────────────────────────────
 export default function Home() {
@@ -944,15 +997,15 @@ export default function Home() {
   }, [menuOpen]);
 
   return (
-    <main className="relative min-h-screen overflow-x-hidden bg-[#07070d] text-white">
+    <main className="relative min-h-screen overflow-x-hidden bg-[#080b12] text-white">
       <Backdrop />
 
       {/* NAV */}
-      <nav className={`fixed top-0 w-full z-50 transition-all duration-500 ${scrolled ? "bg-[#07070d]/70 backdrop-blur-xl border-b border-white/8 shadow-[0_1px_0_0_rgba(255,255,255,0.04),0_18px_40px_-24px_rgba(0,0,0,0.9)]" : "bg-transparent border-b border-transparent"}`}>
-        <div className="max-w-6xl mx-auto px-6 h-16 flex items-center justify-between">
+      <nav className={`fixed top-0 w-full z-50 transition-all duration-500 ${scrolled ? "bg-[#080b12]/80 backdrop-blur-2xl border-b border-white/8 shadow-[0_18px_60px_-32px_rgba(0,0,0,0.9)]" : "bg-transparent border-b border-transparent"}`}>
+        <div className="max-w-[1240px] mx-auto px-5 sm:px-8 h-[72px] flex items-center justify-between">
           <a href="#" className="text-lg font-semibold tracking-tight flex items-center gap-2.5">
-            <span className="grid place-items-center w-7 h-7 rounded-lg bg-gradient-to-br from-indigo-500 to-violet-600 text-[13px] font-bold shadow-lg shadow-indigo-500/25">Z</span>
-            <span>Zuply</span>
+            <span className="brand-mark">Z</span>
+            <span>ZUPLY<sup>STUDIO</sup></span>
           </a>
 
           <div className="hidden md:flex items-center gap-1 text-sm">
@@ -1003,11 +1056,11 @@ export default function Home() {
       </nav>
 
       {/* HERO */}
-      <section className="relative z-10 min-h-[100svh] flex items-center justify-center">
-        <div className="max-w-6xl mx-auto px-6 pt-32 pb-20 grid grid-cols-1 lg:grid-cols-[1.05fr_0.95fr] gap-14 lg:gap-16 items-center">
+      <section className="hero-section relative z-10 min-h-[100svh] flex items-center justify-center">
+        <div className="max-w-[1240px] w-full mx-auto px-5 sm:px-8 pt-36 pb-24 grid grid-cols-1 lg:grid-cols-[0.88fr_1.12fr] gap-16 lg:gap-12 items-center">
           <div>
             <Rise>
-              <div className="inline-flex items-center gap-2.5 px-3.5 py-1.5 rounded-full bg-white/[0.04] border border-white/10 text-gray-300 text-xs backdrop-blur">
+              <div className="hero-kicker">
                 <span className="relative flex w-1.5 h-1.5">
                   <span className="absolute inline-flex w-full h-full rounded-full bg-indigo-400 opacity-70 animate-ping" />
                   <span className="relative inline-flex w-1.5 h-1.5 rounded-full bg-indigo-400" />
@@ -1017,7 +1070,7 @@ export default function Home() {
             </Rise>
 
             <Rise delay={90}>
-              <h1 className="mt-8 text-[2.75rem] leading-[1.04] sm:text-6xl lg:text-[4.25rem] font-semibold text-balance">
+              <h1 className="hero-title mt-8 text-[3.2rem] leading-[0.98] sm:text-7xl lg:text-[4.9rem] font-semibold text-balance">
                 {t.hero_h1.map((line, i) => (
                   <span key={i} className={i === 1 ? "block text-gradient" : "block"}>{line}</span>
                 ))}
@@ -1025,44 +1078,34 @@ export default function Home() {
             </Rise>
 
             <Rise delay={170}>
-              <p className="mt-7 text-[15px] sm:text-base text-gray-400 leading-relaxed max-w-lg">{t.hero_sub}</p>
+              <p className="mt-8 text-[15px] sm:text-[17px] text-gray-400 leading-[1.8] max-w-xl">{t.hero_sub}</p>
             </Rise>
 
             <Rise delay={240}>
               <div className="mt-9 flex flex-wrap gap-3">
                 <a href="#contact"
-                  className="group px-6 py-3.5 rounded-full bg-white text-[#07070d] text-sm font-semibold transition-all hover:shadow-[0_10px_40px_-10px_rgba(255,255,255,0.5)] hover:-translate-y-0.5">
+                  className="primary-button group">
                   {t.cta_primary}
                   <span className="inline-block ml-1.5 transition-transform group-hover:translate-x-0.5">→</span>
                 </a>
                 <a href="#services"
-                  className="px-6 py-3.5 rounded-full border border-white/12 bg-white/[0.02] text-sm text-gray-300 hover:text-white hover:border-white/25 hover:bg-white/[0.06] transition-all">
+                  className="secondary-button">
                   {t.cta_secondary}
                 </a>
               </div>
             </Rise>
           </div>
 
-          {/* Terminal */}
+          {/* Product delivery cockpit */}
           <Rise delay={300}>
-            <div className="relative">
-              {/* 카드 뒤에 깔리는 발광 */}
-              <div aria-hidden className="absolute -inset-px rounded-2xl bg-gradient-to-b from-indigo-400/25 to-transparent blur-[1px]" />
-              <div className="relative rounded-2xl edge-lit bg-[#0b0b16]/80 backdrop-blur-xl overflow-hidden shadow-[0_40px_80px_-30px_rgba(0,0,0,0.9)]">
-                <div className="flex items-center gap-2 px-4 py-3 border-b border-white/6">
-                  <span className="w-2.5 h-2.5 rounded-full bg-red-500/70" /><span className="w-2.5 h-2.5 rounded-full bg-amber-500/70" /><span className="w-2.5 h-2.5 rounded-full bg-green-500/70" />
-                  <span className="ml-3 text-xs text-gray-500 font-mono">zuply — terminal</span>
-                </div>
-                <div className="p-6 min-h-[210px]"><Typewriter lines={t.terminal_lines} /></div>
-              </div>
-            </div>
+            <StudioPreview lang={lang} />
           </Rise>
         </div>
       </section>
 
       {/* STATS */}
-      <section className="relative z-10 py-16 px-6 border-y border-white/6 bg-white/[0.015] backdrop-blur-sm">
-        <div className="max-w-4xl mx-auto"><Stats t={t} /></div>
+      <section className="relative z-10 px-5 sm:px-8 border-y border-white/6 bg-white/[0.018] backdrop-blur-sm">
+        <div className="max-w-[1240px] mx-auto"><Stats t={t} /></div>
       </section>
 
       {/* ABOUT */}
@@ -1245,23 +1288,15 @@ export default function Home() {
       <section id="team" className="relative z-10 py-28 sm:py-36 px-6">
         <div className="max-w-6xl mx-auto">
           <SectionHeading badge={t.team_badge} title={t.team_h2} sub={t.team_sub} />
+          <div className="team-console mb-5">
+            <span className="flex gap-1.5"><i /><i /><i /></span>
+            <span className="truncate">zuply://team</span>
+            <span className="ml-auto flex items-center gap-1.5 text-[#9effb2]"><i className="team-node__pulse" style={{ "--accent": "#9effb2" } as React.CSSProperties} />{t.team.length} nodes · synced</span>
+          </div>
           <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-5">
             {t.team.map((m, i) => (
-              <Reveal key={m.name} delay={(i % 4) * 80}>
-                <div className="group h-full rounded-2xl edge-lit bg-[#0b0b16]/40 hover:bg-[#0b0b16]/75 hover:border-white/18 hover:-translate-y-1 transition-all duration-300 overflow-hidden">
-                  <div className={`h-0.5 bg-gradient-to-r ${TEAM_COLORS[i]} opacity-70 group-hover:opacity-100 transition-opacity`} />
-                  <div className="p-6">
-                    <div className={`grid place-items-center w-11 h-11 rounded-xl bg-gradient-to-br ${TEAM_COLORS[i]} mb-4 text-white font-semibold text-base shadow-lg shadow-black/40 group-hover:scale-105 transition-transform`}>{m.name[0]}</div>
-                    <p className="font-semibold text-sm text-white">{m.name}</p>
-                    <p className="text-xs text-gray-500 mt-0.5 mb-3">{m.role}</p>
-                    <p className="text-xs text-gray-500 leading-relaxed mb-4 line-clamp-3">{m.desc}</p>
-                    <div className="flex flex-wrap gap-1.5">
-                      {m.skills.map(s => (
-                        <span key={s} className="px-2 py-0.5 rounded text-[10px] font-mono bg-white/[0.04] border border-white/8 text-gray-400">{s}</span>
-                      ))}
-                    </div>
-                  </div>
-                </div>
+              <Reveal key={m.name} delay={(i % 4) * 80} className="h-full">
+                <TeamCard m={m} i={i} />
               </Reveal>
             ))}
           </div>

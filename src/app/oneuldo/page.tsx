@@ -3,6 +3,7 @@ import { AppOverview, type AppOverviewData } from "@/components/AppOverview";
 /** 오늘도 소개 페이지. 새 버전을 낼 때 history 맨 위에 한 항목 추가하세요. */
 const app: AppOverviewData = {
   slug: "oneuldo",
+  appStore: "https://apps.apple.com/kr/app/id6816432597",
   name: "오늘도 · Oneuldo",
   accent: "#F4A261",
   tagline: { ko: "기분 하나, 한 줄이면 충분해요.", en: "A mood and one line. That's it." },
@@ -18,7 +19,7 @@ const app: AppOverviewData = {
   ],
   history: [
     {
-      version: "1.0", date: "2026-09-26", status: "in-review",
+      version: "1.0", date: "2026-10-01", status: "released",
       notes: {
         ko: ["첫 출시. 한 줄 일기와 기분 5단계, 무드 캘린더, 월간 회고 카드 공유, 스트릭", "하루 한 번 리마인더, Face ID·기기 암호 잠금, 텍스트·CSV 내보내기", "한국어·영어, 계정·서버·광고·분석 없음"],
         en: ["First release: one-line diary with five moods, mood calendar, shareable monthly recap card, streaks", "Daily reminder, Face ID / passcode lock, export as text or CSV", "Korean and English; no account, server, ads or analytics"],

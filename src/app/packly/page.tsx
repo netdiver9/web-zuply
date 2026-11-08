@@ -3,6 +3,7 @@ import { AppOverview, type AppOverviewData } from "@/components/AppOverview";
 /** Packly 소개 페이지. 새 버전을 낼 때 history 맨 위에 한 항목 추가하세요. */
 const app: AppOverviewData = {
   slug: "packly",
+  appStore: "https://apps.apple.com/kr/app/id6816399100",
   name: "Packly",
   accent: "#5B8DEF",
   tagline: { ko: "여행은 설레게, 짐은 간단하게.", en: "Pack smart. Travel light." },
@@ -18,7 +19,7 @@ const app: AppOverviewData = {
   ],
   history: [
     {
-      version: "1.0", date: "2026-09", status: "planned",
+      version: "1.0", date: "2026-10-11", status: "released",
       notes: {
         ko: ["첫 출시 준비 중. 여행 생성 4단계, 규칙 기반 준비물 생성과 추천 이유, 날씨 반영(Open-Meteo)", "목록 편집·체크·진행률, 함께 가는 사람과 담당자 지정, 출발 D-7·D-2·당일 알림", "한국어·영어·일본어, 도시 99곳 오프라인 검색, 계정·서버 없음"],
         en: ["First release in preparation: 4-step trip setup, rule-based packing list with reasons, weather from Open-Meteo", "Editing, check-off and progress, travel companions with assignments, reminders at D-7, D-2 and departure day", "Korean, English and Japanese, 99 cities searchable offline, no account or server"],

@@ -3,6 +3,7 @@ import { AppOverview, type AppOverviewData } from "@/components/AppOverview";
 /** 노나 소개 페이지. 새 버전을 낼 때 history 맨 위에 한 항목 추가하세요. */
 const app: AppOverviewData = {
   slug: "nona",
+  appStore: "https://apps.apple.com/kr/app/id6816402139",
   name: "노나 · Nona",
   accent: "#3FB08A",
   tagline: { ko: "여행은 즐겁게, 계산은 깔끔하게.", en: "Enjoy the trip. Let Nona do the math." },
@@ -17,7 +18,7 @@ const app: AppOverviewData = {
     { icon: "🔐", title: { ko: "종단간 암호화 공유", en: "End-to-end encrypted sharing" }, desc: { ko: "초대 링크로 함께 기록. 내용은 기기 밖에서 읽을 수 없습니다.", en: "Record together by invite link; nothing readable leaves the device." } },
   ],
   history: [
-    { version: "1.0", date: "2026-09", status: "planned",
+    { version: "1.0", date: "2026-10-01", status: "released",
       notes: { ko: ["첫 출시 준비 중. 지출 기록·분담 4방식, 22개 통화와 환율 스냅샷, 잔액과 최소 송금 정산", "초대 링크로 여러 기기 공동 기록(종단간 암호화), 텍스트 요약·CSV 내보내기", "한국어·영어·일본어, Packly 딥링크 연동"],
                en: ["First release in preparation: expense logging with 4 split methods, 22 currencies with rate snapshots, balances and minimum-transfer settlement", "Shared trips by invite link (end-to-end encrypted), text summary and CSV export", "Korean, English and Japanese; Packly deep-link integration"] } },
   ],
