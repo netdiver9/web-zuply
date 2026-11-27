@@ -211,7 +211,7 @@ const ALL=[['keyboard','cpu'],['cpu','monitor'],['cpu','ram'],['ram','ssd']];
 const act=(...p)=>ALL.map(([x,y])=>[x,y,p.some(([a,b])=>(a===x&&b===y)||(a===y&&b===x))?'':'d']);
 const SHOW=['keyboard','cpu','ram','ssd','monitor'];
 const STEPS=[
-{t:'다섯 부품, 하나의 팀',te:'Five parts, one team',se:'Input, process, memory, storage, output. A computer does just these five jobs.',s:'입력 · 처리 · 기억 · 저장 · 출력. 컴퓨터는 이 다섯 가지 일을 한다.',show:SHOW,e:act(...ALL),m:['5개 부품','—','—','작은 식당'],
+{t:'다섯 부품, 하나의 팀',te:'Five parts, one team',se:'Input, process, memory, storage, output. These five parts work together to run your computer.',s:'입력 · 처리 · 기억 · 저장 · 출력. 컴퓨터는 이 다섯 가지 일을 한다.',show:SHOW,e:act(...ALL),m:['5개 부품','—','—','작은 식당'],
  x:'컴퓨터가 하는 일은 다섯 가지로 나눌 수 있습니다. 키보드로 입력받고, CPU가 처리하고, RAM이 잠깐 기억하고, SSD가 오래 저장하고, 모니터로 보여 줍니다. 부품들은 메인보드의 전선(버스)으로 이어져 신호를 주고받습니다.',
  k:'식당에 비유하면 키보드는 주문, CPU는 요리사, RAM은 조리대, SSD는 창고, 모니터는 손님에게 나가는 접시입니다.',
  f:[{n:['keyboard','Input']},{n:['cpu','Process']},{n:['ram','Memory (short-term)']},{n:['ssd','Storage (long-term)']},{n:['monitor','Output']}]},
@@ -219,7 +219,7 @@ const STEPS=[
  x:'메모장 아이콘을 더블클릭하면, SSD에 잠들어 있던 메모장 프로그램이 RAM으로 복사됩니다. CPU는 너무 빨라서 SSD를 기다릴 수 없기 때문에, 가까운 RAM에 올려 둔 것만 꺼내 씁니다.',
  k:'SSD는 넓지만 멀리 있는 창고, RAM은 좁지만 손이 닿는 조리대입니다. 일을 하려면 먼저 조리대로 꺼내 와야 합니다.',
  f:[{n:['ssd','notepad.exe']},['ssd','ram','Notepad app'],{n:['ram','Ready to run']}]},
-{t:'키를 누르면 0과 1이 된다',te:'A key press becomes 0s and 1s',se:'The keyboard turns each key into a number signal.',s:'키보드는 눌린 키를 숫자 신호로 바꿔 보낸다.',show:SHOW,e:act(['keyboard','cpu']),m:['키보드 → CPU','약 1 ms','—','손님의 주문'],
+{t:'키를 누르면 0과 1이 된다',te:'A key press becomes a digital signal',se:'The keyboard turns each key into a number signal.',s:'키보드는 눌린 키를 숫자 신호로 바꿔 보낸다.',show:SHOW,e:act(['keyboard','cpu']),m:['키보드 → CPU','약 1 ms','—','손님의 주문'],
  x:'A 키를 누르면 키보드는 "A가 눌렸다"는 사실을 숫자로 바꿔 보냅니다. A는 65번, 2진수로 01000001입니다. 컴퓨터 안을 오가는 것은 글자도 그림도 아닌, 결국 0과 1의 전기 신호입니다.',
  k:'전기가 흐르면 1, 흐르지 않으면 0. 이 두 가지만으로 글자, 사진, 영상까지 모두 표현합니다.',
  f:[{n:['keyboard','A key pressed']},['keyboard','cpu','01000001','push'],{n:['cpu','65 = A']}]},
@@ -227,10 +227,10 @@ const STEPS=[
  x:'CPU는 RAM에서 다음 명령을 가져오고(fetch), 무슨 뜻인지 해석한 뒤(decode), 실행합니다(execute). 여기서는 "입력된 A를 문서 끝에 붙여라"라는 명령이고, 결과는 다시 RAM에 적습니다.',
  k:'3 GHz CPU는 1초에 약 30억 번 박자를 맞춥니다. 이 세 단계를 끝없이 반복하는 것이 컴퓨터가 일하는 방식의 전부입니다.',
  f:[['ram','cpu','Instr: append A'],{n:['cpu','① Decode']},{n:['cpu','② Execute']},['cpu','ram','Doc … A','ack'],{n:['ram','Result saved']}]},
-{t:'화면에 글자가 그려진다',te:'Drawing the letter on screen',se:'The new image goes to the monitor and is redrawn 60 times a second.',s:'바뀐 화면은 모니터로 보내져 1초에 60번 새로 그려진다.',show:SHOW,e:act(['cpu','monitor']),m:['CPU → 모니터','약 16 ms','—','손님에게 접시'],
- x:'문서가 바뀌었으니 화면도 바꿔야 합니다. CPU와 그래픽 장치가 A 글자의 모양을 작은 점(픽셀)으로 그려 모니터로 보내면, 모니터는 1초에 60번 화면을 새로 그립니다.',
- k:'화면은 멈춰 있는 그림이 아니라 1초에 60장씩 바뀌는 그림입니다. 그래서 키를 누르자마자 글자가 나타나는 것처럼 보입니다.',
- f:[['cpu','monitor','Draw A','ack'],{n:['monitor','Refresh at 60 Hz']}]},
+{t:'화면에 글자가 그려진다',te:'Drawing the letter on screen',se:'The graphics system updates the image on your screen.',s:'바뀐 화면은 그래픽 장치를 거쳐 모니터에 새로 그려진다.',show:SHOW,e:act(['cpu','monitor']),m:['CPU → 모니터','약 16 ms','—','손님에게 접시'],
+ x:'문서가 바뀌었으니 화면도 바꿔야 합니다. CPU와 그래픽 장치가 A 글자의 모양을 작은 점(픽셀)으로 그려 모니터로 보내면, 모니터는 보통 1초에 60번 이상 화면을 새로 그립니다.',
+ k:'화면은 멈춰 있는 그림이 아니라 1초에 수십 장씩 바뀌는 그림입니다. 그래서 키를 누르자마자 글자가 나타나는 것처럼 보입니다.',
+ f:[['cpu','monitor','Draw A','ack'],{n:['monitor','Screen updated']}]},
 {t:'저장해야 남는다',te:'Save it or lose it',se:'RAM empties when the power goes off, so we save to the SSD.',s:'RAM은 전원이 꺼지면 비워진다. 그래서 SSD에 저장한다.',show:SHOW,e:act(['keyboard','cpu'],['cpu','ram'],['ram','ssd']),m:['RAM → SSD','약 1 ms','RAM은 사라짐','조리대 → 창고'],
  x:'Ctrl+S를 누르면 RAM에 있던 문서가 SSD에 파일로 기록됩니다. RAM은 빠르지만 전원이 꺼지면 내용이 모두 사라지고, SSD는 느리지만 전원이 없어도 내용을 보관합니다.',
  k:'저장하지 않고 전원을 끄면 RAM의 작업은 사라집니다. 조리대를 치우기 전에 창고에 넣어 두는 것과 같습니다.',
