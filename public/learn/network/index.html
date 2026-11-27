@@ -1,0 +1,383 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>전화망의 원리</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Sans+KR:wght@400;500;600;700&family=Space+Grotesk:wght@500;700&display=swap" rel="stylesheet">
+<style>
+/* VOICE  everyday learning: calm, precise, a little playful in motion
+   IDEA   a working switchboard: messages are tokens that glide between real machines
+   PICTURE the live diagram, phones / gateways / registry / store drawn as soft blocks, packets travelling
+   COLOUR white ground, ink #0b0b10, signal green #00a862 band, mist #eafaf2 stage; night #07130d
+   TYPE   Space Grotesk for figures, IBM Plex Sans KR for Korean text
+   LAYOUT laptop: stage 2/3 + step panel 1/3; phone: title, stage, panel; reel mode: 9:16 frame */
+:root{color-scheme:light dark;
+--bg:light-dark(#ffffff,#07130d);--ink:light-dark(#0b0b10,#e9f3ee);--muted:light-dark(#56615b,#9db3a8);
+--green:#00a862;--green-ink:light-dark(#00754a,#3fd897);--mist:light-dark(#eafaf2,#0c2018);--line:light-dark(#d3e5db,#1f3a2d);
+--face:light-dark(#ffffff,#1c3128);--side:light-dark(#c4d6cc,#08140f);--edge:light-dark(#b6cdc0,#2f5141);
+--gw:light-dark(#d4f4e4,#11402d);--gw-edge:light-dark(#8fd8b4,#1f6a4a);--gw-side:light-dark(#6cc79c,#062619);
+--store:light-dark(#1f2c26,#cfe9db);--store-top:light-dark(#43564c,#f2fbf6);--screen:light-dark(#1f2c26,#0a1611);
+--wire:light-dark(#a9c5b6,#2d5241);--pk:light-dark(#0b0b10,#f2fbf6);--pk-ink:light-dark(#ffffff,#07130d);
+--red:#e5484d;
+--w1:light-dark(#ffffff,#2c4037);--w2:light-dark(#edf4f0,#24372e);--w3:light-dark(#d9e6df,#1a2a23);--w4:light-dark(#bed0c6,#111d18);
+--g1:light-dark(#e2f9ee,#23714f);--g2:light-dark(#bfeed6,#1b5a3f);--g3:light-dark(#8fdbb5,#134430);--g4:light-dark(#5ec393,#0b3222);
+--v1:light-dark(#f0ebff,#4a3f80);--v2:light-dark(#dcd2fc,#3b316b);--v3:light-dark(#bfb0f3,#2c2552);--v4:light-dark(#a08de6,#1f1a3d);
+--a1:light-dark(#fff3dc,#6e521d);--a2:light-dark(#ffe0aa,#5c4418);--a3:light-dark(#ffc976,#453210);--a4:light-dark(#f0a843,#33250b);
+--k1:light-dark(#62786d,#f2fbf6);--k2:light-dark(#3f5148,#d3eadf);--k3:light-dark(#2c3a33,#a9cab9);--k4:light-dark(#1c2722,#86ad9a);
+--ol:light-dark(#1b2a22,#020604);--b1:light-dark(#eef5ff,#2d4a78);--b2:light-dark(#d3e5fd,#25406a);--b3:light-dark(#a9c8f3,#1b3154);--b4:light-dark(#86afe8,#132440);
+--m1:light-dark(#f6f8fa,#6a747e);--m2:light-dark(#d9dfe4,#525b64);--m3:light-dark(#c9d1d7,#424a52);--m4:light-dark(#9ea9b2,#2c3238);
+--p1:light-dark(#3a4047,#4a5159);--p2:light-dark(#22272c,#2d3238);--p3:light-dark(#15191c,#15191c);--p4:light-dark(#15191c,#15191c);
+--sc1:light-dark(#ffffff,#f1f6f3);--sc2:light-dark(#e9f1ed,#d7e5de);
+--lane:light-dark(#d2e9dd,#14291f);--grid:light-dark(#d8ebe1,#10241a);--amber:#f5a300;--shadow:light-dark(rgba(10,50,30,.10),rgba(0,0,0,.42))}
+:root[data-theme=light]{color-scheme:light}:root[data-theme=dark]{color-scheme:dark}
+*{box-sizing:border-box;min-width:0}
+html,body{margin:0}
+body{background:var(--bg);color:var(--ink);font:16px/1.6 'IBM Plex Sans KR',system-ui,sans-serif;overflow-x:clip}
+button{font:inherit;color:inherit;cursor:pointer}
+button:focus-visible{outline:3px solid var(--green);outline-offset:2px}
+.band{padding-block:clamp(24px,3.5vw,48px);padding-left:max(5vw,16px);padding-right:max(5vw,16px)}
+.top{background:var(--green);color:#fff;display:flex;flex-wrap:wrap;gap:18px 32px;align-items:end;justify-content:space-between}
+.top h1{font:700 clamp(32px,5vw,50px)/1.05 'Space Grotesk','IBM Plex Sans KR',sans-serif;letter-spacing:-.02em;margin:0}
+.top p{margin:10px 0 0;max-width:46ch;opacity:.92}
+.ctl{display:flex;gap:10px;flex-wrap:wrap}
+.btn{min-height:44px;padding:0 18px;border-radius:999px;border:1.5px solid currentColor;background:transparent;font-weight:600;transition:background .2s,color .2s,transform .15s}
+.btn:active{transform:scale(.97)}
+.top .btn{color:#fff}
+.top .btn.solid{background:#fff;color:#00754a;border-color:#fff}
+.main{display:grid;gap:28px;max-width:1340px;margin-inline:auto}
+@media(min-width:900px){.main{grid-template-columns:minmax(0,1.75fr) minmax(0,1fr);align-items:start}}
+.mets{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:10px;margin-bottom:12px}
+.met{border:1px solid var(--line);border-radius:14px;padding:10px 14px}
+.met span{display:block;font-size:13px;color:var(--muted)}
+.met b{display:block;font:700 clamp(18px,2.2vw,24px)/1.2 'Space Grotesk','IBM Plex Sans KR',sans-serif;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.met b.good{color:var(--green-ink)}.met b.bad{color:var(--red)}
+.met b.flip{animation:flip .5s cubic-bezier(.2,.8,.2,1)}
+@keyframes flip{from{opacity:0;transform:translateY(8px)}to{opacity:1;transform:none}}
+.note-s{font-size:13px;color:var(--muted);margin:8px 2px 0}
+.slot{position:relative;height:clamp(400px,58vh,620px)}
+#stage{position:absolute;inset:0;border-radius:22px;background:repeating-linear-gradient(30deg,transparent 0 33px,var(--grid) 33px 34px),repeating-linear-gradient(150deg,transparent 0 33px,var(--grid) 33px 34px),var(--mist);overflow:hidden}
+#dia{position:absolute;inset:0;width:100%;height:100%}
+.panel{display:flex;flex-direction:column;gap:14px}
+@media(min-width:900px){.panel{position:sticky;top:20px}}
+.segs{display:flex;gap:6px}
+.seg{flex:1;height:28px;border:0;background:none;padding:0;display:flex;align-items:center}
+.seg i{display:block;width:100%;height:6px;border-radius:9px;background:var(--line);position:relative;overflow:hidden}
+.seg i::after{content:"";position:absolute;inset:0;background:var(--green);transform:scaleX(0);transform-origin:left;transition:transform .5s cubic-bezier(.2,.8,.2,1)}
+.seg.done i::after{transform:none}
+.num{margin:0;font:500 15px 'Space Grotesk','IBM Plex Sans KR',sans-serif;color:var(--green-ink)}
+.panel h2{font:700 clamp(26px,3vw,34px)/1.12 'Space Grotesk','IBM Plex Sans KR',sans-serif;letter-spacing:-.02em;margin:0;text-wrap:balance}
+.panel p{margin:0}
+.fade{animation:flip .55s cubic-bezier(.2,.8,.2,1)}
+.key{background:var(--mist);border-radius:16px;padding:14px 16px}
+.key b{display:block;color:var(--green-ink);margin-bottom:2px}
+.nav{display:flex;gap:10px}
+.nav .btn{flex:1}
+.nav .btn.solid{background:var(--ink);color:var(--bg);border-color:var(--ink)}
+.toc{max-width:1340px;margin-inline:auto;padding-top:0}
+.toc h2{font:700 26px/1.2 'Space Grotesk','IBM Plex Sans KR',sans-serif;margin:0 0 14px}
+.toc ol{list-style:none;margin:0;padding:0;display:grid;gap:10px;grid-template-columns:repeat(auto-fit,minmax(240px,1fr))}
+.toc button{width:100%;text-align:left;border:1px solid var(--line);border-radius:16px;background:var(--bg);padding:14px 16px;min-height:44px;transition:border-color .2s,background .2s}
+.toc button:hover{border-color:var(--green)}
+.toc button.cur{background:var(--mist);border-color:var(--green)}
+.toc small{display:block;font:500 13px 'Space Grotesk',sans-serif;color:var(--green-ink)}
+.toc strong{display:block}
+.toc span{display:block;font-size:14px;color:var(--muted)}
+.toc em{display:block;font:600 15px/1.35 'Space Grotesk',sans-serif;font-style:normal;color:var(--green-ink);margin-bottom:4px}
+.toc span.en{font-family:'Space Grotesk',sans-serif;margin-top:2px}
+.h2en{font-weight:500;color:var(--muted);font-size:.7em}
+@media(max-width:600px){.mets{grid-template-columns:repeat(2,minmax(0,1fr))}.slot{height:600px}.top .ctl{width:100%}.top .btn{flex:1}}
+.home{display:inline-block;color:#fff;text-decoration:none;font:600 14px 'Space Grotesk',sans-serif;opacity:.9;margin-bottom:10px}.home:hover{opacity:1;text-decoration:underline}
+/* svg */
+.zn rect{fill:color-mix(in srgb,var(--green) 6%,transparent);stroke:color-mix(in srgb,var(--green) 55%,transparent);stroke-width:1.5;stroke-dasharray:7 6}.zn text{font:700 12px 'Space Grotesk',sans-serif;letter-spacing:.1em;fill:var(--green-ink)}.zn.core rect{fill:color-mix(in srgb,#7c5cff 7%,transparent);stroke:color-mix(in srgb,#7c5cff 55%,transparent)}.zn.core text{fill:light-dark(#4a3a9c,#c9b8ff)}
+.e{opacity:0;transition:opacity .45s}.e.on{opacity:1}
+.ln{fill:none;stroke:var(--lane);stroke-linecap:round;transition:stroke .3s}
+.cl{fill:none;stroke:var(--wire);stroke-width:2;stroke-dasharray:.1 9;stroke-linecap:round;transition:stroke .3s}
+.e.d .ln{opacity:.5}.e.d .cl{stroke-dasharray:6 8}
+.e.x .ln{stroke:color-mix(in srgb,var(--red) 22%,var(--lane))}.e.x .cl{stroke:var(--red);stroke-dasharray:3 8}
+.e.hot .ln{stroke:var(--g2)}.e.hot .cl{stroke:var(--green)}
+.nd{opacity:0;transform:scale(.5) translateY(20px);transform-box:fill-box;transform-origin:center bottom;transition:opacity .45s,transform .7s cubic-bezier(.34,1.56,.64,1)}
+.nd.on{opacity:1;transform:none}
+.bd{transform-box:fill-box;transform-origin:center bottom;transition:opacity .4s}
+.bd.bump{animation:bump .5s cubic-bezier(.3,1.6,.5,1)}
+@keyframes bump{35%{transform:translateY(-5px) scale(1.04)}}
+.nd.off .bd{opacity:.32}.nd.dead .bd{opacity:.4}
+.xm{opacity:0;transition:opacity .3s}.nd.dead .xm{opacity:1}
+.sh,.psh{fill:var(--shadow)}
+.tf{stroke:light-dark(rgba(255,255,255,.9),rgba(255,255,255,.14));stroke-width:1.2}
+.gl{font:700 15px 'Space Grotesk','IBM Plex Sans KR',sans-serif;text-anchor:middle;dominant-baseline:central}
+.gl-g{fill:light-dark(#0b5e3c,#e4fff1)}.gl-v{fill:light-dark(#4a3a9c,#f0ecff)}.gl-a{fill:light-dark(#7a4b00,#fff3dc)}
+.lbl{font:600 13px 'Space Grotesk','IBM Plex Sans KR',sans-serif;fill:var(--ink);text-anchor:middle;dominant-baseline:central}
+.lblb{fill:var(--w1);stroke:var(--ol);stroke-width:1.4}
+.ol{stroke:var(--ol);stroke-width:1.6;stroke-linejoin:round}.tf.ol{stroke:var(--ol);stroke-width:1.6}
+.olt{stroke:var(--ol);stroke-width:.8}
+.sheen{fill:#fff;opacity:light-dark(.35,.08);pointer-events:none}
+.rim{fill:none;stroke:var(--b1);stroke-width:1.2;opacity:.7}
+.ft{font:600 13px 'IBM Plex Sans KR',sans-serif;text-anchor:middle;dominant-baseline:central}
+.ft-g{fill:light-dark(#0b4a30,#eafff3)}.ft-v{fill:light-dark(#3a2c86,#f3efff)}.ft-a{fill:light-dark(#5e3a00,#fff5e2)}.ft-k{fill:light-dark(#f3faf6,#0b130f)}
+.ic-k{stroke:light-dark(#f3faf6,#0b130f)}.ic-b{stroke:light-dark(#1d3a6b,#eef5ff)}.ft-b{fill:light-dark(#1d3a6b,#eef5ff)}
+.m-l{fill:var(--m3)}.m-r{fill:var(--m4)}
+.vent{fill:#1d252b;opacity:.55}.seam{stroke:var(--ol);stroke-width:1.2}.hole{fill:#1d252b;opacity:.35}
+.lcd{fill:#101820;stroke:var(--ol);stroke-width:.8}.door{fill:#2a333b;stroke:var(--ol);stroke-width:.8}.bay{fill:#4a5661;stroke:#11171c;stroke-width:.6}
+.mast{stroke:var(--ol);stroke-width:2.4;stroke-linecap:round}.wave{fill:none;stroke:#f29a00;stroke-width:2;stroke-linecap:round}
+.btnk{fill:#15191c}.hdr{stroke:light-dark(#dde6e1,#c4d3cb);stroke-width:1}.b3{fill:light-dark(#9fb0a7,#7d9087)}.inp{fill:none;stroke:light-dark(#c9d6cf,#a8bab0);stroke-width:1}
+.key{fill:#eef2f4;stroke:#0f1316;stroke-width:.4}.keyA{fill:#ffc233}
+.chip{font:700 14px 'Space Grotesk',sans-serif;fill:#55616b;text-anchor:middle;dominant-baseline:central}
+.scrt{font:600 13px 'Space Grotesk',sans-serif;fill:#e8f3ee}
+.cur{animation:blink 1s steps(1) infinite}@keyframes blink{50%{opacity:0}}
+.glare{fill:#fff;opacity:.22;pointer-events:none}
+.ic{fill:none;stroke-width:2;stroke-linecap:round;stroke-linejoin:round}
+.ic-g{stroke:light-dark(#0b5e3c,#e4fff1)}.ic-v{stroke:light-dark(#4a3a9c,#f0ecff)}.ic-a{stroke:light-dark(#7a4b00,#fff3dc)}
+.scr{fill:light-dark(#f6faf8,#dfeee6)}.b2{fill:light-dark(#dfe8e3,#b9cdc3);stroke:var(--ol);stroke-width:.8}
+.f-red{fill:var(--red)}.xl{stroke:#fff;stroke-width:2.5;stroke-linecap:round}
+.pk rect.b{fill:var(--w1);stroke:var(--ol);stroke-width:1.4}.pk rect.s{fill:var(--ol)}
+.pk text{fill:var(--ink);font:600 13px 'Space Grotesk','IBM Plex Sans KR',sans-serif;text-anchor:middle;dominant-baseline:central}
+.pk.ack rect.b{fill:#00b56a;stroke:var(--ol);stroke-width:1.4}.pk.ack rect.s{fill:var(--ol)}.pk.ack text{fill:#fff}
+.pk.push rect.b{fill:#ffb52e;stroke:var(--ol);stroke-width:1.4}.pk.push rect.s{fill:var(--ol)}.pk.push text{fill:#2a1a00}
+.pk.beat rect.b{fill:var(--g2);stroke:var(--ol);stroke-width:1.4}.pk.beat rect.s{fill:var(--ol)}.pk.beat text{fill:light-dark(#0b5e3c,#e4fff1)}
+.pk.lost rect.b{fill:#ef5b5f;stroke:var(--ol);stroke-width:1.4}.pk.lost rect.s{fill:var(--ol)}.pk.lost text{fill:#fff}
+.pk.gone{opacity:0;transition:opacity .45s}
+.nt{animation:ntin .35s cubic-bezier(.2,.8,.2,1);transition:opacity .35s}
+.nt rect{fill:var(--ink)}.nt text{fill:var(--bg);font:600 13px 'Space Grotesk','IBM Plex Sans KR',sans-serif;text-anchor:middle;dominant-baseline:central}
+.nt.bad rect{fill:var(--red)}.nt.bad text{fill:#fff}.nt.out{opacity:0}
+@keyframes ntin{from{opacity:0;transform:translateY(6px)}}
+.ring{fill:none;stroke:var(--green);stroke-width:2.5;transform-box:fill-box;transform-origin:center;animation:ring .8s ease-out forwards}
+@keyframes ring{from{transform:scale(.75);opacity:.85}to{transform:scale(1.5);opacity:0}}
+/* reel */
+.reel{position:fixed;inset:0;z-index:20;background:#05100b;display:grid;place-items:center;padding:16px}
+.reel[hidden]{display:none}
+.rframe{height:min(94vh,calc(92vw * 16 / 9));aspect-ratio:9/16;background:var(--mist);color:var(--ink);border-radius:8px;display:flex;flex-direction:column;padding:4% 5% 6%;gap:2.5%;overflow:hidden}
+.rframe .segs{gap:5px}.rframe .seg{height:12px}
+.rhead{display:flex;justify-content:space-between;font:600 15px 'Space Grotesk','IBM Plex Sans KR',sans-serif;color:var(--green-ink)}
+.rframe .slot{flex:1;height:auto}
+.rframe #stage{border-radius:14px}
+.rcap h3{font:700 clamp(22px,3.4vh,32px)/1.15 'Space Grotesk','IBM Plex Sans KR',sans-serif;letter-spacing:-.02em;margin:0 0 6px}
+.rcap p{margin:0;font-size:clamp(15px,2.1vh,19px);color:var(--muted)}
+.rside{position:absolute;top:16px;right:16px;display:flex;gap:8px;align-items:center}
+.rside .btn{color:#fff;background:#05100b}
+.rhint{position:absolute;left:16px;bottom:10px;margin:0;color:#8fb5a2;font-size:13px}
+@media(max-width:700px){.rhint{display:none}}
+@media(prefers-reduced-motion:reduce){*{animation:none!important;transition:none!important}}
+</style>
+</head>
+<body>
+<header class="band top">
+  <div><a class="home" id="home" href="/">← ZUPLY Learn</a><script>document.getElementById('home').href=location.hostname.startsWith('learn.')?'/':'/learn'</script>
+    <h1>전화는 어떻게 연결될까</h1>
+    <p>전화를 걸면 목소리는 액세스망과 코어망을 지나 상대에게 갑니다. 중계기, 기지국, 코어망이 하는 일을 6단계로 따라가 보세요.</p>
+  </div>
+  <div class="ctl">
+    <button class="btn" id="play">자동 재생</button>
+    <button class="btn solid" id="reelBtn">릴스 모드</button>
+  </div>
+</header>
+<main class="band main">
+  <section>
+    <div class="mets" id="mets"></div>
+    <div class="slot" id="slotA"><div id="stage"><svg id="dia" role="img" aria-label="전화망 구성도"><defs id="defs"></defs><g id="gZ"></g><g id="gE"></g><g id="gN"></g><g id="gP"></g></svg></div></div>
+    <p class="note-s">걸리는 시간은 LTE·5G 통화 기준 대략값입니다.</p>
+  </section>
+  <aside class="panel" aria-live="polite">
+    <div class="segs" id="segs"></div>
+    <p class="num" id="num"></p>
+    <h2 id="ttl"></h2>
+    <p id="txt"></p>
+    <div class="key"><b>핵심</b><p id="key"></p></div>
+    <div class="nav"><button class="btn" id="prev">이전</button><button class="btn solid" id="next">다음</button></div>
+  </aside>
+</main>
+<section class="band toc">
+  <h2>전체 흐름 <span class="h2en">Full flow</span></h2>
+  <ol id="toc"></ol>
+</section>
+<div class="reel" id="reel" hidden>
+  <div class="rframe">
+    <div class="segs" id="segs2"></div>
+    <div class="rhead"><span>How a Phone Network Works</span><span id="rnum"></span></div>
+    <div class="slot" id="slotB"></div>
+    <div class="rcap" lang="en"><h3 id="rttl"></h3><p id="rtxt"></p></div>
+  </div>
+  <div class="rside"><button class="btn" id="rplay">일시 정지</button><button class="btn" id="rclose">닫기</button></div>
+  <p class="rhint">화면 녹화 후 가운데 9:16 영역만 잘라 릴스로 올리세요</p>
+</div>
+<script>
+{
+const $=id=>document.getElementById(id);
+const NODES={phoneA:{t:'ph',l:'내 폰',e:'My phone',tile:'a'},rep:{t:'rep',l:'중계기',e:'Repeater',tile:'w'},btsA:{t:'tw',l:'기지국 A',e:'Base station A',tile:'g'},core:{t:'core',l:'코어망',e:'Core network',tile:'v'},btsB:{t:'tw',l:'기지국 B',e:'Base station B',tile:'g'},phoneB:{t:'ph',c:'#c9b8ff',l:'상대 폰',e:"Friend's phone",tile:'b'}};
+const LAND={phoneA:[0,1],rep:[.1,.5],btsA:[.25,.98],core:[.5,.12],btsB:[.75,.98],phoneB:[1,1]};
+const PORT={core:[.5,0],btsA:[.1,.46],btsB:[.9,.46],rep:[0,.76],phoneA:[.26,1],phoneB:[.9,.96]};
+const ZONES=[{ids:['phoneA','rep','btsA'],l:'ACCESS NETWORK'},{ids:['core'],l:'CORE NETWORK',c:'core'},{ids:['btsB','phoneB'],l:'ACCESS NETWORK'}];
+const ALL=[['phoneA','rep'],['rep','btsA'],['btsA','core'],['core','btsB'],['btsB','phoneB']];
+const act=(...p)=>ALL.map(([x,y])=>[x,y,p.some(([a,b])=>(a===x&&b===y)||(a===y&&b===x))?'':'d']);
+const SHOW=['phoneA','rep','btsA','core','btsB','phoneB'];
+const STEPS=[
+{t:'전화망은 두 층으로 되어 있다',te:'Two layers: access and core',se:'A call crosses an access network, the core network, then another access network.',s:'통화는 액세스망 → 코어망 → 액세스망을 지나 상대에게 간다.',show:SHOW,e:act(...ALL),m:['6개 지점','—','—','동네 우체국과 집중국'],
+ x:'전화망은 크게 두 층으로 나뉩니다. 액세스망(Access network)은 휴대폰과 가장 가까운 구간으로, 중계기와 기지국이 전파로 휴대폰을 붙잡아 줍니다. 코어망(Core network)은 통신사 안쪽의 중심 구간으로, 가입자를 찾고 통화를 연결하고 먼 곳까지 데이터를 실어 나릅니다. 기지국과 코어망 사이는 광케이블로 이어져 있습니다.',
+ k:'우편에 비유하면 액세스망은 동네 우체국, 코어망은 전국의 우편물을 모아 나누는 우편 집중국입니다.',
+ f:[{n:['phoneA','Me']},{n:['phoneB','Friend']},{w:900}]},
+{t:'지하에서는 중계기가 잇는다',te:'A repeater fills the gap',se:'Underground, a repeater picks up weak signals and passes them on to the base station.',s:'전파가 약한 지하나 건물 안에서는 중계기가 신호를 받아 키워 기지국으로 이어 준다.',show:SHOW,e:act(['phoneA','rep'],['rep','btsA']),m:['폰 ↔ 중계기 ↔ 기지국','1 ms 미만','전파','징검다리'],
+ x:'기지국의 전파는 땅속이나 두꺼운 벽을 잘 통과하지 못합니다. 그래서 지하철역, 터널, 큰 건물 안에는 중계기를 둡니다. 중계기는 휴대폰과 기지국 사이에서 약한 신호를 받아 키운 뒤 다시 보내 줍니다. 내용을 판단하지 않고 신호를 이어 주기만 합니다.',
+ k:'중계기는 액세스망의 일부입니다. 신호가 강한 곳에서는 휴대폰이 기지국과 바로 연결되고, 약한 곳에서만 중계기를 거칩니다.',
+ f:[{n:['phoneA','Weak signal']},['phoneA','rep','Radio'],{n:['rep','Amplify']},['rep','btsA','Radio','push'],{n:['btsA','Connected']}]},
+{t:'번호로 상대를 찾는다',te:'Finding who you called',se:'The core network finds which base station your friend is near, then rings their phone.',s:'코어망이 상대 폰이 어느 기지국 근처에 있는지 찾아 벨을 울린다.',show:SHOW,e:act(...ALL),m:['코어망','약 1–3초','제어 신호','교환원'],
+ x:'번호를 누르고 통화 버튼을 누르면, "이 번호와 연결해 달라"는 요청이 액세스망을 지나 코어망으로 갑니다. 코어망의 가입자 정보 저장소(HSS)에는 각 휴대폰이 지금 어느 지역에 접속해 있는지 기록되어 있습니다. 코어망은 상대가 있는 지역의 기지국으로 호출을 보내고, 상대 폰의 벨이 울립니다.',
+ k:'목소리를 보내기 전에 먼저 길을 찾고 연결을 잡습니다. 목소리는 이 연결이 만들어진 뒤에야 흐르기 시작합니다.',
+ f:[['phoneA','rep','Call 010-…'],['rep','btsA','Call'],['btsA','core','Call'],{n:['core','Where is Friend?']},{n:['core','Near B']},['core','btsB','Ring','push'],['btsB','phoneB','Ring','push'],{n:['phoneB','Ringing']}]},
+{t:'목소리는 작은 묶음이 된다',te:'Voice becomes small packets',se:'Your phone turns sound into numbers and sends them in a packet every 20 ms.',s:'휴대폰은 목소리를 숫자로 바꿔 20 ms마다 작은 묶음(패킷)으로 보낸다.',show:SHOW,e:act(['phoneA','rep']),m:['내 폰','20 ms마다','디지털','받아쓰기'],
+ x:'상대가 전화를 받으면 목소리가 흐르기 시작합니다. 마이크가 공기의 떨림을 전기 신호로 바꾸고, 휴대폰은 이를 1초에 수천 번 넘게 재서 숫자로 만듭니다. 코덱이 이 숫자를 작게 압축하고, 20 ms 분량씩 묶어 패킷으로 보냅니다. LTE와 5G 통화(VoLTE)는 이렇게 데이터처럼 전달됩니다.',
+ k:'1초 동안의 말은 50개의 작은 패킷이 됩니다. 패킷 몇 개가 늦거나 빠져도 대화가 이어지도록 설계되어 있습니다.',
+ f:[{n:['phoneA','“Hello”']},{n:['phoneA','Sound → numbers']},['phoneA','rep','Packet 1'],['phoneA','rep','Packet 2']]},
+{t:'코어망을 가로지른다',te:'Across the core network',se:'Base stations send packets over fiber to the core, which routes them to the other side.',s:'기지국은 광케이블로 코어망에 패킷을 보내고, 코어망은 상대 쪽 기지국으로 길을 골라 넘긴다.',show:SHOW,e:act(['rep','btsA'],['btsA','core'],['core','btsB']),m:['기지국 → 코어망 → 기지국','수 ms','빛 (광케이블)','고속도로'],
+ x:'기지국에 도착한 패킷은 이제 전파가 아니라 광케이블 속의 빛으로 달립니다. 코어망은 패킷을 받아 상대가 연결된 기지국으로 길을 골라 보냅니다. 서울에서 부산까지도 몇 ms면 닿습니다.',
+ k:'전파는 양쪽 끝의 짧은 구간에서만 쓰입니다. 통화 거리의 대부분은 땅속과 바닷속의 광케이블이 맡습니다.',
+ f:[['rep','btsA','Packet'],['btsA','core','Packet','push'],{n:['core','Route to B']},['core','btsB','Packet','push']]},
+{t:'다시 소리가 된다',te:'Back into sound',se:'Your friend\'s phone turns packets back into sound, while their voice travels back to you.',s:'상대 폰이 패킷을 다시 소리로 바꾼다. 그 사이 상대의 목소리도 같은 길을 거꾸로 온다.',show:SHOW,e:act(...ALL),m:['상대 폰','0.15초 안팎','소리','실시간 대화'],
+ x:'기지국 B는 패킷을 다시 전파에 실어 상대 폰으로 보냅니다. 상대 폰은 숫자를 소리로 되돌려 스피커로 들려줍니다. 입에서 귀까지는 보통 0.15초 안팎이라 대화가 자연스럽습니다. 그 사이 상대의 목소리도 같은 길을 거꾸로 지나 나에게 옵니다.',
+ k:'통화는 두 방향의 길이 동시에 열려 있는 것입니다. 지연이 길어지면 말이 자꾸 겹쳐 대화가 어색해집니다.',
+ f:[['btsB','phoneB','Packet'],{n:['phoneB','“Hello”']},['phoneB','btsB','“Hi!”','ack'],['btsB','core','“Hi!”','ack'],['core','btsA','“Hi!”','ack'],['btsA','rep','“Hi!”','ack'],['rep','phoneA','“Hi!”','ack'],{n:['phoneA','“Hi!”']}]}];
+const MLAB=['지금 일하는 곳','걸리는 시간','신호 형태','비유'];
+const svg=$('dia'),gE=$('gE'),gN=$('gN'),gP=$('gP');
+const NS='http://www.w3.org/2000/svg';
+const RM=matchMedia('(prefers-reduced-motion: reduce)').matches;
+const EDGES={};STEPS.forEach(st=>st.e.forEach(([a,b])=>{if(!EDGES[a+'-'+b]&&!EDGES[b+'-'+a])EDGES[a+'-'+b]=[a,b]}));
+let W=0,H=0,S=60,port=false,TOP={},BOT=40,HW=40,cur=0,tk=0,auto=false;
+const ISO=.5774;
+const clamp=(v,a,b)=>Math.max(a,Math.min(b,v));
+const sleep=ms=>new Promise(r=>setTimeout(r,ms));
+$('defs').innerHTML=`<linearGradient id="mscr" x1="0" y1="0" x2=".3" y2="1"><stop offset="0" stop-color="#16222c"/><stop offset="1" stop-color="#0b1117"/></linearGradient><linearGradient id="scr" x1="0" y1="0" x2=".4" y2="1"><stop offset="0" style="stop-color:var(--sc1)"/><stop offset="1" style="stop-color:var(--sc2)"/></linearGradient>`+['w','g','v','a','k','b','m','p'].map(p=>`<linearGradient id="t-${p}" x1="0" y1="0" x2=".7" y2="1"><stop offset="0" style="stop-color:var(--${p}1)"/><stop offset="1" style="stop-color:var(--${p}2)"/></linearGradient><linearGradient id="s-${p}" x1="0" y1="0" x2="1" y2="0"><stop offset=".5" style="stop-color:var(--${p}3)"/><stop offset=".5" style="stop-color:var(--${p}4)"/></linearGradient>`).join('');
+function P(id){const L=(port?PORT:LAND)[id];const mx=HW+14,mt=S*.86+46,mb=BOT+38;return{x:mx+L[0]*(W-2*mx),y:mt+L[1]*(H-mt-mb)}}
+function canon(a,b){return EDGES[a+'-'+b]||(EDGES[b+'-'+a]?[b,a]:[a,b])}
+function ctrl(a,b){const[c0,c1]=canon(a,b),A=P(c0),B=P(c1),dx=B.x-A.x,dy=B.y-A.y,len=Math.hypot(dx,dy)||1,k=len*.07;return{x:(A.x+B.x)/2-dy/len*k,y:(A.y+B.y)/2+dx/len*k}}
+function qp(A,C,B,t){const u=1-t;return{x:u*u*A.x+2*u*t*C.x+t*t*B.x,y:u*u*A.y+2*u*t*C.y+t*t*B.y}}
+function dpath(cy,hw0,f=.3){const hh=hw0*ISO,V=[[0,cy-hh],[hw0,cy],[0,cy+hh],[-hw0,cy]],r=n=>n.toFixed(1);let d='';
+ for(let i=0;i<4;i++){const v=V[i],p=V[(i+3)%4],n=V[(i+1)%4];d+=(i?'L':'M')+r(v[0]+(p[0]-v[0])*f)+' '+r(v[1]+(p[1]-v[1])*f)+'Q'+r(v[0])+' '+r(v[1])+' '+r(v[0]+(n[0]-v[0])*f)+' '+r(v[1]+(n[1]-v[1])*f)}return d+'Z'}
+function slab(cy,hw0,d,p,ol){const hw=hw0*.85,o=ol?' ol':'';return `<path class="${o}" d="${dpath(cy+d,hw0)}" fill="url(#s-${p})"/><rect x="${-hw}" y="${cy}" width="${2*hw}" height="${d}" fill="url(#s-${p})"/>`+(ol?`<path class="ol" d="M${-hw} ${cy}V${cy+d}M${hw} ${cy}V${cy+d}"/>`:'')+`<path class="tf${o}" d="${dpath(cy,hw0)}" fill="url(#t-${p})"/>`}
+const ICON={gw:'<path d="M4 8h14M14 4l4 4-4 4M20 16H6M10 12l-4 4 4 4"/>',pin:'<path d="M12 21s-6.5-5.6-6.5-10.5a6.5 6.5 0 0 1 13 0C18.5 15.4 12 21 12 21z"/><circle cx="12" cy="10.5" r="2.4"/>',bell:'<path d="M6 16.5V11a6 6 0 0 1 12 0v5.5l1.6 2H4.4z"/><path d="M10 21a2 2 0 0 0 4 0"/>',db:'<ellipse cx="12" cy="5.5" rx="7.5" ry="2.8"/><path d="M4.5 5.5v13c0 1.5 3.4 2.8 7.5 2.8s7.5-1.3 7.5-2.8v-13M4.5 12c0 1.5 3.4 2.8 7.5 2.8s7.5-1.3 7.5-2.8"/>'};
+function box(U,V,Z,z0,f,o={}){const z1=z0+Z,X=(u,v,z)=>((u-v).toFixed(1)+' '+((u+v)*ISO-z).toFixed(1)),pg=a=>'M'+a.map(p=>X(...p)).join('L')+'Z';
+ return `<path class="ol" style="fill:${f[1]}" d="${pg([[-U,V,z1],[U,V,z1],[U,V,z0],[-U,V,z0]])}"/><path class="ol" style="fill:${f[2]}" d="${pg([[U,V,z1],[U,-V,z1],[U,-V,z0],[U,V,z0]])}"/><path class="ol" style="fill:${f[0]}" d="${pg([[-U,-V,z1],[U,-V,z1],[U,V,z1],[-U,V,z1]])}"/>`+
+ (o.top?`<g transform="matrix(1 ${ISO} -1 ${ISO} 0 ${-z1})">${o.top}</g>`:'')+(o.lf?`<g transform="matrix(1 ${ISO} 0 1 ${-U-V} ${(V-U)*ISO-z1})">${o.lf}</g>`:'')+(o.rf?`<g transform="matrix(1 ${-ISO} 0 1 ${U-V} ${(U+V)*ISO-z1})">${o.rf}</g>`:'')}
+const DARK=['#4a525a','#30363c','#22272c'],METAL=['url(#t-m)','var(--m3)','var(--m4)'],PCB=['#34965f','#237448','#1a5a37'],GOLD='#e0b450';
+const LED=(x,y,r,c)=>`<circle cx="${x}" cy="${y}" r="${r*2.2}" fill="${c}" opacity=".22"/><circle cx="${x}" cy="${y}" r="${r}" fill="${c}"/>`;
+const csh=(U,V)=>`<ellipse cx="0" cy="${(U+V)*ISO*.25}" rx="${(U+V)*1.05}" ry="${(U+V)*ISO*.7}" class="sh"/>`;
+function wv(x,y,s,n=2){let d='';for(let i=1;i<=n;i++){const r=s*(.07+.07*i);d+=`<path class="wave" d="M${x+r*.55} ${y-r*.8}A${r} ${r} 0 0 1 ${x+r*.55} ${y+r*.8}M${x-r*.55} ${y-r*.8}A${r} ${r} 0 0 0 ${x-r*.55} ${y+r*.8}"/>`}return d}
+function dev2(n,s){let g='',top;
+ if(n.t==='ph'){const U=s*.2,V=s*.38,Z=s*.045;
+  const sc=`<rect x="${-U*.86}" y="${-V*.92}" width="${U*1.72}" height="${V*1.84}" rx="${U*.22}" fill="url(#mscr)"/>`+
+   `<circle cx="0" cy="${-V*.38}" r="${U*.42}" fill="#2a3a46"/><circle cx="0" cy="${-V*.38}" r="${U*.24}" fill="${n.c||'#7fd3a8'}"/>`+
+   `<rect x="${-U*.55}" y="${V*.08}" width="${U*1.1}" height="${V*.09}" rx="1" fill="#c9b8ff" opacity=".85"/>`+
+   `<rect x="${-U*.4}" y="${V*.26}" width="${U*.8}" height="${V*.07}" rx="1" fill="#9fc4f5" opacity=".8"/>`+
+   `<circle cx="0" cy="${V*.66}" r="${U*.24}" fill="#2ee58a"/>`;
+  g=csh(U,V)+box(U,V,Z,0,['#2b3137','#1e2328','#15181b'],{top:sc});top=-(U+V)*ISO-Z}
+ else if(n.t==='tw'){const H=s*1.05,b=s*.04,z0=s*.05,ty=-H-z0*1.2;
+  const pnl=(u,v)=>`<g transform="translate(${(u-v).toFixed(1)} ${((u+v)*ISO).toFixed(1)})">${box(s*.02,s*.05,s*.2,H*.68,['#ffffff','#e3e8ec','#c4ccd2'])}</g>`;
+  g=csh(s*.22,s*.22)+box(s*.22,s*.22,z0,0,METAL)+pnl(-s*.06,0)+pnl(0,-s*.06)+box(b,b,H,z0,['#d9dfe4','#aab4bc','#8a959e'])+
+   `<path class="mast" d="M${-s*.15} ${-z0}L0 ${-H*.55}L${s*.15} ${-z0}" fill="none"/>`+pnl(s*.06,0)+pnl(0,s*.06)+
+   LED(0,ty,s*.025,'#e5484d')+wv(0,ty+s*.05,s,3);top=ty-s*.25}
+ else if(n.t==='rep'){const U=s*.26,V=s*.17,Z=s*.24,ax=-s*.06,ay=-(V-U)*ISO*0-Z-s*.02;
+  g=csh(U,V)+box(U,V,Z,0,['url(#t-w)','var(--w3)','var(--w4)'],{rf:LED(V*.45,Z*.4,s*.022,'#2ee58a')+LED(V*1.05,Z*.4,s*.022,'#f5a300')})+
+   `<path class="mast" d="M${ax} ${ay}v${-s*.3}M${ax+s*.14} ${ay+s*.04}v${-s*.3}"/>`+wv(ax+s*.07,ay-s*.32,s,2);top=ay-s*.5}
+ else if(n.t==='core'){const U=s*.36,V=s*.3,Z=s*.15;let q='';
+  for(let i=0;i<3;i++)q+=box(U,V,Z,i*(Z+s*.02),DARK,{rf:[.3,.55,.8].map((x,j)=>LED(2*V*x,Z*.5,s*.02,j===(i%3)?'#f5a300':'#2ee58a')).join('')+`<rect x="${V*.1}" y="${Z*.25}" width="${V*.3}" height="${Z*.5}" rx="1" fill="#15191c"/>`});
+  g=csh(U,V)+q;top=-(U+V)*ISO-3*Z-s*.08}
+ else if(n.t==='bat'){const U=s*.3,V=s*.22,Z=s*.12;
+  g=csh(U,V)+box(U,V,Z,0,['#3d454c','#262c31','#1c2025'],{top:`<rect x="${-U*.82}" y="${-V*.7}" width="${U*1.64}" height="${V*1.4}" rx="2" fill="#f4f7f9"/><rect x="${-U*.76}" y="${-V*.6}" width="${U*1.15}" height="${V*1.2}" rx="1.5" fill="#2ee58a"/><path d="M${U*.25} ${-V*.35}l${-U*.16} ${V*.4}h${U*.14}l${-U*.12} ${V*.35}" fill="none" stroke="#15191c" stroke-width="1.6" stroke-linejoin="round"/>`})+
+   box(s*.05,s*.08,s*.03,Z,METAL);top=-(U+V)*ISO-Z-s*.05}
+ else return null;
+ return {g,top}}
+function device(n,s){let g='',top;
+ const X=dev2(n,s);if(X)return X;
+ if(n.t==='kb'){const U=s*.46,V=s*.2,Z=s*.07,pd=s*.035,cols=11,du=(2*U-2*pd)/cols,dv=(2*V-2*pd)/4;let k='';
+  for(let j=0;j<4;j++)for(let i=0;i<cols;i++){if(j===3&&i>3&&i<8)continue;const w=j===3&&i===3?du*5:du;k+=`<rect x="${-U+pd+i*du+du*.1}" y="${-V+pd+j*dv+dv*.12}" width="${w-du*.2}" height="${dv*.76}" rx="1.2" class="key${j===1&&i===1?' keyA':''}"/>`}
+  g=csh(U,V)+box(U,V,Z,0,DARK,{top:k});top=-(U+V)*ISO-Z}
+ else if(n.t==='cpu'){const A=s*.38,L=s*.26;let p='';for(let i=-4;i<=4;i++){const q=i*s*.075,r=s*.325,d=s*.032;p+=[[q,-r],[q,r],[-r,q],[r,q]].map(([x,y])=>`<rect x="${x-d/2}" y="${y-d/2}" width="${d}" height="${d}" fill="${GOLD}"/>`).join('')}
+  g=csh(A,A)+box(A,A,s*.05,0,PCB,{top:p})+box(L,L,s*.07,s*.05,METAL,{top:`<text class="chip" x="0" y="0">${n.chip||'CPU'}</text><path d="M${-L*.8} ${-L*.8}l${s*.08} 0l${-s*.08} ${s*.08}z" fill="#8b97a0"/>`});top=-(A+A)*ISO-s*.12}
+ else if(n.t==='ram'){const U=s*.55,V=s*.022,Z=s*.4,W=2*U;let lf='';for(let i=0;i<4;i++)lf+=`<rect x="${W*.06+i*W*.235}" y="${Z*.16}" width="${W*.19}" height="${Z*.42}" rx="1.5" fill="#15191c"/>`;
+  lf+=`<rect x="${W*.06}" y="${Z*.66}" width="${W*.5}" height="${Z*.13}" rx="1.5" fill="#eef2f4"/><rect x="${W*.62}" y="${Z*.68}" width="${W*.1}" height="${Z*.09}" fill="${GOLD}"/>`;
+  g=csh(s*.6,s*.08)+box(s*.6,s*.075,s*.06,0,DARK)+box(U,V,Z,s*.06,PCB,{lf})+box(s*.03,s*.075,s*.12,0,['#f4f6f8','#d6dce1','#b9c2c9']);
+  g+=`<g transform="translate(${(s*.6-0)*1-s*.035} ${(s*.6)*ISO})"></g>`;top=-(U+V)*ISO-Z-s*.06}
+ else if(n.t==='ssd'){const U=s*.4,V=s*.28;
+  g=csh(U,V)+box(U,V,s*.1,0,['#3d454c','#262c31','#1c2025'],{top:`<rect x="${-U*.8}" y="${-V*.72}" width="${U*1.6}" height="${V*1.44}" rx="2" fill="#f4f7f9"/><rect x="${-U*.8}" y="${-V*.72}" width="${U*1.6}" height="${V*.42}" rx="2" fill="#3c82e0"/><text class="chip" x="0" y="${V*.25}" style="fill:#1d3a6b">${n.chip||'SSD'}</text>`,rf:`<rect x="${V*.5}" y="${s*.025}" width="${V*.9}" height="${s*.05}" fill="#111"/>`});top=-(U+V)*ISO-s*.1}
+ else{const U=s*.6,V=s*.04,Z=s*.6,z0=s*.28,W=2*U,sc=`<rect x="${W*.035}" y="${Z*.05}" width="${W*.93}" height="${Z*.86}" rx="2" fill="url(#mscr)"/>`+
+   `<rect x="${W*.07}" y="${Z*.12}" width="${W*.86}" height="${Z*.08}" rx="1" fill="#2a3a46"/>`+[[.3,'#7fd3a8'],[.42,'#c9b8ff'],[.54,'#9fc4f5']].map(([y,c],i)=>`<rect x="${W*.08}" y="${Z*y}" width="${W*(.6-i*.12)}" height="${Z*.06}" rx="1" fill="${c}" opacity=".85"/>`).join('')+
+   `<text class="scrt" x="${W*.08}" y="${Z*.76}">Hi A</text><rect class="cur" x="${W*.34}" y="${Z*.66}" width="${W*.03}" height="${Z*.14}" fill="#2ee58a"/><path d="M${W*.6} ${Z*.05}L${W*.8} ${Z*.05}L${W*.45} ${Z*.91}L${W*.25} ${Z*.91}Z" class="glare"/>`;
+  g=csh(s*.3,s*.2)+box(s*.24,s*.17,s*.035,0,DARK)+box(s*.045,s*.035,s*.3,s*.035,DARK)+box(U,V,Z,z0,['#2b3137','#1e2328','#15181b'],{lf:sc});top=-(U+V)*ISO-Z-z0}
+ return {g,top}}
+function nodeSVG(id){const n=NODES[id],s=S,T=s*.82,d=s*.2;const dv=device(n,s);
+ const b=`<ellipse class="sh" cx="0" cy="${T*ISO+d-1}" rx="${T*.82}" ry="${T*ISO*.42}"/>`+slab(0,T,d,n.tile,1)+dv.g;
+ TOP[id]=dv.top;const P0=P(id);
+ return `<g transform="translate(${P0.x},${P0.y})"><g class="nd" id="n-${id}"><g class="bd">${b}</g><text class="lbl" y="${BOT+24}">${n.e}</text></g></g>`}
+function zoneSVG(){if(!ZONES.length)return '';const pad=Math.max(HW,62)+10;return ZONES.map(z=>{const ps=z.ids.map(id=>Object.assign(P(id),{t:TOP[id]||0}));
+ const x0=clamp(Math.min(...ps.map(p=>p.x))-pad,4,W),x1=clamp(Math.max(...ps.map(p=>p.x))+pad,0,W-4),y0=clamp(Math.min(...ps.map(p=>p.y+p.t))-30,4,H),y1=clamp(Math.max(...ps.map(p=>p.y))+BOT+40,0,H-4);
+ return `<g class="zn ${z.c||''}"><rect x="${x0}" y="${y0}" width="${x1-x0}" height="${y1-y0}" rx="18"/><text x="${x0+14}" y="${y0+18}">${z.l}</text></g>`}).join('')}
+function render(){W=svg.clientWidth;H=svg.clientHeight;if(!W||!H)return;port=H/W>1.05;S=clamp(Math.min(W,H)*(port?.155:.175),40,96);
+ HW=S*.82*.85;BOT=S*.82*ISO+S*.2;svg.setAttribute('viewBox',`0 0 ${W} ${H}`);
+ gE.innerHTML=Object.entries(EDGES).map(([k,[a,b]])=>{const A=P(a),B=P(b),C=ctrl(a,b),d=`M${A.x} ${A.y}Q${C.x} ${C.y} ${B.x} ${B.y}`;return `<g class="e" id="e-${k}"><path class="ln" d="${d}" stroke-width="${S*.26}"/><path class="cl" d="${d}"/></g>`}).join('');
+ gN.innerHTML=Object.keys(NODES).map(nodeSVG).join('');$('gZ').innerHTML=zoneSVG();
+ gN.querySelectorAll('.lbl').forEach(t=>{let w;try{w=t.getComputedTextLength()}catch(_){w=0}w=(w||60)+24;const y=+t.getAttribute('y');const r=mk('rect',{class:'lblb',x:-w/2,y:y-13,width:w,height:26,rx:13});t.parentNode.insertBefore(r,t)});
+ svg.querySelectorAll('.nd').forEach(n=>n.style.transition='none');apply();
+ requestAnimationFrame(()=>svg.querySelectorAll('.nd').forEach(n=>n.style.transition=''))}
+function edgeEl(a,b){return $('e-'+a+'-'+b)||$('e-'+b+'-'+a)}
+function apply(){const st=STEPS[cur],stt=st.st||{};
+ for(const id in NODES){const el=$('n-'+id);if(!el)continue;el.classList.toggle('on',st.show.includes(id));el.classList.toggle('off',stt[id]==='off');el.classList.toggle('dead',stt[id]==='dead')}
+ svg.querySelectorAll('.e').forEach(e=>e.classList.remove('on','d','x','hot'));
+ st.e.forEach(([a,b,f])=>{const e=edgeEl(a,b);if(e){e.classList.add('on');if(f)e.classList.add(f)}})}
+function mk(tag,attrs,parent){const e=document.createElementNS(NS,tag);for(const k in attrs)e.setAttribute(k,attrs[k]);if(parent)parent.appendChild(e);return e}
+function chip(g,text){const t=mk('text',{},g);t.textContent=text;let w;try{w=t.getComputedTextLength()}catch(_){w=0}w=(w||text.length*8)+22;
+ const r=mk('rect',{class:'b',x:-w/2,y:-14,width:w,height:28,rx:14});g.insertBefore(r,t);return r}
+function note(id,text,bad){const p=P(id),g=mk('g',{},gP),inner=mk('g',{class:'nt'+(bad?' bad':'')},g);chip(inner,text);
+ let y=p.y+TOP[id]-22;if(y<18)y=p.y+BOT+52;g.setAttribute('transform',`translate(${clamp(p.x,90,W-90)},${y})`);
+ setTimeout(()=>inner.classList.add('out'),1900);setTimeout(()=>g.remove(),2300)}
+function pulse(id){const p=P(id),c=mk('ellipse',{class:'ring',cx:p.x,cy:p.y,rx:S*.95,ry:S*.95*ISO},gE);setTimeout(()=>c.remove(),800);
+ const b=$('n-'+id)?.querySelector('.bd');if(b){b.classList.remove('bump');void b.getBBox();b.classList.add('bump')}}
+function hop([a,b,label,kind],tok){return new Promise(res=>{
+ const ps=mk('ellipse',{class:'psh',rx:S*.32,ry:S*.32*ISO},gP);
+ const g=mk('g',{class:'pk'+(kind?' '+kind:'')},gP),sh=mk('g',{transform:'translate(0,4)'},g);
+ const r=chip(g,label);const s=r.cloneNode();s.setAttribute('class','s');sh.appendChild(s);
+ const A0=P(a),B0=P(b),dist=Math.hypot(B0.x-A0.x,B0.y-A0.y),dur=RM?1:clamp(dist*1.6,600,1200);
+ const e=edgeEl(a,b);if(e)e.classList.add('hot');let t0=null;
+ const end=ok=>{if(e)e.classList.remove('hot');res(ok)};
+ const step=ts=>{if(tok!==tk){g.remove();ps.remove();return end(false)}
+  if(t0===null)t0=ts;const t=Math.min(1,(ts-t0)/dur),k=t<.5?4*t*t*t:1-((-2*t+2)**3)/2;
+  const q=qp(P(a),ctrl(a,b),P(b),k),lift=S*.32+Math.sin(Math.PI*k)*S*.28,sc=1-Math.sin(Math.PI*k)*.25;
+  ps.setAttribute('cx',q.x);ps.setAttribute('cy',q.y);ps.setAttribute('transform',`translate(${q.x} ${q.y}) scale(${sc}) translate(${-q.x} ${-q.y})`);
+  g.setAttribute('transform',`translate(${q.x},${q.y-lift})`);
+  if(kind==='lost'&&t>.55){g.classList.add('gone');ps.remove();const ng=mk('g',{transform:`translate(${q.x},${q.y-lift-34})`},gP),ni=mk('g',{class:'nt bad'},ng);chip(ni,'Lost');setTimeout(()=>ni.classList.add('out'),1300);setTimeout(()=>ng.remove(),1700);setTimeout(()=>g.remove(),500);return end(true)}
+  if(t<1)requestAnimationFrame(step);else{g.remove();ps.remove();pulse(b);end(true)}};
+ requestAnimationFrame(step)})}
+async function item(it,tok){if(Array.isArray(it))return hop(it,tok);
+ if(it.p)return Promise.all(it.p.map(h=>hop(h,tok)));
+ if(it.n){note(it.n[0],it.n[1],/erased/.test(it.n[1]));return sleep(RM?900:700)}
+ if(it.w)return sleep(it.w)}
+async function run(tok){for(;;){for(const it of STEPS[cur].f){if(tok!==tk)return;await item(it,tok);if(tok!==tk)return;await sleep(140)}
+ await sleep(1300);if(tok!==tk)return;if(auto){go(cur+1);return}}}
+function fill(id,text){const e=$(id);e.textContent=text;e.classList.remove('fade');void e.offsetWidth;e.classList.add('fade')}
+function segs(el){el.innerHTML=STEPS.map((s,i)=>`<button class="seg${i<=cur?' done':''}" data-i="${i}" aria-label="${i+1}단계: ${s.t}"><i></i></button>`).join('')}
+function panel(){const st=STEPS[cur];$('num').textContent=`${cur+1} / ${STEPS.length}단계`;fill('ttl',st.t);fill('txt',st.x);fill('key',st.k);
+ fill('rttl',st.te);fill('rtxt',st.se);$('rnum').textContent=`${cur+1} / ${STEPS.length}`;segs($('segs'));segs($('segs2'));
+ const old=[...document.querySelectorAll('.met b')].map(b=>b.textContent);
+ $('mets').innerHTML=st.m.map((v,i)=>{const c=/사라|지워/.test(v)?'bad':/남음/.test(v)?'good':'';
+  return `<div class="met"><span>${MLAB[i]}</span><b class="${c}${old[i]!==v?' flip':''}">${v}</b></div>`}).join('');
+ $('prev').disabled=cur===0;$('next').textContent=cur===STEPS.length-1?'처음부터':'다음';
+ document.querySelectorAll('#toc button').forEach((b,i)=>b.classList.toggle('cur',i===cur))}
+function go(i){cur=(i+STEPS.length)%STEPS.length;tk++;gP.innerHTML='';apply();panel();
+ try{history.replaceState(null,'','#step-'+(cur+1))}catch(_){}run(tk)}
+function setAuto(v){auto=v;$('play').textContent=v?'일시 정지':'자동 재생';$('rplay').textContent=v?'일시 정지':'자동 재생'}
+$('toc').innerHTML=STEPS.map((s,i)=>`<li><button data-i="${i}"><small>${i+1}단계 · Step ${i+1}</small><strong>${s.t}</strong><em lang="en">${s.te}</em><span>${s.s}</span><span class="en" lang="en">${s.se}</span></button></li>`).join('');
+document.addEventListener('click',e=>{const b=e.target.closest('[data-i]');if(!b)return;go(+b.dataset.i);if(b.closest('#toc')&&$('reel').hidden)$('slotA').scrollIntoView({behavior:RM?'auto':'smooth',block:'center'})});
+$('prev').onclick=()=>go(cur-1);$('next').onclick=()=>go(cur+1);
+$('play').onclick=()=>setAuto(!auto);$('rplay').onclick=()=>setAuto(!auto);
+const stage=$('stage');
+function openReel(){$('reel').hidden=false;$('slotB').appendChild(stage);setAuto(true);go(cur)}
+function closeReel(){$('reel').hidden=true;$('slotA').appendChild(stage);setAuto(false);go(cur)}
+$('reelBtn').onclick=openReel;$('rclose').onclick=closeReel;
+document.addEventListener('keydown',e=>{if(e.key==='ArrowRight')go(cur+1);else if(e.key==='ArrowLeft')go(cur-1);else if(e.key==='Escape'&&!$('reel').hidden)closeReel();else if(e.key===' '&&e.target===document.body){e.preventDefault();setAuto(!auto)}});
+const ro=new ResizeObserver(()=>render());ro.observe(svg);
+const m=/^#step-(\d+)$/.exec(location.hash);cur=m?clamp(+m[1]-1,0,STEPS.length-1):0;
+render();go(cur);
+if(document.fonts)document.fonts.ready.then(render);
+}
+</script>
+</body>
+</html>
