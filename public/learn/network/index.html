@@ -166,7 +166,7 @@ button:focus-visible{outline:3px solid var(--green);outline-offset:2px}
 <header class="band top">
   <div><a class="home" id="home" href="/">← ZUPLY Learn</a><script>document.getElementById('home').href=location.hostname.startsWith('learn.')?'/':'/learn'</script>
     <h1>전화는 어떻게 연결될까</h1>
-    <p>전화를 걸면 목소리는 액세스망과 코어망을 지나 상대에게 갑니다. 중계기, 기지국, 코어망이 하는 일을 6단계로 따라가 보세요.</p>
+    <p>전화를 걸면 목소리는 중계기와 기지국(액세스망), 제어·가입자 DB·IMS·게이트웨이(코어망)를 지나 상대에게 갑니다. 8단계로 따라가 보세요.</p>
   </div>
   <div class="ctl">
     <button class="btn" id="play">자동 재생</button>
@@ -177,7 +177,7 @@ button:focus-visible{outline:3px solid var(--green);outline-offset:2px}
   <section>
     <div class="mets" id="mets"></div>
     <div class="slot" id="slotA"><div id="stage"><svg id="dia" role="img" aria-label="전화망 구성도"><defs id="defs"></defs><g id="gZ"></g><g id="gE"></g><g id="gN"></g><g id="gP"></g></svg></div></div>
-    <p class="note-s">걸리는 시간은 LTE·5G 통화 기준 대략값입니다.</p>
+    <p class="note-s">걸리는 시간은 LTE·5G 통화 기준 대략값입니다. 괄호 안은 LTE/5G 장비 이름입니다.</p>
   </section>
   <aside class="panel" aria-live="polite">
     <div class="segs" id="segs"></div>
@@ -205,38 +205,47 @@ button:focus-visible{outline:3px solid var(--green);outline-offset:2px}
 <script>
 {
 const $=id=>document.getElementById(id);
-const NODES={phoneA:{t:'ph',l:'내 폰',e:'My phone',tile:'a'},rep:{t:'rep',l:'중계기',e:'Repeater',tile:'w'},btsA:{t:'tw',l:'기지국 A',e:'Base station A',tile:'g'},core:{t:'core',l:'코어망',e:'Core network',tile:'v'},btsB:{t:'tw',l:'기지국 B',e:'Base station B',tile:'g'},phoneB:{t:'ph',c:'#c9b8ff',l:'상대 폰',e:"Friend's phone",tile:'b'}};
-const LAND={phoneA:[0,1],rep:[.1,.5],btsA:[.25,.98],core:[.5,.12],btsB:[.75,.98],phoneB:[1,1]};
-const PORT={core:[.5,0],btsA:[.1,.46],btsB:[.9,.46],rep:[0,.76],phoneA:[.26,1],phoneB:[.9,.96]};
-const ZONES=[{ids:['phoneA','rep','btsA'],l:'ACCESS NETWORK'},{ids:['core'],l:'CORE NETWORK',c:'core'},{ids:['btsB','phoneB'],l:'ACCESS NETWORK'}];
-const ALL=[['phoneA','rep'],['rep','btsA'],['btsA','core'],['core','btsB'],['btsB','phoneB']];
+const NODES={phoneA:{t:'ph',l:'내 폰',e:'My phone',tile:'a'},rep:{t:'rep',l:'중계기',e:'Repeater',tile:'w'},btsA:{t:'tw',l:'기지국 A',e:'Base station A',tile:'g'},ctrl:{t:'srv',chip:'MME',l:'제어',e:'Control',tile:'v'},hss:{t:'db',l:'가입자 DB',e:'Subscriber DB',tile:'b'},ims:{t:'srv',chip:'IMS',l:'음성',e:'Voice (IMS)',tile:'a'},gw:{t:'lb',l:'게이트웨이',e:'Gateway',tile:'g'},btsB:{t:'tw',l:'기지국 B',e:'Base station B',tile:'g'},phoneB:{t:'ph',c:'#c9b8ff',l:'상대 폰',e:"Friend's phone",tile:'b'}};
+const SCALE=.8;
+const LAND={phoneA:[0,1],rep:[0,.3],btsA:[.17,.78],ctrl:[.41,0],hss:[.6,0],ims:[.6,.5],gw:[.41,.86],btsB:[.86,.78],phoneB:[1,.3]};
+const PORT={ctrl:[.2,0],hss:[.8,0],gw:[.2,.3],ims:[.8,.3],btsA:[.06,.68],rep:[.42,.86],phoneA:[.06,1],btsB:[.92,.68],phoneB:[.92,1]};
+const ZONES=[{ids:['phoneA','rep','btsA'],l:'ACCESS NETWORK'},{ids:['ctrl','hss','ims','gw'],l:'CORE NETWORK',c:'core'},{ids:['btsB','phoneB'],l:'ACCESS NETWORK'}];
+const ALL=[['phoneA','rep'],['rep','btsA'],['btsA','ctrl'],['btsA','gw'],['ctrl','hss'],['ims','hss'],['gw','ims'],['gw','btsB'],['btsB','phoneB']];
 const act=(...p)=>ALL.map(([x,y])=>[x,y,p.some(([a,b])=>(a===x&&b===y)||(a===y&&b===x))?'':'d']);
-const SHOW=['phoneA','rep','btsA','core','btsB','phoneB'];
+const SHOW=Object.keys(NODES);
 const STEPS=[
-{t:'전화망은 두 층으로 되어 있다',te:'Two layers: access and core',se:'A call crosses an access network, the core network, then another access network.',s:'통화는 액세스망 → 코어망 → 액세스망을 지나 상대에게 간다.',show:SHOW,e:act(...ALL),m:['6개 지점','—','—','동네 우체국과 집중국'],
- x:'전화망은 크게 두 층으로 나뉩니다. 액세스망(Access network)은 휴대폰과 가장 가까운 구간으로, 중계기와 기지국이 전파로 휴대폰을 붙잡아 줍니다. 코어망(Core network)은 통신사 안쪽의 중심 구간으로, 가입자를 찾고 통화를 연결하고 먼 곳까지 데이터를 실어 나릅니다. 기지국과 코어망 사이는 광케이블로 이어져 있습니다.',
- k:'우편에 비유하면 액세스망은 동네 우체국, 코어망은 전국의 우편물을 모아 나누는 우편 집중국입니다.',
+{t:'전화망은 두 층으로 되어 있다',te:'Two layers: access and core',se:'A call crosses an access network, the core network, then another access network.',s:'통화는 액세스망 → 코어망 → 액세스망을 지나 상대에게 간다.',show:SHOW,e:act(...ALL),m:['9개 장비','—','—','동네 우체국과 집중국'],
+ x:'전화망은 크게 액세스망과 코어망으로 나뉩니다. 액세스망(Access network)은 휴대폰을 전파로 붙잡아 주는 가장 바깥 구간으로, 중계기와 기지국이 여기에 속합니다. 코어망(Core network)은 통신사 안쪽의 두뇌로, 가입자를 인증하고, 상대를 찾고, 통화와 데이터를 목적지까지 실어 나릅니다. 기지국과 코어망 사이는 백홀(backhaul)이라 부르는 광케이블로 이어져 있습니다.',
+ k:'우편에 비유하면 중계기와 기지국은 동네 우체국, 코어망은 전국의 우편물을 모아 나누는 우편 집중국입니다.',
  f:[{n:['phoneA','Me']},{n:['phoneB','Friend']},{w:900}]},
-{t:'지하에서는 중계기가 잇는다',te:'A repeater fills the gap',se:'Underground, a repeater picks up weak signals and passes them on to the base station.',s:'전파가 약한 지하나 건물 안에서는 중계기가 신호를 받아 키워 기지국으로 이어 준다.',show:SHOW,e:act(['phoneA','rep'],['rep','btsA']),m:['폰 ↔ 중계기 ↔ 기지국','1 ms 미만','전파','징검다리'],
- x:'기지국의 전파는 땅속이나 두꺼운 벽을 잘 통과하지 못합니다. 그래서 지하철역, 터널, 큰 건물 안에는 중계기를 둡니다. 중계기는 휴대폰과 기지국 사이에서 약한 신호를 받아 키운 뒤 다시 보내 줍니다. 내용을 판단하지 않고 신호를 이어 주기만 합니다.',
- k:'중계기는 액세스망의 일부입니다. 신호가 강한 곳에서는 휴대폰이 기지국과 바로 연결되고, 약한 곳에서만 중계기를 거칩니다.',
- f:[{n:['phoneA','Weak signal']},['phoneA','rep','Radio'],{n:['rep','Amplify']},['rep','btsA','Radio','push'],{n:['btsA','Connected']}]},
-{t:'번호로 상대를 찾는다',te:'Finding who you called',se:'The core network finds which base station your friend is near, then rings their phone.',s:'코어망이 상대 폰이 어느 기지국 근처에 있는지 찾아 벨을 울린다.',show:SHOW,e:act(...ALL),m:['코어망','약 1–3초','제어 신호','교환원'],
- x:'번호를 누르고 통화 버튼을 누르면, "이 번호와 연결해 달라"는 요청이 액세스망을 지나 코어망으로 갑니다. 코어망의 가입자 정보 저장소(HSS)에는 각 휴대폰이 지금 어느 지역에 접속해 있는지 기록되어 있습니다. 코어망은 상대가 있는 지역의 기지국으로 호출을 보내고, 상대 폰의 벨이 울립니다.',
- k:'목소리를 보내기 전에 먼저 길을 찾고 연결을 잡습니다. 목소리는 이 연결이 만들어진 뒤에야 흐르기 시작합니다.',
- f:[['phoneA','rep','Call 010-…'],['rep','btsA','Call'],['btsA','core','Call'],{n:['core','Where is Friend?']},{n:['core','Near B']},['core','btsB','Ring','push'],['btsB','phoneB','Ring','push'],{n:['phoneB','Ringing']}]},
-{t:'목소리는 작은 묶음이 된다',te:'Voice becomes small packets',se:'Your phone turns sound into numbers and sends them in a packet every 20 ms.',s:'휴대폰은 목소리를 숫자로 바꿔 20 ms마다 작은 묶음(패킷)으로 보낸다.',show:SHOW,e:act(['phoneA','rep']),m:['내 폰','20 ms마다','디지털','받아쓰기'],
- x:'상대가 전화를 받으면 목소리가 흐르기 시작합니다. 마이크가 공기의 떨림을 전기 신호로 바꾸고, 휴대폰은 이를 1초에 수천 번 넘게 재서 숫자로 만듭니다. 코덱이 이 숫자를 작게 압축하고, 20 ms 분량씩 묶어 패킷으로 보냅니다. LTE와 5G 통화(VoLTE)는 이렇게 데이터처럼 전달됩니다.',
+{t:'중계기: 약한 전파를 이어 준다',te:'Repeaters: bridging weak signals',se:'Underground or indoors, a repeater picks up weak signals, amplifies them and passes them on.',s:'지하나 건물 안에서는 중계기가 약한 전파를 받아 키운 뒤 기지국으로 이어 준다.',show:SHOW,e:act(['phoneA','rep'],['rep','btsA']),m:['폰 ↔ 중계기 ↔ 기지국','1 ms 미만','전파 증폭','징검다리'],
+ x:'기지국 전파는 땅속이나 두꺼운 벽, 엘리베이터 안까지 잘 들어가지 못합니다. 그래서 지하철역, 터널, 지하 주차장, 큰 건물에는 중계기를 설치합니다. 중계기는 기지국 신호를 받아 키워서 안쪽으로 뿌려 주고, 휴대폰의 약한 신호도 받아 키워서 기지국으로 돌려보냅니다. 기지국 신호를 공중에서 받는 RF 중계기와, 광케이블로 받아 멀리까지 보내는 광중계기가 있습니다.',
+ k:'중계기는 신호를 키워 전달할 뿐, 통화를 연결하거나 판단하지는 않습니다. 중계기가 있어도 휴대폰이 실제로 연결된 상대는 여전히 기지국입니다.',
+ f:[{n:['phoneA','Weak signal']},['phoneA','rep','Radio'],{n:['rep','Amplify']},['rep','btsA','Radio / fiber','push'],{n:['btsA','Connected']}]},
+{t:'기지국: 셀을 맡아 관리한다',te:'Base stations: running a cell',se:'Each base station serves one area, called a cell, and shares its radio among the phones in it.',s:'기지국은 셀이라 부르는 구역을 맡아, 그 안의 휴대폰들에게 전파를 나눠 준다.',show:SHOW,e:act(['rep','btsA'],['btsA','ctrl'],['btsA','gw']),m:['기지국','1 ms 단위','전파 ↔ 광케이블','동네 우체국'],
+ x:'기지국(LTE는 eNB, 5G는 gNB)은 반경 수백 m에서 수 km의 셀을 맡습니다. 셀 안의 수많은 휴대폰에게 언제, 어떤 주파수로 보낼지 1 ms 단위로 나눠 주고, 전파로 받은 신호를 디지털 데이터로 바꿔 광케이블(백홀)로 코어망에 올려 보냅니다. 사용자가 움직여 다른 셀로 넘어가면 통화를 끊지 않고 옆 기지국으로 넘겨줍니다(핸드오버).',
+ k:'액세스망의 끝은 기지국입니다. 기지국까지는 전파로, 기지국부터는 광케이블로 달립니다.',
+ f:[['rep','btsA','Radio'],{n:['btsA','Schedule every 1 ms']},{p:[['btsA','ctrl','Control'],['btsA','gw','Data']]},{n:['btsA','Backhaul: fiber']}]},
+{t:'코어망 ① 접속과 인증',te:'Core ①: attach and authenticate',se:'When your phone connects, the control unit checks your SIM against the subscriber database.',s:'휴대폰이 접속하면 제어 장비가 가입자 DB와 USIM 정보를 맞춰 보고 인증한다.',show:SHOW,e:act(['phoneA','rep'],['rep','btsA'],['btsA','ctrl'],['ctrl','hss']),m:['제어 ↔ 가입자 DB','수십 ms','제어 신호','출입 관리실'],
+ x:'휴대폰을 켜면 코어망의 제어 장비(LTE는 MME, 5G는 AMF)가 "누구세요?"라고 묻습니다. 제어 장비는 가입자 DB(LTE는 HSS, 5G는 UDM)에 저장된 비밀 키로 휴대폰의 USIM 칩을 확인해 진짜 가입자인지 인증합니다. 인증이 끝나면 이 휴대폰이 지금 어느 지역에 있는지 기록해 둡니다.',
+ k:'코어망은 크게 제어(누가, 어디에 있나)와 데이터 전달(무엇을, 어디로 보내나)로 나뉩니다. 이 단계는 제어 쪽의 일입니다.',
+ f:[['phoneA','rep','Attach'],['rep','btsA','Attach'],['btsA','ctrl','Who are you?'],['ctrl','hss','Check SIM'],['hss','ctrl','Verified','ack'],{n:['ctrl','Location saved']}]},
+{t:'코어망 ② 상대를 찾아 벨을 울린다',te:'Core ②: finding and ringing',se:'The voice system (IMS) looks up your friend and rings their phone through the gateway.',s:'음성 통화 시스템(IMS)이 상대를 찾아 게이트웨이를 거쳐 상대 폰의 벨을 울린다.',show:SHOW,e:act(['btsA','gw'],['gw','ims'],['ims','hss'],['gw','btsB'],['btsB','phoneB']),m:['IMS ↔ 가입자 DB','약 1–3초','제어 신호','교환원'],
+ x:'통화 버튼을 누르면 "이 번호와 연결해 주세요"라는 요청이 게이트웨이를 지나 IMS로 갑니다. IMS는 LTE와 5G에서 음성 통화를 맡는 시스템으로, 가입자 DB에 물어 상대가 어디에 있는지 확인합니다. 상대 폰이 쉬고 있으면 제어 장비가 상대 지역의 기지국들에 호출(페이징)을 보내 깨우고, 상대 폰의 벨이 울립니다.',
+ k:'목소리를 보내기 전에 먼저 길을 찾고 연결을 잡습니다. 목소리는 상대가 전화를 받은 뒤에야 흐르기 시작합니다.',
+ f:[['btsA','gw','Call 010-…'],['gw','ims','Call'],['ims','hss','Where is Friend?'],['hss','ims','Near B','ack'],['ims','gw','Ring'],['gw','btsB','Ring','push'],['btsB','phoneB','Ring','push'],{n:['phoneB','Ringing']}]},
+{t:'목소리는 작은 묶음이 된다',te:'Voice becomes small packets',se:'Your phone turns sound into numbers and sends them in a packet every 20 ms.',s:'휴대폰은 목소리를 숫자로 바꿔 20 ms마다 작은 묶음(패킷)으로 보낸다.',show:SHOW,e:act(['phoneA','rep'],['rep','btsA']),m:['내 폰','20 ms마다','디지털','받아쓰기'],
+ x:'상대가 전화를 받으면 목소리가 흐르기 시작합니다. 마이크가 공기의 떨림을 전기 신호로 바꾸고, 휴대폰은 이를 1초에 수천 번 넘게 재서 숫자로 만듭니다. 코덱이 이 숫자를 작게 압축하고, 20 ms 분량씩 묶어 패킷으로 보냅니다. LTE와 5G 통화(VoLTE, VoNR)는 이렇게 데이터처럼 전달됩니다.',
  k:'1초 동안의 말은 50개의 작은 패킷이 됩니다. 패킷 몇 개가 늦거나 빠져도 대화가 이어지도록 설계되어 있습니다.',
- f:[{n:['phoneA','“Hello”']},{n:['phoneA','Sound → numbers']},['phoneA','rep','Packet 1'],['phoneA','rep','Packet 2']]},
-{t:'코어망을 가로지른다',te:'Across the core network',se:'Base stations send packets over fiber to the core, which routes them to the other side.',s:'기지국은 광케이블로 코어망에 패킷을 보내고, 코어망은 상대 쪽 기지국으로 길을 골라 넘긴다.',show:SHOW,e:act(['rep','btsA'],['btsA','core'],['core','btsB']),m:['기지국 → 코어망 → 기지국','수 ms','빛 (광케이블)','고속도로'],
- x:'기지국에 도착한 패킷은 이제 전파가 아니라 광케이블 속의 빛으로 달립니다. 코어망은 패킷을 받아 상대가 연결된 기지국으로 길을 골라 보냅니다. 서울에서 부산까지도 몇 ms면 닿습니다.',
- k:'전파는 양쪽 끝의 짧은 구간에서만 쓰입니다. 통화 거리의 대부분은 땅속과 바닷속의 광케이블이 맡습니다.',
- f:[['rep','btsA','Packet'],['btsA','core','Packet','push'],{n:['core','Route to B']},['core','btsB','Packet','push']]},
-{t:'다시 소리가 된다',te:'Back into sound',se:'Your friend\'s phone turns packets back into sound, while their voice travels back to you.',s:'상대 폰이 패킷을 다시 소리로 바꾼다. 그 사이 상대의 목소리도 같은 길을 거꾸로 온다.',show:SHOW,e:act(...ALL),m:['상대 폰','0.15초 안팎','소리','실시간 대화'],
- x:'기지국 B는 패킷을 다시 전파에 실어 상대 폰으로 보냅니다. 상대 폰은 숫자를 소리로 되돌려 스피커로 들려줍니다. 입에서 귀까지는 보통 0.15초 안팎이라 대화가 자연스럽습니다. 그 사이 상대의 목소리도 같은 길을 거꾸로 지나 나에게 옵니다.',
+ f:[{n:['phoneA','“Hello”']},{n:['phoneA','Sound → numbers']},['phoneA','rep','Packet 1'],['rep','btsA','Packet 1']]},
+{t:'게이트웨이를 지나 상대 쪽으로',te:'Through the gateway',se:'Voice packets take the data path: base station, gateway, then the other base station.',s:'목소리 패킷은 데이터 길을 따라 기지국 → 게이트웨이 → 상대 기지국으로 간다.',show:SHOW,e:act(['btsA','gw'],['gw','btsB']),m:['기지국 → 게이트웨이 → 기지국','수 ms','빛 (광케이블)','고속도로 톨게이트'],
+ x:'목소리 패킷은 제어 장비를 거치지 않고, 데이터 전달을 맡는 게이트웨이(LTE는 S-GW·P-GW, 5G는 UPF)를 지나 상대 쪽 기지국으로 갑니다. 게이트웨이는 패킷이 어디로 가야 하는지 알고, 요금 계산을 위해 사용량도 셉니다. 이 구간은 모두 광케이블이라 서울에서 부산까지도 몇 ms면 닿습니다.',
+ k:'제어 신호와 실제 데이터가 서로 다른 길로 다니는 것이 요즘 코어망의 특징입니다. 데이터가 늘어나면 데이터 길만 늘리면 됩니다.',
+ f:[['btsA','gw','Packet','push'],{n:['gw','Route → B']},['gw','btsB','Packet','push'],['btsB','phoneB','Packet']]},
+{t:'다시 소리가 된다',te:'Back into sound',se:'Your friend\'s phone turns packets back into sound, while their voice travels back to you.',s:'상대 폰이 패킷을 다시 소리로 바꾼다. 그 사이 상대의 목소리도 같은 길을 거꾸로 온다.',show:SHOW,e:act(['phoneA','rep'],['rep','btsA'],['btsA','gw'],['gw','btsB'],['btsB','phoneB']),m:['상대 폰','0.15초 안팎','소리','실시간 대화'],
+ x:'상대 폰은 받은 숫자를 소리로 되돌려 스피커로 들려줍니다. 입에서 귀까지는 보통 0.15초 안팎이라 대화가 자연스럽습니다. 그 사이 상대의 목소리도 기지국 B → 게이트웨이 → 기지국 A → 중계기를 거꾸로 지나 나에게 옵니다.',
  k:'통화는 두 방향의 길이 동시에 열려 있는 것입니다. 지연이 길어지면 말이 자꾸 겹쳐 대화가 어색해집니다.',
- f:[['btsB','phoneB','Packet'],{n:['phoneB','“Hello”']},['phoneB','btsB','“Hi!”','ack'],['btsB','core','“Hi!”','ack'],['core','btsA','“Hi!”','ack'],['btsA','rep','“Hi!”','ack'],['rep','phoneA','“Hi!”','ack'],{n:['phoneA','“Hi!”']}]}];
+ f:[{n:['phoneB','“Hello”']},['phoneB','btsB','“Hi!”','ack'],['btsB','gw','“Hi!”','ack'],['gw','btsA','“Hi!”','ack'],['btsA','rep','“Hi!”','ack'],['rep','phoneA','“Hi!”','ack'],{n:['phoneA','“Hi!”']}]}];
 const MLAB=['지금 일하는 곳','걸리는 시간','신호 형태','비유'];
 const svg=$('dia'),gE=$('gE'),gN=$('gN'),gP=$('gP');
 const NS='http://www.w3.org/2000/svg';
@@ -284,6 +293,19 @@ function dev2(n,s){let g='',top;
  else if(n.t==='bat'){const U=s*.3,V=s*.22,Z=s*.12;
   g=csh(U,V)+box(U,V,Z,0,['#3d454c','#262c31','#1c2025'],{top:`<rect x="${-U*.82}" y="${-V*.7}" width="${U*1.64}" height="${V*1.4}" rx="2" fill="#f4f7f9"/><rect x="${-U*.76}" y="${-V*.6}" width="${U*1.15}" height="${V*1.2}" rx="1.5" fill="#2ee58a"/><path d="M${U*.25} ${-V*.35}l${-U*.16} ${V*.4}h${U*.14}l${-U*.12} ${V*.35}" fill="none" stroke="#15191c" stroke-width="1.6" stroke-linejoin="round"/>`})+
    box(s*.05,s*.08,s*.03,Z,METAL);top=-(U+V)*ISO-Z-s*.05}
+ else if(n.t==='srv'){const U=s*.2,V=s*.3,Z=s*.62;let rf='';for(let i=0;i<4;i++)rf+=`<rect x="${V*.18}" y="${Z*(.1+i*.15)}" width="${V*1.1}" height="${Z*.09}" rx="1" fill="#2a3138"/>`;
+  rf+=LED(V*1.6,Z*.16,s*.02,'#2ee58a')+LED(V*1.6,Z*.31,s*.02,'#2ee58a')+LED(V*1.6,Z*.46,s*.02,'#f5a300');
+  g=csh(U,V)+box(U,V,Z,0,['url(#t-m)','var(--m3)','var(--m4)'],{rf,top:n.chip?`<text class="chip" x="0" y="0" style="fill:#2a3138">${n.chip}</text>`:''});top=-(U+V)*ISO-Z}
+ else if(n.t==='db'){const r=s*.34,ry=r*ISO,h=s*.44,b=-h*.5;
+  g=`<ellipse class="sh" cx="0" cy="${ry*.4}" rx="${r*1.15}" ry="${ry*.9}"/>`+`<path class="ol" d="M${-r} ${-h}V0A${r} ${ry} 0 0 0 ${r} 0V${-h}Z" fill="url(#s-b)"/>`+
+   `<path class="ol" d="M${-r} ${b}A${r} ${ry} 0 0 0 ${r} ${b}" fill="none"/><path class="ol" d="M${-r} ${-h*.08}A${r} ${ry} 0 0 0 ${r} ${-h*.08}" fill="none" opacity=".4"/>`+
+   `<ellipse class="ol" cx="0" cy="${-h}" rx="${r}" ry="${ry}" fill="url(#t-b)"/>`+LED(r*.55,b+ry*.55,s*.022,'#2ee58a');top=-h-ry}
+ else if(n.t==='lb'){const U=s*.36,V=s*.26,Z=s*.12,c='#2ee58a';
+  g=csh(U,V)+box(U,V,Z,0,DARK,{top:`<path d="M${-U*.75} 0H${-U*.15}M${-U*.15} 0L${U*.55} ${-V*.6}M${-U*.15} 0H${U*.55}M${-U*.15} 0L${U*.55} ${V*.6}" fill="none" stroke="${c}" stroke-width="2.4" stroke-linecap="round"/><circle cx="${-U*.15}" cy="0" r="${s*.035}" fill="${c}"/>`});top=-(U+V)*ISO-Z}
+ else if(n.t==='box'){const U=s*.27,Z=s*.34,p=n.p||'g';
+  g=csh(U,U)+box(U,U,Z,0,[`url(#t-${p})`,`var(--${p}3)`,`var(--${p}4)`],{top:n.chip?`<text class="chip" x="0" y="0" style="fill:var(--ink)">${n.chip}</text>`:''});top=-2*U*ISO-Z}
+ else if(n.t==='ctrs'){const u=s*.13,Z=s*.2,d=s*.3;
+  g=csh(s*.3,s*.3)+[-1,0,1].map((k,i)=>{const p=['v','b','a'][i];return `<g transform="translate(${k*d} ${k*d*ISO})">${box(u,u,Z,0,[`url(#t-${p})`,`var(--${p}3)`,`var(--${p}4)`])}</g>`}).join('');top=-2*u*ISO-Z-d*ISO}
  else return null;
  return {g,top}}
 function device(n,s){let g='',top;
@@ -301,7 +323,7 @@ function device(n,s){let g='',top;
   g=csh(U,V)+box(U,V,s*.1,0,['#3d454c','#262c31','#1c2025'],{top:`<rect x="${-U*.8}" y="${-V*.72}" width="${U*1.6}" height="${V*1.44}" rx="2" fill="#f4f7f9"/><rect x="${-U*.8}" y="${-V*.72}" width="${U*1.6}" height="${V*.42}" rx="2" fill="#3c82e0"/><text class="chip" x="0" y="${V*.25}" style="fill:#1d3a6b">${n.chip||'SSD'}</text>`,rf:`<rect x="${V*.5}" y="${s*.025}" width="${V*.9}" height="${s*.05}" fill="#111"/>`});top=-(U+V)*ISO-s*.1}
  else{const U=s*.6,V=s*.04,Z=s*.6,z0=s*.28,W=2*U,sc=`<rect x="${W*.035}" y="${Z*.05}" width="${W*.93}" height="${Z*.86}" rx="2" fill="url(#mscr)"/>`+
    `<rect x="${W*.07}" y="${Z*.12}" width="${W*.86}" height="${Z*.08}" rx="1" fill="#2a3a46"/>`+[[.3,'#7fd3a8'],[.42,'#c9b8ff'],[.54,'#9fc4f5']].map(([y,c],i)=>`<rect x="${W*.08}" y="${Z*y}" width="${W*(.6-i*.12)}" height="${Z*.06}" rx="1" fill="${c}" opacity=".85"/>`).join('')+
-   `<text class="scrt" x="${W*.08}" y="${Z*.76}">Hi A</text><rect class="cur" x="${W*.34}" y="${Z*.66}" width="${W*.03}" height="${Z*.14}" fill="#2ee58a"/><path d="M${W*.6} ${Z*.05}L${W*.8} ${Z*.05}L${W*.45} ${Z*.91}L${W*.25} ${Z*.91}Z" class="glare"/>`;
+   `<text class="scrt" x="${W*.08}" y="${Z*.76}">${n.scr||'Hi A'}</text><rect class="cur" x="${W*.34}" y="${Z*.66}" width="${W*.03}" height="${Z*.14}" fill="#2ee58a"/><path d="M${W*.6} ${Z*.05}L${W*.8} ${Z*.05}L${W*.45} ${Z*.91}L${W*.25} ${Z*.91}Z" class="glare"/>`;
   g=csh(s*.3,s*.2)+box(s*.24,s*.17,s*.035,0,DARK)+box(s*.045,s*.035,s*.3,s*.035,DARK)+box(U,V,Z,z0,['#2b3137','#1e2328','#15181b'],{lf:sc});top=-(U+V)*ISO-Z-z0}
  return {g,top}}
 function nodeSVG(id){const n=NODES[id],s=S,T=s*.82,d=s*.2;const dv=device(n,s);
@@ -311,7 +333,7 @@ function nodeSVG(id){const n=NODES[id],s=S,T=s*.82,d=s*.2;const dv=device(n,s);
 function zoneSVG(){if(!ZONES.length)return '';const pad=Math.max(HW,62)+10;return ZONES.map(z=>{const ps=z.ids.map(id=>Object.assign(P(id),{t:TOP[id]||0}));
  const x0=clamp(Math.min(...ps.map(p=>p.x))-pad,4,W),x1=clamp(Math.max(...ps.map(p=>p.x))+pad,0,W-4),y0=clamp(Math.min(...ps.map(p=>p.y+p.t))-30,4,H),y1=clamp(Math.max(...ps.map(p=>p.y))+BOT+40,0,H-4);
  return `<g class="zn ${z.c||''}"><rect x="${x0}" y="${y0}" width="${x1-x0}" height="${y1-y0}" rx="18"/><text x="${x0+14}" y="${y0+18}">${z.l}</text></g>`}).join('')}
-function render(){W=svg.clientWidth;H=svg.clientHeight;if(!W||!H)return;port=H/W>1.05;S=clamp(Math.min(W,H)*(port?.155:.175),40,96);
+function render(){W=svg.clientWidth;H=svg.clientHeight;if(!W||!H)return;port=H/W>1.05;S=clamp(Math.min(W,H)*(port?.155:.175)*(typeof SCALE==='number'?SCALE:1),34,96);
  HW=S*.82*.85;BOT=S*.82*ISO+S*.2;svg.setAttribute('viewBox',`0 0 ${W} ${H}`);
  gE.innerHTML=Object.entries(EDGES).map(([k,[a,b]])=>{const A=P(a),B=P(b),C=ctrl(a,b),d=`M${A.x} ${A.y}Q${C.x} ${C.y} ${B.x} ${B.y}`;return `<g class="e" id="e-${k}"><path class="ln" d="${d}" stroke-width="${S*.26}"/><path class="cl" d="${d}"/></g>`}).join('');
  gN.innerHTML=Object.keys(NODES).map(nodeSVG).join('');$('gZ').innerHTML=zoneSVG();
@@ -322,7 +344,7 @@ function edgeEl(a,b){return $('e-'+a+'-'+b)||$('e-'+b+'-'+a)}
 function apply(){const st=STEPS[cur],stt=st.st||{};
  for(const id in NODES){const el=$('n-'+id);if(!el)continue;el.classList.toggle('on',st.show.includes(id));el.classList.toggle('off',stt[id]==='off');el.classList.toggle('dead',stt[id]==='dead')}
  svg.querySelectorAll('.e').forEach(e=>e.classList.remove('on','d','x','hot'));
- st.e.forEach(([a,b,f])=>{const e=edgeEl(a,b);if(e){e.classList.add('on');if(f)e.classList.add(f)}})}
+ st.e.forEach(([a,b,f])=>{if(!st.show.includes(a)||!st.show.includes(b))return;const e=edgeEl(a,b);if(e){e.classList.add('on');if(f)e.classList.add(f)}})}
 function mk(tag,attrs,parent){const e=document.createElementNS(NS,tag);for(const k in attrs)e.setAttribute(k,attrs[k]);if(parent)parent.appendChild(e);return e}
 function chip(g,text){const t=mk('text',{},g);t.textContent=text;let w;try{w=t.getComputedTextLength()}catch(_){w=0}w=(w||text.length*8)+22;
  const r=mk('rect',{class:'b',x:-w/2,y:-14,width:w,height:28,rx:14});g.insertBefore(r,t);return r}
@@ -348,7 +370,7 @@ function hop([a,b,label,kind],tok){return new Promise(res=>{
  requestAnimationFrame(step)})}
 async function item(it,tok){if(Array.isArray(it))return hop(it,tok);
  if(it.p)return Promise.all(it.p.map(h=>hop(h,tok)));
- if(it.n){note(it.n[0],it.n[1],/erased/.test(it.n[1]));return sleep(RM?900:700)}
+ if(it.n){note(it.n[0],it.n[1],/erased|down|Crashed/i.test(it.n[1]));return sleep(RM?900:700)}
  if(it.w)return sleep(it.w)}
 async function run(tok){for(;;){for(const it of STEPS[cur].f){if(tok!==tk)return;await item(it,tok);if(tok!==tk)return;await sleep(140)}
  await sleep(1300);if(tok!==tk)return;if(auto){go(cur+1);return}}}
