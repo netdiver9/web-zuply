@@ -284,6 +284,19 @@ function dev2(n,s){let g='',top;
  else if(n.t==='bat'){const U=s*.3,V=s*.22,Z=s*.12;
   g=csh(U,V)+box(U,V,Z,0,['#3d454c','#262c31','#1c2025'],{top:`<rect x="${-U*.82}" y="${-V*.7}" width="${U*1.64}" height="${V*1.4}" rx="2" fill="#f4f7f9"/><rect x="${-U*.76}" y="${-V*.6}" width="${U*1.15}" height="${V*1.2}" rx="1.5" fill="#2ee58a"/><path d="M${U*.25} ${-V*.35}l${-U*.16} ${V*.4}h${U*.14}l${-U*.12} ${V*.35}" fill="none" stroke="#15191c" stroke-width="1.6" stroke-linejoin="round"/>`})+
    box(s*.05,s*.08,s*.03,Z,METAL);top=-(U+V)*ISO-Z-s*.05}
+ else if(n.t==='srv'){const U=s*.2,V=s*.3,Z=s*.62;let rf='';for(let i=0;i<4;i++)rf+=`<rect x="${V*.18}" y="${Z*(.1+i*.15)}" width="${V*1.1}" height="${Z*.09}" rx="1" fill="#2a3138"/>`;
+  rf+=LED(V*1.6,Z*.16,s*.02,'#2ee58a')+LED(V*1.6,Z*.31,s*.02,'#2ee58a')+LED(V*1.6,Z*.46,s*.02,'#f5a300');
+  g=csh(U,V)+box(U,V,Z,0,['url(#t-m)','var(--m3)','var(--m4)'],{rf,top:n.chip?`<text class="chip" x="0" y="0" style="fill:#2a3138">${n.chip}</text>`:''});top=-(U+V)*ISO-Z}
+ else if(n.t==='db'){const r=s*.34,ry=r*ISO,h=s*.44,b=-h*.5;
+  g=`<ellipse class="sh" cx="0" cy="${ry*.4}" rx="${r*1.15}" ry="${ry*.9}"/>`+`<path class="ol" d="M${-r} ${-h}V0A${r} ${ry} 0 0 0 ${r} 0V${-h}Z" fill="url(#s-b)"/>`+
+   `<path class="ol" d="M${-r} ${b}A${r} ${ry} 0 0 0 ${r} ${b}" fill="none"/><path class="ol" d="M${-r} ${-h*.08}A${r} ${ry} 0 0 0 ${r} ${-h*.08}" fill="none" opacity=".4"/>`+
+   `<ellipse class="ol" cx="0" cy="${-h}" rx="${r}" ry="${ry}" fill="url(#t-b)"/>`+LED(r*.55,b+ry*.55,s*.022,'#2ee58a');top=-h-ry}
+ else if(n.t==='lb'){const U=s*.36,V=s*.26,Z=s*.12,c='#2ee58a';
+  g=csh(U,V)+box(U,V,Z,0,DARK,{top:`<path d="M${-U*.75} 0H${-U*.15}M${-U*.15} 0L${U*.55} ${-V*.6}M${-U*.15} 0H${U*.55}M${-U*.15} 0L${U*.55} ${V*.6}" fill="none" stroke="${c}" stroke-width="2.4" stroke-linecap="round"/><circle cx="${-U*.15}" cy="0" r="${s*.035}" fill="${c}"/>`});top=-(U+V)*ISO-Z}
+ else if(n.t==='box'){const U=s*.27,Z=s*.34,p=n.p||'g';
+  g=csh(U,U)+box(U,U,Z,0,[`url(#t-${p})`,`var(--${p}3)`,`var(--${p}4)`],{top:n.chip?`<text class="chip" x="0" y="0" style="fill:var(--ink)">${n.chip}</text>`:''});top=-2*U*ISO-Z}
+ else if(n.t==='ctrs'){const u=s*.13,Z=s*.2,d=s*.3;
+  g=csh(s*.3,s*.3)+[-1,0,1].map((k,i)=>{const p=['v','b','a'][i];return `<g transform="translate(${k*d} ${k*d*ISO})">${box(u,u,Z,0,[`url(#t-${p})`,`var(--${p}3)`,`var(--${p}4)`])}</g>`}).join('');top=-2*u*ISO-Z-d*ISO}
  else return null;
  return {g,top}}
 function device(n,s){let g='',top;
@@ -301,7 +314,7 @@ function device(n,s){let g='',top;
   g=csh(U,V)+box(U,V,s*.1,0,['#3d454c','#262c31','#1c2025'],{top:`<rect x="${-U*.8}" y="${-V*.72}" width="${U*1.6}" height="${V*1.44}" rx="2" fill="#f4f7f9"/><rect x="${-U*.8}" y="${-V*.72}" width="${U*1.6}" height="${V*.42}" rx="2" fill="#3c82e0"/><text class="chip" x="0" y="${V*.25}" style="fill:#1d3a6b">${n.chip||'SSD'}</text>`,rf:`<rect x="${V*.5}" y="${s*.025}" width="${V*.9}" height="${s*.05}" fill="#111"/>`});top=-(U+V)*ISO-s*.1}
  else{const U=s*.6,V=s*.04,Z=s*.6,z0=s*.28,W=2*U,sc=`<rect x="${W*.035}" y="${Z*.05}" width="${W*.93}" height="${Z*.86}" rx="2" fill="url(#mscr)"/>`+
    `<rect x="${W*.07}" y="${Z*.12}" width="${W*.86}" height="${Z*.08}" rx="1" fill="#2a3a46"/>`+[[.3,'#7fd3a8'],[.42,'#c9b8ff'],[.54,'#9fc4f5']].map(([y,c],i)=>`<rect x="${W*.08}" y="${Z*y}" width="${W*(.6-i*.12)}" height="${Z*.06}" rx="1" fill="${c}" opacity=".85"/>`).join('')+
-   `<text class="scrt" x="${W*.08}" y="${Z*.76}">Hi A</text><rect class="cur" x="${W*.34}" y="${Z*.66}" width="${W*.03}" height="${Z*.14}" fill="#2ee58a"/><path d="M${W*.6} ${Z*.05}L${W*.8} ${Z*.05}L${W*.45} ${Z*.91}L${W*.25} ${Z*.91}Z" class="glare"/>`;
+   `<text class="scrt" x="${W*.08}" y="${Z*.76}">${n.scr||'Hi A'}</text><rect class="cur" x="${W*.34}" y="${Z*.66}" width="${W*.03}" height="${Z*.14}" fill="#2ee58a"/><path d="M${W*.6} ${Z*.05}L${W*.8} ${Z*.05}L${W*.45} ${Z*.91}L${W*.25} ${Z*.91}Z" class="glare"/>`;
   g=csh(s*.3,s*.2)+box(s*.24,s*.17,s*.035,0,DARK)+box(s*.045,s*.035,s*.3,s*.035,DARK)+box(U,V,Z,z0,['#2b3137','#1e2328','#15181b'],{lf:sc});top=-(U+V)*ISO-Z-z0}
  return {g,top}}
 function nodeSVG(id){const n=NODES[id],s=S,T=s*.82,d=s*.2;const dv=device(n,s);
@@ -311,7 +324,7 @@ function nodeSVG(id){const n=NODES[id],s=S,T=s*.82,d=s*.2;const dv=device(n,s);
 function zoneSVG(){if(!ZONES.length)return '';const pad=Math.max(HW,62)+10;return ZONES.map(z=>{const ps=z.ids.map(id=>Object.assign(P(id),{t:TOP[id]||0}));
  const x0=clamp(Math.min(...ps.map(p=>p.x))-pad,4,W),x1=clamp(Math.max(...ps.map(p=>p.x))+pad,0,W-4),y0=clamp(Math.min(...ps.map(p=>p.y+p.t))-30,4,H),y1=clamp(Math.max(...ps.map(p=>p.y))+BOT+40,0,H-4);
  return `<g class="zn ${z.c||''}"><rect x="${x0}" y="${y0}" width="${x1-x0}" height="${y1-y0}" rx="18"/><text x="${x0+14}" y="${y0+18}">${z.l}</text></g>`}).join('')}
-function render(){W=svg.clientWidth;H=svg.clientHeight;if(!W||!H)return;port=H/W>1.05;S=clamp(Math.min(W,H)*(port?.155:.175),40,96);
+function render(){W=svg.clientWidth;H=svg.clientHeight;if(!W||!H)return;port=H/W>1.05;S=clamp(Math.min(W,H)*(port?.155:.175)*(typeof SCALE==='number'?SCALE:1),34,96);
  HW=S*.82*.85;BOT=S*.82*ISO+S*.2;svg.setAttribute('viewBox',`0 0 ${W} ${H}`);
  gE.innerHTML=Object.entries(EDGES).map(([k,[a,b]])=>{const A=P(a),B=P(b),C=ctrl(a,b),d=`M${A.x} ${A.y}Q${C.x} ${C.y} ${B.x} ${B.y}`;return `<g class="e" id="e-${k}"><path class="ln" d="${d}" stroke-width="${S*.26}"/><path class="cl" d="${d}"/></g>`}).join('');
  gN.innerHTML=Object.keys(NODES).map(nodeSVG).join('');$('gZ').innerHTML=zoneSVG();
@@ -322,7 +335,7 @@ function edgeEl(a,b){return $('e-'+a+'-'+b)||$('e-'+b+'-'+a)}
 function apply(){const st=STEPS[cur],stt=st.st||{};
  for(const id in NODES){const el=$('n-'+id);if(!el)continue;el.classList.toggle('on',st.show.includes(id));el.classList.toggle('off',stt[id]==='off');el.classList.toggle('dead',stt[id]==='dead')}
  svg.querySelectorAll('.e').forEach(e=>e.classList.remove('on','d','x','hot'));
- st.e.forEach(([a,b,f])=>{const e=edgeEl(a,b);if(e){e.classList.add('on');if(f)e.classList.add(f)}})}
+ st.e.forEach(([a,b,f])=>{if(!st.show.includes(a)||!st.show.includes(b))return;const e=edgeEl(a,b);if(e){e.classList.add('on');if(f)e.classList.add(f)}})}
 function mk(tag,attrs,parent){const e=document.createElementNS(NS,tag);for(const k in attrs)e.setAttribute(k,attrs[k]);if(parent)parent.appendChild(e);return e}
 function chip(g,text){const t=mk('text',{},g);t.textContent=text;let w;try{w=t.getComputedTextLength()}catch(_){w=0}w=(w||text.length*8)+22;
  const r=mk('rect',{class:'b',x:-w/2,y:-14,width:w,height:28,rx:14});g.insertBefore(r,t);return r}
@@ -348,7 +361,7 @@ function hop([a,b,label,kind],tok){return new Promise(res=>{
  requestAnimationFrame(step)})}
 async function item(it,tok){if(Array.isArray(it))return hop(it,tok);
  if(it.p)return Promise.all(it.p.map(h=>hop(h,tok)));
- if(it.n){note(it.n[0],it.n[1],/erased/.test(it.n[1]));return sleep(RM?900:700)}
+ if(it.n){note(it.n[0],it.n[1],/erased|down|Crashed/i.test(it.n[1]));return sleep(RM?900:700)}
  if(it.w)return sleep(it.w)}
 async function run(tok){for(;;){for(const it of STEPS[cur].f){if(tok!==tk)return;await item(it,tok);if(tok!==tk)return;await sleep(140)}
  await sleep(1300);if(tok!==tk)return;if(auto){go(cur+1);return}}}

@@ -20,17 +20,17 @@ CSS = "".join(
     for pkg, ws in [("ibm-plex-sans-kr", [400, 500, 600, 700]), ("space-grotesk", [500, 700])]
     for w in ws
 ) if FONTS.exists() else ""
-# 인스타 UI(하단 설명, 오른쪽 버튼)에 가리지 않도록 여백을 둔다
+# 인스타 전체 화면 UI(위 '릴스' 머리글, 아래 계정·설명 글, 오른쪽 버튼)와 피드 4:5 잘림을 피하도록 위 15%, 아래 21% 여백을 둔다
 VIDEO_CSS = ("<style>.reel{padding:0!important}.rframe{position:relative;height:100vh!important;width:100vw!important;"
-             "border-radius:0!important;padding:9% 13% 26% 6%!important}.rside,.rhint{display:none!important}"
+             "border-radius:0!important;padding:15vh 12% 21vh 5%!important}.rside,.rhint{display:none!important}"
              # 휴대폰에서 읽기 쉽게 글자를 키운다
-             ".rhead{font-size:20px!important}.rcap h3{font-size:34px!important;margin-bottom:8px!important}"
-             ".rcap p{font-size:23px!important;line-height:1.35!important;color:var(--ink)!important}"
+             ".rhead{font-size:18px!important}.rcap h3{font-size:31px!important;margin-bottom:6px!important}"
+             ".rcap p{font-size:21px!important;line-height:1.35!important;color:var(--ink)!important}"
              ".lbl{font-size:19px!important;font-weight:700!important}"
              ".pk text,.nt text{font-size:18px!important}.pk rect,.nt rect{y:-19px;height:38px;rx:19px}"
              # 시작 질문, 마무리 안내 (영어만)
              ".card{position:absolute;inset:0;z-index:5;background:var(--mist);display:flex;flex-direction:column;"
-             "justify-content:center;gap:22px;padding:9% 13% 26% 8%;font-family:'Space Grotesk','IBM Plex Sans KR',sans-serif;"
+             "justify-content:center;gap:22px;padding:15vh 12% 21vh 8%;font-family:'Space Grotesk','IBM Plex Sans KR',sans-serif;"
              "animation:cin .5s ease-out}.card[hidden]{display:none}@keyframes cin{from{opacity:0;transform:translateY(12px)}}"
              ".card small{font:700 20px 'Space Grotesk',sans-serif;color:var(--green-ink);letter-spacing:.06em}"
              ".card h1{margin:0;font:700 52px/1.1 'Space Grotesk',sans-serif;letter-spacing:-.03em;color:var(--ink)}"
@@ -48,7 +48,7 @@ CARDS = """
 <h1>Explore the interactive lesson.</h1>
 <div class="links"><b>zuply.co.kr/learn</b><span>Follow @seunghwan.daily</span></div><p>Link in bio.</p></div>"""
 # 영상 내내 아래쪽에 작게 표시 (영상이 퍼져도 출처가 남도록)
-WATERMARK = '<div class="wm" lang="en">@seunghwan.daily · zuply.co.kr/learn</div>'
+WATERMARK_TEXT = '@seunghwan.daily · zuply.co.kr/learn'
 INTRO_MS, OUTRO_MS = 2800, 3200
 
 
@@ -57,8 +57,9 @@ async def record(frames_dir: Path):
     async with async_playwright() as p:
         browser = await p.chromium.launch()
         page = await browser.new_page(viewport={"width": 540, "height": 960}, device_scale_factor=2, color_scheme="light")
-        # 영상에서는 글자가 커지므로 RAM 위 말풍선이 SSD 라벨과 겹치지 않게 RAM을 조금 내린다
-        html = SRC.read_text(encoding="utf-8").replace("ram:[.8,.42]", "ram:[.8,.52]").replace("y=p.y+BOT+52", "y=p.y+BOT+66")
+        # 영상에서는 글자가 커지므로 RAM 위 말풍선이 SSD 라벨과 겹치지 않게 RAM을 조금 내리고,
+        # 안전 영역 때문에 다이어그램이 납작해져도 세로 배치를 쓴다
+        html = SRC.read_text(encoding="utf-8").replace("const PORT={monitor:[.2,0],ssd:[.84,0],ram:[.8,.42],cpu:[.26,.62],keyboard:[.42,1]}", "const PORT={monitor:[.16,0],ssd:[.86,.02],ram:[.86,.62],cpu:[.18,.56],keyboard:[.56,1]}").replace("(port?.155:.175),40,96)", "(port?.13:.175),36,96)").replace("y=p.y+BOT+52", "y=p.y+BOT+66").replace("port=H/W>1.05", "port=H/W>.75")
         tmp = frames_dir / "page.html"
         tmp.write_text(html, encoding="utf-8")
         await page.goto(tmp.as_uri() + "#step-1")
@@ -68,7 +69,8 @@ async def record(frames_dir: Path):
         # 자동 재생을 잠시 멈추고 시작 카드를 띄운 뒤 녹화를 시작한다
         await page.evaluate("document.getElementById('reelBtn').click(); document.getElementById('rplay').click()")
         await page.evaluate("h => document.querySelector('.rframe').insertAdjacentHTML('beforeend', h)", CARDS)
-        await page.evaluate("h => document.querySelector('.rcap').insertAdjacentHTML('beforeend', h)", WATERMARK)
+        # 위쪽 제목 줄 자리에 계정·주소를 넣는다 (제목은 시작 카드에 있음)
+        await page.evaluate("t => document.querySelector('.rhead span').textContent = t", WATERMARK_TEXT)
         await page.wait_for_timeout(300)
         cdp = await page.context.new_cdp_session(page)
 
