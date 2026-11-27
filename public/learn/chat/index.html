@@ -1,0 +1,351 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>채팅 시스템 설계</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Sans+KR:wght@400;500;600;700&family=Space+Grotesk:wght@500;700&display=swap" rel="stylesheet">
+<style>
+/* VOICE  everyday learning: calm, precise, a little playful in motion
+   IDEA   a working switchboard: messages are tokens that glide between real machines
+   PICTURE the live diagram, phones / gateways / registry / store drawn as soft blocks, packets travelling
+   COLOUR white ground, ink #0b0b10, signal green #00a862 band, mist #eafaf2 stage; night #07130d
+   TYPE   Space Grotesk for figures, IBM Plex Sans KR for Korean text
+   LAYOUT laptop: stage 2/3 + step panel 1/3; phone: title, stage, panel; reel mode: 9:16 frame */
+:root{color-scheme:light dark;
+--bg:light-dark(#ffffff,#07130d);--ink:light-dark(#0b0b10,#e9f3ee);--muted:light-dark(#56615b,#9db3a8);
+--green:#00a862;--green-ink:light-dark(#00754a,#3fd897);--mist:light-dark(#eafaf2,#0c2018);--line:light-dark(#d3e5db,#1f3a2d);
+--face:light-dark(#ffffff,#1c3128);--side:light-dark(#c4d6cc,#08140f);--edge:light-dark(#b6cdc0,#2f5141);
+--gw:light-dark(#d4f4e4,#11402d);--gw-edge:light-dark(#8fd8b4,#1f6a4a);--gw-side:light-dark(#6cc79c,#062619);
+--store:light-dark(#1f2c26,#cfe9db);--store-top:light-dark(#43564c,#f2fbf6);--screen:light-dark(#1f2c26,#0a1611);
+--wire:light-dark(#a9c5b6,#2d5241);--pk:light-dark(#0b0b10,#f2fbf6);--pk-ink:light-dark(#ffffff,#07130d);
+--red:#e5484d;
+--w1:light-dark(#ffffff,#2c4037);--w2:light-dark(#edf4f0,#24372e);--w3:light-dark(#d9e6df,#1a2a23);--w4:light-dark(#bed0c6,#111d18);
+--g1:light-dark(#e2f9ee,#23714f);--g2:light-dark(#bfeed6,#1b5a3f);--g3:light-dark(#8fdbb5,#134430);--g4:light-dark(#5ec393,#0b3222);
+--v1:light-dark(#f0ebff,#4a3f80);--v2:light-dark(#dcd2fc,#3b316b);--v3:light-dark(#bfb0f3,#2c2552);--v4:light-dark(#a08de6,#1f1a3d);
+--a1:light-dark(#fff3dc,#6e521d);--a2:light-dark(#ffe0aa,#5c4418);--a3:light-dark(#ffc976,#453210);--a4:light-dark(#f0a843,#33250b);
+--k1:light-dark(#62786d,#f2fbf6);--k2:light-dark(#3f5148,#d3eadf);--k3:light-dark(#2c3a33,#a9cab9);--k4:light-dark(#1c2722,#86ad9a);
+--ol:light-dark(#1b2a22,#020604);--b1:light-dark(#eef5ff,#2d4a78);--b2:light-dark(#d3e5fd,#25406a);--b3:light-dark(#a9c8f3,#1b3154);--b4:light-dark(#86afe8,#132440);
+--m1:light-dark(#f6f8fa,#6a747e);--m2:light-dark(#d9dfe4,#525b64);--m3:light-dark(#c9d1d7,#424a52);--m4:light-dark(#9ea9b2,#2c3238);
+--p1:light-dark(#3a4047,#4a5159);--p2:light-dark(#22272c,#2d3238);--p3:light-dark(#15191c,#15191c);--p4:light-dark(#15191c,#15191c);
+--sc1:light-dark(#ffffff,#f1f6f3);--sc2:light-dark(#e9f1ed,#d7e5de);
+--lane:light-dark(#d2e9dd,#14291f);--grid:light-dark(#d8ebe1,#10241a);--amber:#f5a300;--shadow:light-dark(rgba(10,50,30,.10),rgba(0,0,0,.42))}
+:root[data-theme=light]{color-scheme:light}:root[data-theme=dark]{color-scheme:dark}
+*{box-sizing:border-box;min-width:0}
+html,body{margin:0}
+body{background:var(--bg);color:var(--ink);font:16px/1.6 'IBM Plex Sans KR',system-ui,sans-serif;overflow-x:clip}
+button{font:inherit;color:inherit;cursor:pointer}
+button:focus-visible{outline:3px solid var(--green);outline-offset:2px}
+.band{padding-block:clamp(24px,3.5vw,48px);padding-left:max(5vw,16px);padding-right:max(5vw,16px)}
+.top{background:var(--green);color:#fff;display:flex;flex-wrap:wrap;gap:18px 32px;align-items:end;justify-content:space-between}
+.top h1{font:700 clamp(32px,5vw,50px)/1.05 'Space Grotesk','IBM Plex Sans KR',sans-serif;letter-spacing:-.02em;margin:0}
+.top p{margin:10px 0 0;max-width:46ch;opacity:.92}
+.ctl{display:flex;gap:10px;flex-wrap:wrap}
+.btn{min-height:44px;padding:0 18px;border-radius:999px;border:1.5px solid currentColor;background:transparent;font-weight:600;transition:background .2s,color .2s,transform .15s}
+.btn:active{transform:scale(.97)}
+.top .btn{color:#fff}
+.top .btn.solid{background:#fff;color:#00754a;border-color:#fff}
+.main{display:grid;gap:28px;max-width:1340px;margin-inline:auto}
+@media(min-width:900px){.main{grid-template-columns:minmax(0,1.75fr) minmax(0,1fr);align-items:start}}
+.mets{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:10px;margin-bottom:12px}
+.met{border:1px solid var(--line);border-radius:14px;padding:10px 14px}
+.met span{display:block;font-size:13px;color:var(--muted)}
+.met b{display:block;font:700 clamp(18px,2.2vw,24px)/1.2 'Space Grotesk','IBM Plex Sans KR',sans-serif;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.met b.good{color:var(--green-ink)}.met b.bad{color:var(--red)}
+.met b.flip{animation:flip .5s cubic-bezier(.2,.8,.2,1)}
+@keyframes flip{from{opacity:0;transform:translateY(8px)}to{opacity:1;transform:none}}
+.note-s{font-size:13px;color:var(--muted);margin:8px 2px 0}
+.slot{position:relative;height:clamp(400px,58vh,620px)}
+#stage{position:absolute;inset:0;border-radius:22px;background:repeating-linear-gradient(30deg,transparent 0 33px,var(--grid) 33px 34px),repeating-linear-gradient(150deg,transparent 0 33px,var(--grid) 33px 34px),var(--mist);overflow:hidden}
+#dia{position:absolute;inset:0;width:100%;height:100%}
+.panel{display:flex;flex-direction:column;gap:14px}
+@media(min-width:900px){.panel{position:sticky;top:20px}}
+.segs{display:flex;gap:6px}
+.seg{flex:1;height:28px;border:0;background:none;padding:0;display:flex;align-items:center}
+.seg i{display:block;width:100%;height:6px;border-radius:9px;background:var(--line);position:relative;overflow:hidden}
+.seg i::after{content:"";position:absolute;inset:0;background:var(--green);transform:scaleX(0);transform-origin:left;transition:transform .5s cubic-bezier(.2,.8,.2,1)}
+.seg.done i::after{transform:none}
+.num{margin:0;font:500 15px 'Space Grotesk','IBM Plex Sans KR',sans-serif;color:var(--green-ink)}
+.panel h2{font:700 clamp(26px,3vw,34px)/1.12 'Space Grotesk','IBM Plex Sans KR',sans-serif;letter-spacing:-.02em;margin:0;text-wrap:balance}
+.panel p{margin:0}
+.fade{animation:flip .55s cubic-bezier(.2,.8,.2,1)}
+.key{background:var(--mist);border-radius:16px;padding:14px 16px}
+.key b{display:block;color:var(--green-ink);margin-bottom:2px}
+.nav{display:flex;gap:10px}
+.nav .btn{flex:1}
+.nav .btn.solid{background:var(--ink);color:var(--bg);border-color:var(--ink)}
+.toc{max-width:1340px;margin-inline:auto;padding-top:0}
+.toc h2{font:700 26px/1.2 'Space Grotesk','IBM Plex Sans KR',sans-serif;margin:0 0 14px}
+.toc ol{list-style:none;margin:0;padding:0;display:grid;gap:10px;grid-template-columns:repeat(auto-fit,minmax(240px,1fr))}
+.toc button{width:100%;text-align:left;border:1px solid var(--line);border-radius:16px;background:var(--bg);padding:14px 16px;min-height:44px;transition:border-color .2s,background .2s}
+.toc button:hover{border-color:var(--green)}
+.toc button.cur{background:var(--mist);border-color:var(--green)}
+.toc small{display:block;font:500 13px 'Space Grotesk',sans-serif;color:var(--green-ink)}
+.toc strong{display:block}
+.toc span{display:block;font-size:14px;color:var(--muted)}
+@media(max-width:600px){.mets{grid-template-columns:repeat(2,minmax(0,1fr))}.slot{height:600px}.top .ctl{width:100%}.top .btn{flex:1}}
+.home{display:inline-block;color:#fff;text-decoration:none;font:600 14px 'Space Grotesk',sans-serif;opacity:.9;margin-bottom:10px}.home:hover{opacity:1;text-decoration:underline}
+/* svg */
+.e{opacity:0;transition:opacity .45s}.e.on{opacity:1}
+.ln{fill:none;stroke:var(--lane);stroke-linecap:round;transition:stroke .3s}
+.cl{fill:none;stroke:var(--wire);stroke-width:2;stroke-dasharray:.1 9;stroke-linecap:round;transition:stroke .3s}
+.e.d .ln{opacity:.5}.e.d .cl{stroke-dasharray:6 8}
+.e.x .ln{stroke:color-mix(in srgb,var(--red) 22%,var(--lane))}.e.x .cl{stroke:var(--red);stroke-dasharray:3 8}
+.e.hot .ln{stroke:var(--g2)}.e.hot .cl{stroke:var(--green)}
+.nd{opacity:0;transform:scale(.5) translateY(20px);transform-box:fill-box;transform-origin:center bottom;transition:opacity .45s,transform .7s cubic-bezier(.34,1.56,.64,1)}
+.nd.on{opacity:1;transform:none}
+.bd{transform-box:fill-box;transform-origin:center bottom;transition:opacity .4s}
+.bd.bump{animation:bump .5s cubic-bezier(.3,1.6,.5,1)}
+@keyframes bump{35%{transform:translateY(-5px) scale(1.04)}}
+.nd.off .bd{opacity:.32}.nd.dead .bd{opacity:.4}
+.xm{opacity:0;transition:opacity .3s}.nd.dead .xm{opacity:1}
+.sh,.psh{fill:var(--shadow)}
+.tf{stroke:light-dark(rgba(255,255,255,.9),rgba(255,255,255,.14));stroke-width:1.2}
+.gl{font:700 15px 'Space Grotesk','IBM Plex Sans KR',sans-serif;text-anchor:middle;dominant-baseline:central}
+.gl-g{fill:light-dark(#0b5e3c,#e4fff1)}.gl-v{fill:light-dark(#4a3a9c,#f0ecff)}.gl-a{fill:light-dark(#7a4b00,#fff3dc)}
+.lbl{font:600 13px 'IBM Plex Sans KR',sans-serif;fill:var(--ink);text-anchor:middle;dominant-baseline:central}
+.lblb{fill:var(--w1);stroke:var(--ol);stroke-width:1.4}
+.ol{stroke:var(--ol);stroke-width:1.6;stroke-linejoin:round}.tf.ol{stroke:var(--ol);stroke-width:1.6}
+.olt{stroke:var(--ol);stroke-width:.8}
+.sheen{fill:#fff;opacity:light-dark(.35,.08);pointer-events:none}
+.rim{fill:none;stroke:var(--b1);stroke-width:1.2;opacity:.7}
+.ft{font:600 13px 'IBM Plex Sans KR',sans-serif;text-anchor:middle;dominant-baseline:central}
+.ft-g{fill:light-dark(#0b4a30,#eafff3)}.ft-v{fill:light-dark(#3a2c86,#f3efff)}.ft-a{fill:light-dark(#5e3a00,#fff5e2)}.ft-k{fill:light-dark(#f3faf6,#0b130f)}
+.ic-k{stroke:light-dark(#f3faf6,#0b130f)}.ic-b{stroke:light-dark(#1d3a6b,#eef5ff)}.ft-b{fill:light-dark(#1d3a6b,#eef5ff)}
+.m-l{fill:var(--m3)}.m-r{fill:var(--m4)}
+.vent{fill:#1d252b;opacity:.55}.seam{stroke:var(--ol);stroke-width:1.2}.hole{fill:#1d252b;opacity:.35}
+.lcd{fill:#101820;stroke:var(--ol);stroke-width:.8}.door{fill:#2a333b;stroke:var(--ol);stroke-width:.8}.bay{fill:#4a5661;stroke:#11171c;stroke-width:.6}
+.mast{stroke:var(--ol);stroke-width:2.4;stroke-linecap:round}.wave{fill:none;stroke:#f29a00;stroke-width:2;stroke-linecap:round}
+.btnk{fill:#15191c}.hdr{stroke:light-dark(#dde6e1,#c4d3cb);stroke-width:1}.b3{fill:light-dark(#9fb0a7,#7d9087)}.inp{fill:none;stroke:light-dark(#c9d6cf,#a8bab0);stroke-width:1}
+.glare{fill:#fff;opacity:.22;pointer-events:none}
+.ic{fill:none;stroke-width:2;stroke-linecap:round;stroke-linejoin:round}
+.ic-g{stroke:light-dark(#0b5e3c,#e4fff1)}.ic-v{stroke:light-dark(#4a3a9c,#f0ecff)}.ic-a{stroke:light-dark(#7a4b00,#fff3dc)}
+.scr{fill:light-dark(#f6faf8,#dfeee6)}.b2{fill:light-dark(#dfe8e3,#b9cdc3);stroke:var(--ol);stroke-width:.8}
+.f-red{fill:var(--red)}.xl{stroke:#fff;stroke-width:2.5;stroke-linecap:round}
+.pk rect.b{fill:var(--w1);stroke:var(--ol);stroke-width:1.4}.pk rect.s{fill:var(--ol)}
+.pk text{fill:var(--ink);font:600 13px 'IBM Plex Sans KR',sans-serif;text-anchor:middle;dominant-baseline:central}
+.pk.ack rect.b{fill:#00b56a;stroke:var(--ol);stroke-width:1.4}.pk.ack rect.s{fill:var(--ol)}.pk.ack text{fill:#fff}
+.pk.push rect.b{fill:#ffb52e;stroke:var(--ol);stroke-width:1.4}.pk.push rect.s{fill:var(--ol)}.pk.push text{fill:#2a1a00}
+.pk.beat rect.b{fill:var(--g2);stroke:var(--ol);stroke-width:1.4}.pk.beat rect.s{fill:var(--ol)}.pk.beat text{fill:light-dark(#0b5e3c,#e4fff1)}
+.pk.lost rect.b{fill:#ef5b5f;stroke:var(--ol);stroke-width:1.4}.pk.lost rect.s{fill:var(--ol)}.pk.lost text{fill:#fff}
+.pk.gone{opacity:0;transition:opacity .45s}
+.nt{animation:ntin .35s cubic-bezier(.2,.8,.2,1);transition:opacity .35s}
+.nt rect{fill:var(--ink)}.nt text{fill:var(--bg);font:500 13px 'IBM Plex Sans KR',sans-serif;text-anchor:middle;dominant-baseline:central}
+.nt.bad rect{fill:var(--red)}.nt.bad text{fill:#fff}.nt.out{opacity:0}
+@keyframes ntin{from{opacity:0;transform:translateY(6px)}}
+.ring{fill:none;stroke:var(--green);stroke-width:2.5;transform-box:fill-box;transform-origin:center;animation:ring .8s ease-out forwards}
+@keyframes ring{from{transform:scale(.75);opacity:.85}to{transform:scale(1.5);opacity:0}}
+/* reel */
+.reel{position:fixed;inset:0;z-index:20;background:#05100b;display:grid;place-items:center;padding:16px}
+.reel[hidden]{display:none}
+.rframe{height:min(94vh,calc(92vw * 16 / 9));aspect-ratio:9/16;background:var(--mist);color:var(--ink);border-radius:8px;display:flex;flex-direction:column;padding:4% 5% 6%;gap:2.5%;overflow:hidden}
+.rframe .segs{gap:5px}.rframe .seg{height:12px}
+.rhead{display:flex;justify-content:space-between;font:600 15px 'Space Grotesk','IBM Plex Sans KR',sans-serif;color:var(--green-ink)}
+.rframe .slot{flex:1;height:auto}
+.rframe #stage{border-radius:14px}
+.rcap h3{font:700 clamp(22px,3.4vh,32px)/1.15 'Space Grotesk','IBM Plex Sans KR',sans-serif;letter-spacing:-.02em;margin:0 0 6px}
+.rcap p{margin:0;font-size:clamp(15px,2.1vh,19px);color:var(--muted)}
+.rside{position:absolute;top:16px;right:16px;display:flex;gap:8px;align-items:center}
+.rside .btn{color:#fff;background:#05100b}
+.rhint{position:absolute;left:16px;bottom:10px;margin:0;color:#8fb5a2;font-size:13px}
+@media(max-width:700px){.rhint{display:none}}
+@media(prefers-reduced-motion:reduce){*{animation:none!important;transition:none!important}}
+</style>
+</head>
+<body>
+<header class="band top">
+  <div><a class="home" id="home" href="/">← ZUPLY Learn</a><script>document.getElementById('home').href=location.hostname.startsWith('learn.')?'/':'/learn'</script>
+    <h1>채팅 시스템 설계</h1>
+    <p>메시지가 사라지지 않고, 순서대로, 딱 한 번만 도착하게 만드는 7단계. 단계를 넘기며 메시지가 실제로 어디를 지나가는지 보세요.</p>
+  </div>
+  <div class="ctl">
+    <button class="btn" id="play">자동 재생</button>
+    <button class="btn solid" id="reelBtn">릴스 모드</button>
+  </div>
+</header>
+<main class="band main">
+  <section>
+    <div class="mets" id="mets"></div>
+    <div class="slot" id="slotA"><div id="stage"><svg id="dia" role="img" aria-label="채팅 시스템 구성도"><defs id="defs"></defs><g id="gE"></g><g id="gN"></g><g id="gP"></g></svg></div></div>
+    <p class="note-s">수치는 설명을 위한 예시 규모입니다.</p>
+  </section>
+  <aside class="panel" aria-live="polite">
+    <div class="segs" id="segs"></div>
+    <p class="num" id="num"></p>
+    <h2 id="ttl"></h2>
+    <p id="txt"></p>
+    <div class="key"><b>핵심</b><p id="key"></p></div>
+    <div class="nav"><button class="btn" id="prev">이전</button><button class="btn solid" id="next">다음</button></div>
+  </aside>
+</main>
+<section class="band toc">
+  <h2>전체 흐름</h2>
+  <ol id="toc"></ol>
+</section>
+<div class="reel" id="reel" hidden>
+  <div class="rframe">
+    <div class="segs" id="segs2"></div>
+    <div class="rhead"><span>채팅 시스템 설계</span><span id="rnum"></span></div>
+    <div class="slot" id="slotB"></div>
+    <div class="rcap"><h3 id="rttl"></h3><p id="rtxt"></p></div>
+  </div>
+  <div class="rside"><button class="btn" id="rplay">일시 정지</button><button class="btn" id="rclose">닫기</button></div>
+  <p class="rhint">화면 녹화 후 가운데 9:16 영역만 잘라 릴스로 올리세요</p>
+</div>
+<script>
+{
+const $=id=>document.getElementById(id);
+const NODES={alice:{t:'man',l:'Alice',tile:'w',c:'g'},bob:{t:'man',l:'Bob',tile:'w',c:'v'},gwA:{t:'srv',l:'게이트웨이 A',f:'게이트웨이 A',g:'A',tile:'g',i:'gw'},gwB:{t:'srv',l:'게이트웨이 B',f:'게이트웨이 B',g:'B',tile:'g',i:'gw'},gwC:{t:'srv',l:'게이트웨이 C',f:'게이트웨이 C',g:'C',tile:'g',i:'gw'},registry:{t:'srv',l:'세션 레지스트리',f:'세션 위치',g:'세션',tile:'v',i:'pin'},push:{t:'srv',l:'푸시 알림',f:'푸시 알림',g:'푸시',tile:'a',i:'bell'},store:{t:'db',l:'메시지 저장소',f:'저장소',tile:'b',i:'db'}};
+const LAND={alice:[0,.5],gwA:[.27,.5],registry:[.5,.04],push:[.86,.06],gwB:[.73,.5],bob:[1,.5],store:[.4,.96],gwC:[.68,.96]};
+const PORT={alice:[.14,0],push:[.6,0],gwA:[.14,.33],registry:[.86,.28],store:[.3,.66],gwB:[.86,.64],gwC:[.46,.98],bob:[.86,1]};
+const STEPS=[
+{t:'두 사람, 하나의 약속',s:'메시지는 사라지지 않고, 순서대로, 딱 한 번.',show:['alice','bob'],e:[['alice','bob','d']],m:['?','?','?','?'],
+ x:'Alice가 Bob에게 메시지를 보냅니다. 단순해 보이지만 조건이 붙습니다. 메시지는 하나도 사라지면 안 되고, 보낸 순서대로, 딱 한 번만 보여야 합니다. 둘 다 접속해 있다면 0.2초 안에 도착해야 하고요.',
+ k:'속도보다 신뢰가 먼저입니다. 아무리 빨라도 메시지가 하나라도 빠지면 실패한 설계입니다.',
+ f:[{n:['alice','유실 0 · 순서대로 · 한 번만']},['alice','bob','안녕?'],{n:['bob','어떻게 보장하지?']}]},
+{t:'연결을 열어 둔다',s:'서버가 먼저 말을 걸 수 있게 연결을 유지한다.',show:['alice','gwA','gwB','bob'],e:[['alice','gwA'],['gwB','bob']],m:['—','3,000만','—','—'],
+ x:'일반 HTTP는 클라이언트가 물어야만 서버가 답합니다. 채팅은 서버가 먼저 "새 메시지 왔어"라고 알려야 하므로, 각 기기는 게이트웨이와 WebSocket 연결을 계속 열어 둡니다. 주기적인 하트비트로 연결이 살아 있는지 확인합니다.',
+ k:'동시 접속 3,000만 명을 서버당 5만 연결로 나누면 게이트웨이가 약 600대 필요합니다. 서버 대수는 메시지 수가 아니라 연결 수가 정합니다.',
+ f:[{p:[['alice','gwA','ping','beat'],['bob','gwB','ping','beat']]},{p:[['gwA','alice','pong','beat'],['gwB','bob','pong','beat']]},{n:['gwA','연결 5만 개 유지 중']}]},
+{t:'Bob은 어디에 있을까',s:'Bob이 붙어 있는 서버를 레지스트리에서 찾는다.',show:['alice','gwA','registry','gwB','bob'],e:[['alice','gwA'],['gwA','registry'],['gwA','gwB'],['gwB','bob']],m:['80 ms','3,000만','있음','보장 안 됨'],
+ x:'Alice는 게이트웨이 A에, Bob은 게이트웨이 B에 붙어 있습니다. 게이트웨이 A는 세션 레지스트리(Redis)에 Bob의 위치를 묻고, 답을 받아 게이트웨이 B로 메시지를 넘깁니다.',
+ k:'게이트웨이는 연결이라는 상태를 가진 서버입니다. 그래서 누가 어디에 붙어 있는지 기록하는 지도가 따로 필요합니다. 다만 아직은 중간에 서버가 죽으면 메시지가 사라집니다.',
+ f:[['alice','gwA','안녕'],['gwA','registry','Bob 어디?'],{n:['registry','Bob → B']},['registry','gwA','B','ack'],['gwA','gwB','안녕'],['gwB','bob','안녕'],{n:['bob','도착']}]},
+{t:'전달보다 저장이 먼저',s:'먼저 저장하고 순번을 붙인 뒤에 전달한다.',show:['alice','gwA','registry','store','gwB','bob'],e:[['alice','gwA'],['gwA','registry'],['gwA','store'],['gwA','gwB'],['gwB','bob']],m:['120 ms','3,000만','없음','seq 순번'],
+ x:'게이트웨이 A는 메시지를 받자마자 저장소에 기록하고 대화방별 순번(seq)을 붙입니다. 저장에 성공한 뒤에야 Alice에게 "전송됨"을 돌려주고, 그다음 Bob에게 전달합니다.',
+ k:'저장된 메시지는 서버가 죽어도 남습니다. seq 번호가 있으니 Bob의 화면은 네트워크 사정과 상관없이 언제나 같은 순서로 정렬됩니다.',
+ f:[['alice','gwA','안녕'],['gwA','store','안녕'],{n:['store','seq 42 저장']},['store','gwA','ok','ack'],{p:[['gwA','alice','전송됨','ack'],['gwA','gwB','seq 42']]},['gwB','bob','seq 42'],{n:['bob','순서대로 표시']}]},
+{t:'Bob이 자리에 없을 때',s:'오프라인이면 푸시 알림, 돌아오면 이어서 받는다.',show:['alice','gwA','registry','store','push','bob'],st:{bob:'off'},e:[['alice','gwA'],['gwA','registry'],['gwA','store'],['gwA','push'],['push','bob','d']],m:['접속 시','3,000만','없음','seq 순번'],
+ x:'Bob의 연결이 끊겨 있으면 레지스트리에 위치가 없습니다. 메시지는 이미 저장되어 있으니 잃어버릴 걱정은 없고, 푸시 서비스(APNs, FCM)로 알림만 보냅니다. Bob이 돌아오면 마지막으로 읽은 seq 이후를 한 번에 받아 갑니다.',
+ k:'오프라인 메시지를 따로 쌓아 둘 필요가 없습니다. 기기마다 어디까지 읽었는지(seq)만 기억하면 됩니다.',
+ f:[['alice','gwA','저녁 먹자'],['gwA','store','seq 43'],{n:['store','저장 완료']},['gwA','registry','Bob?'],{n:['registry','접속 없음']},['gwA','push','알림','push'],['push','bob','새 메시지 1','push'],{n:['bob','접속하면 seq 42 이후 받기']}]},
+{t:'두 번 보내도 한 번만',s:'재전송돼도 메시지 ID로 한 번만 저장한다.',show:['alice','gwA','registry','store','gwB','bob'],e:[['alice','gwA'],['gwA','registry'],['gwA','store'],['gwA','gwB'],['gwB','bob']],m:['120 ms','3,000만','없음','중복 없음'],
+ x:'지하철에서 응답이 늦으면 Alice의 앱은 같은 메시지를 다시 보냅니다. 앱이 처음 만든 메시지 ID를 함께 보내므로, 저장소는 이미 있는 ID를 보면 새로 저장하지 않고 기존 seq를 돌려줍니다.',
+ k:'재시도는 막을 수 없습니다. 대신 같은 요청이 여러 번 와도 결과가 같도록(멱등성) 만듭니다.',
+ f:[['alice','gwA','id a7f'],['gwA','store','id a7f'],{n:['store','seq 44 저장']},['store','gwA','seq 44','lost'],{w:450},{n:['alice','응답 없음 · 재전송']},['alice','gwA','id a7f'],['gwA','store','id a7f'],{n:['store','이미 있음 · 무시']},['store','gwA','seq 44','ack'],['gwA','alice','전송됨','ack']]},
+{t:'게이트웨이가 죽으면',s:'서버가 죽어도 저장소에서 빠짐없이 다시 받는다.',show:['alice','gwA','registry','store','gwB','gwC','bob'],st:{gwB:'dead'},e:[['alice','gwA'],['gwA','registry'],['gwA','store'],['gwB','bob','x'],['bob','gwC'],['gwC','store'],['gwC','registry']],m:['재접속 1초','3,000만','없음','seq 순번'],
+ x:'게이트웨이 B가 갑자기 멈추면 Bob의 연결도 함께 끊깁니다. Bob의 앱은 하트비트가 끊긴 것을 알아채고 게이트웨이 C에 다시 접속한 뒤, 레지스트리의 위치를 고치고 마지막 seq 이후 메시지를 받아 갑니다.',
+ k:'원본은 저장소에 있고, 게이트웨이는 언제든 바꿔 끼울 수 있는 통로입니다. 그래서 서버 하나가 죽어도 메시지는 하나도 사라지지 않습니다.',
+ f:[{n:['gwB','장애 발생']},{w:350},{n:['bob','연결 끊김']},['bob','gwC','재접속'],['gwC','registry','Bob = C'],['gwC','store','seq 41 이후?'],['store','gwC','42 · 43 · 44','ack'],['gwC','bob','3건','ack'],{n:['bob','빠짐없이 복구']}]}];
+const MLAB=['전달 지연','동시 연결','유실 위험','순서 보장'];
+const svg=$('dia'),gE=$('gE'),gN=$('gN'),gP=$('gP');
+const NS='http://www.w3.org/2000/svg';
+const RM=matchMedia('(prefers-reduced-motion: reduce)').matches;
+const EDGES={};STEPS.forEach(st=>st.e.forEach(([a,b])=>{if(!EDGES[a+'-'+b]&&!EDGES[b+'-'+a])EDGES[a+'-'+b]=[a,b]}));
+let W=0,H=0,S=60,port=false,TOP={},BOT=40,HW=40,cur=0,tk=0,auto=false;
+const ISO=.5774;
+const clamp=(v,a,b)=>Math.max(a,Math.min(b,v));
+const sleep=ms=>new Promise(r=>setTimeout(r,ms));
+$('defs').innerHTML=`<linearGradient id="scr" x1="0" y1="0" x2=".4" y2="1"><stop offset="0" style="stop-color:var(--sc1)"/><stop offset="1" style="stop-color:var(--sc2)"/></linearGradient>`+['w','g','v','a','k','b','m','p'].map(p=>`<linearGradient id="t-${p}" x1="0" y1="0" x2=".7" y2="1"><stop offset="0" style="stop-color:var(--${p}1)"/><stop offset="1" style="stop-color:var(--${p}2)"/></linearGradient><linearGradient id="s-${p}" x1="0" y1="0" x2="1" y2="0"><stop offset=".5" style="stop-color:var(--${p}3)"/><stop offset=".5" style="stop-color:var(--${p}4)"/></linearGradient>`).join('');
+function P(id){const L=(port?PORT:LAND)[id];const mx=HW+14,mt=S*.86+46,mb=BOT+38;return{x:mx+L[0]*(W-2*mx),y:mt+L[1]*(H-mt-mb)}}
+function canon(a,b){return EDGES[a+'-'+b]||(EDGES[b+'-'+a]?[b,a]:[a,b])}
+function ctrl(a,b){const[c0,c1]=canon(a,b),A=P(c0),B=P(c1),dx=B.x-A.x,dy=B.y-A.y,len=Math.hypot(dx,dy)||1,k=len*.07;return{x:(A.x+B.x)/2-dy/len*k,y:(A.y+B.y)/2+dx/len*k}}
+function qp(A,C,B,t){const u=1-t;return{x:u*u*A.x+2*u*t*C.x+t*t*B.x,y:u*u*A.y+2*u*t*C.y+t*t*B.y}}
+function dpath(cy,hw0,f=.3){const hh=hw0*ISO,V=[[0,cy-hh],[hw0,cy],[0,cy+hh],[-hw0,cy]],r=n=>n.toFixed(1);let d='';
+ for(let i=0;i<4;i++){const v=V[i],p=V[(i+3)%4],n=V[(i+1)%4];d+=(i?'L':'M')+r(v[0]+(p[0]-v[0])*f)+' '+r(v[1]+(p[1]-v[1])*f)+'Q'+r(v[0])+' '+r(v[1])+' '+r(v[0]+(n[0]-v[0])*f)+' '+r(v[1]+(n[1]-v[1])*f)}return d+'Z'}
+function slab(cy,hw0,d,p,ol){const hw=hw0*.85,o=ol?' ol':'';return `<path class="${o}" d="${dpath(cy+d,hw0)}" fill="url(#s-${p})"/><rect x="${-hw}" y="${cy}" width="${2*hw}" height="${d}" fill="url(#s-${p})"/>`+(ol?`<path class="ol" d="M${-hw} ${cy}V${cy+d}M${hw} ${cy}V${cy+d}"/>`:'')+`<path class="tf${o}" d="${dpath(cy,hw0)}" fill="url(#t-${p})"/>`}
+const ICON={gw:'<path d="M4 8h14M14 4l4 4-4 4M20 16H6M10 12l-4 4 4 4"/>',pin:'<path d="M12 21s-6.5-5.6-6.5-10.5a6.5 6.5 0 0 1 13 0C18.5 15.4 12 21 12 21z"/><circle cx="12" cy="10.5" r="2.4"/>',bell:'<path d="M6 16.5V11a6 6 0 0 1 12 0v5.5l1.6 2H4.4z"/><path d="M10 21a2 2 0 0 0 4 0"/>',db:'<ellipse cx="12" cy="5.5" rx="7.5" ry="2.8"/><path d="M4.5 5.5v13c0 1.5 3.4 2.8 7.5 2.8s7.5-1.3 7.5-2.8v-13M4.5 12c0 1.5 3.4 2.8 7.5 2.8s7.5-1.3 7.5-2.8"/>'};
+function cube(a,H,lf,rf){const t=a*ISO;
+ return `<path class="ol m-l" d="M${-a} ${-H}L0 ${t-H}V${t}L${-a} 0Z"/><path class="ol m-r" d="M0 ${t-H}L${a} ${-H}V0L0 ${t}Z"/><path class="ol" fill="url(#t-m)" d="M0 ${-t-H}L${a} ${-H}L0 ${t-H}L${-a} ${-H}Z"/>`+
+ (lf?`<g transform="translate(${-a} ${-H}) matrix(1 ${ISO} 0 1 0 0)">${lf}</g>`:'')+(rf?`<g transform="translate(0 ${t-H}) matrix(1 ${-ISO} 0 1 0 0)">${rf}</g>`:'')}
+const LED=(x,y,r,c)=>`<circle cx="${x}" cy="${y}" r="${r*2.2}" fill="${c}" opacity=".22"/><circle cx="${x}" cy="${y}" r="${r}" fill="${c}"/>`;
+const BRAND={g:'#00a862',v:'#7b5ce6',a:'#f29a00',b:'#3c82e0'};
+function rackUnit(a,v0,uh,p){let s=`<rect x="${a*.05}" y="${v0+uh*.18}" width="${a*.07}" height="${uh*.64}" rx="1.5" fill="${BRAND[p]}" class="olt"/>`;
+ for(let i=0;i<6;i++)s+=`<rect x="${a*.2+i*a*.075}" y="${v0+uh*.28}" width="${a*.035}" height="${uh*.44}" rx="1" class="vent"/>`;
+ return s+LED(a*.74,v0+uh*.5,Math.max(1.6,uh*.07),'#2ee58a')+LED(a*.86,v0+uh*.5,Math.max(1.6,uh*.07),v0?'#2ee58a':'#ffc233')+(v0?`<path class="seam" d="M0 ${v0}H${a}"/>`:'')}
+function sideHoles(a,H){let s='';for(let r=0;r<3;r++)for(let c=0;c<4;c++)s+=`<circle cx="${a*.25+c*a*.17}" cy="${H*.25+r*H*.22}" r="${Math.max(1,a*.025)}" class="hole"/>`;return s}
+function badge(x,y,p,icon,s){const r=Math.max(11,s*.17),k=r*1.15/24;return `<g transform="translate(${x} ${y})"><circle r="${r}" class="ol" fill="url(#t-${p})"/><g class="ic ic-${p}" transform="scale(${k}) translate(-12 -12)">${icon}</g></g>`}
+function phone(s,c){const w=s*.56,hh=s*1.06,r=s*.12,x=-w/2-s*.04,y=-hh+s*.05,th=s*.09,bz=w*.07,sx=x+bz,sy=y+bz,sw=w-2*bz,sh=hh-2*bz,col=`url(#t-${c})`;
+ return `<rect x="${x+th}" y="${y-th*.55}" width="${w}" height="${hh}" rx="${r}" class="ol" fill="url(#s-p)"/><rect x="${x}" y="${y}" width="${w}" height="${hh}" rx="${r}" class="ol" fill="url(#t-p)"/>`+
+ `<rect x="${x-1.6}" y="${y+hh*.22}" width="2.4" height="${hh*.12}" rx="1" class="btnk"/><rect x="${sx}" y="${sy}" width="${sw}" height="${sh}" rx="${r*.75}" fill="url(#scr)"/>`+
+ `<rect x="${sx+sw*.34}" y="${sy+sh*.035}" width="${sw*.32}" height="${sh*.045}" rx="${sh*.0225}" fill="#0b0d0f"/>`+
+ `<path d="M${sx} ${sy+sh*.2}H${sx+sw}" class="hdr"/><circle cx="${sx+sw*.18}" cy="${sy+sh*.135}" r="${sw*.08}" fill="${col}" class="olt"/><rect x="${sx+sw*.32}" y="${sy+sh*.115}" width="${sw*.36}" height="${sh*.04}" rx="${sh*.02}" class="b3"/>`+
+ `<rect x="${sx+sw*.08}" y="${sy+sh*.28}" width="${sw*.56}" height="${sh*.1}" rx="${sh*.05}" class="b2"/><rect x="${sx+sw*.34}" y="${sy+sh*.43}" width="${sw*.58}" height="${sh*.1}" rx="${sh*.05}" fill="${col}" class="olt"/><rect x="${sx+sw*.08}" y="${sy+sh*.58}" width="${sw*.42}" height="${sh*.1}" rx="${sh*.05}" class="b2"/>`+
+ `<rect x="${sx+sw*.08}" y="${sy+sh*.8}" width="${sw*.66}" height="${sh*.1}" rx="${sh*.05}" class="inp"/><circle cx="${sx+sw*.84}" cy="${sy+sh*.85}" r="${sh*.05}" fill="${BRAND[c]||'#00a862'}"/>`+
+ `<path d="M${sx} ${sy+sh*.42}L${sx+sw*.62} ${sy}H${sx+sw*.86}L${sx} ${sy+sh*.62}Z" class="glare"/>`}
+function nodeSVG(id){const n=NODES[id],s=S,T=s*.82,d=s*.2,p=n.tile;let top,b;
+ b=`<ellipse class="sh" cx="0" cy="${T*ISO+d-1}" rx="${T*.82}" ry="${T*ISO*.42}"/>`+slab(0,T,d,p==='w'?'w':p,1);
+ if(n.t==='man'){b+=phone(s,n.c);top=-s*1.06}
+ else{const a=s*.5;b+=`<ellipse cx="0" cy="${a*ISO*.35}" rx="${a*1.15}" ry="${a*ISO*.75}" class="sh"/>`;let H;
+  if(id.startsWith('gw')){H=s*.52;const uh=H/2;b+=cube(a,H,rackUnit(a,0,uh,p)+rackUnit(a,uh,uh,p),sideHoles(a,H))}
+  else if(id==='registry'){H=s*.36;b+=cube(a,H,`<rect x="${a*.05}" y="${H*.18}" width="${a*.07}" height="${H*.64}" rx="1.5" fill="${BRAND.v}" class="olt"/><rect x="${a*.2}" y="${H*.16}" width="${a*.58}" height="${H*.68}" rx="2" class="lcd"/>`+[0,1,2].map(i=>`<rect x="${a*.26}" y="${H*(.26+i*.18)}" width="${a*(i===1?.3:.44)}" height="${H*.09}" rx="1" fill="${i===1?'#c9b8ff':'#7ff0b5'}"/>`).join('')+LED(a*.88,H*.5,Math.max(1.6,H*.06),'#2ee58a'),sideHoles(a,H))}
+  else if(id==='push'){H=s*.36;b+=cube(a,H,rackUnit(a,0,H,p),sideHoles(a,H));const mt=-H-s*.5;
+   b+=`<path class="mast" d="M0 ${-H}V${mt}"/><circle cy="${mt}" r="${s*.06}" fill="${BRAND.a}" class="olt"/><path class="wave" d="M${-s*.14} ${mt-s*.1}a${s*.17} ${s*.17} 0 0 0 0 ${s*.2}M${s*.14} ${mt-s*.1}a${s*.17} ${s*.17} 0 0 1 0 ${s*.2}M${-s*.24} ${mt-s*.17}a${s*.28} ${s*.28} 0 0 0 0 ${s*.34}M${s*.24} ${mt-s*.17}a${s*.28} ${s*.28} 0 0 1 0 ${s*.34}"/>`;H=-mt+s*.1}
+  else{H=s*.92;const A=s*.46;let lf=`<rect x="${A*.06}" y="${H*.05}" width="${A*.88}" height="${H*.9}" rx="2" class="door"/>`;
+   for(let r=0;r<6;r++)for(let c=0;c<2;c++)lf+=`<rect x="${A*(.12+c*.42)}" y="${H*(.1+r*.135)}" width="${A*.36}" height="${H*.1}" rx="1.5" class="bay"/>`+LED(A*(.42+c*.42),H*(.15+r*.135),Math.max(1.3,H*.022),'#4aa8ff');
+   b=b.replace(/<ellipse cx="0" cy="[^"]*" rx="[^"]*" ry="[^"]*" class="sh"\/>$/,'')+`<ellipse cx="0" cy="${A*ISO*.35}" rx="${A*1.15}" ry="${A*ISO*.75}" class="sh"/>`+cube(A,H,lf,sideHoles(A,H))}
+  const by=-Math.max(H,s*.36)-a*ISO-s*.12;b+=badge(a*.95,by,p,ICON[n.i],s);top=by-Math.max(11,s*.17)}
+ TOP[id]=top;const P0=P(id);
+ return `<g transform="translate(${P0.x},${P0.y})"><g class="nd" id="n-${id}"><g class="bd">${b}</g><g class="xm" transform="translate(${-s*.6},${top+14})"><circle class="f-red ol" r="${s*.2}"/><path class="xl" d="M-5 -5L5 5M5 -5L-5 5"/></g><text class="lbl" y="${BOT+24}">${n.l}</text></g></g>`}
+function render(){W=svg.clientWidth;H=svg.clientHeight;if(!W||!H)return;port=H/W>1.05;S=clamp(Math.min(W,H)*(port?.13:.14),40,84);
+ HW=S*.82*.85;BOT=S*.82*ISO+S*.2;svg.setAttribute('viewBox',`0 0 ${W} ${H}`);
+ gE.innerHTML=Object.entries(EDGES).map(([k,[a,b]])=>{const A=P(a),B=P(b),C=ctrl(a,b),d=`M${A.x} ${A.y}Q${C.x} ${C.y} ${B.x} ${B.y}`;return `<g class="e" id="e-${k}"><path class="ln" d="${d}" stroke-width="${S*.26}"/><path class="cl" d="${d}"/></g>`}).join('');
+ gN.innerHTML=Object.keys(NODES).map(nodeSVG).join('');
+ gN.querySelectorAll('.lbl').forEach(t=>{let w;try{w=t.getComputedTextLength()}catch(_){w=0}w=(w||60)+24;const y=+t.getAttribute('y');const r=mk('rect',{class:'lblb',x:-w/2,y:y-13,width:w,height:26,rx:13});t.parentNode.insertBefore(r,t)});
+ svg.querySelectorAll('.nd').forEach(n=>n.style.transition='none');apply();
+ requestAnimationFrame(()=>svg.querySelectorAll('.nd').forEach(n=>n.style.transition=''))}
+function edgeEl(a,b){return $('e-'+a+'-'+b)||$('e-'+b+'-'+a)}
+function apply(){const st=STEPS[cur],stt=st.st||{};
+ for(const id in NODES){const el=$('n-'+id);if(!el)continue;el.classList.toggle('on',st.show.includes(id));el.classList.toggle('off',stt[id]==='off');el.classList.toggle('dead',stt[id]==='dead')}
+ svg.querySelectorAll('.e').forEach(e=>e.classList.remove('on','d','x','hot'));
+ st.e.forEach(([a,b,f])=>{const e=edgeEl(a,b);if(e){e.classList.add('on');if(f)e.classList.add(f)}})}
+function mk(tag,attrs,parent){const e=document.createElementNS(NS,tag);for(const k in attrs)e.setAttribute(k,attrs[k]);if(parent)parent.appendChild(e);return e}
+function chip(g,text){const t=mk('text',{},g);t.textContent=text;let w;try{w=t.getComputedTextLength()}catch(_){w=0}w=(w||text.length*8)+22;
+ const r=mk('rect',{class:'b',x:-w/2,y:-14,width:w,height:28,rx:14});g.insertBefore(r,t);return r}
+function note(id,text,bad){const p=P(id),g=mk('g',{},gP),inner=mk('g',{class:'nt'+(bad?' bad':'')},g);chip(inner,text);
+ let y=p.y+TOP[id]-22;if(y<18)y=p.y+BOT+52;g.setAttribute('transform',`translate(${clamp(p.x,90,W-90)},${y})`);
+ setTimeout(()=>inner.classList.add('out'),1900);setTimeout(()=>g.remove(),2300)}
+function pulse(id){const p=P(id),c=mk('ellipse',{class:'ring',cx:p.x,cy:p.y,rx:S*.95,ry:S*.95*ISO},gE);setTimeout(()=>c.remove(),800);
+ const b=$('n-'+id)?.querySelector('.bd');if(b){b.classList.remove('bump');void b.getBBox();b.classList.add('bump')}}
+function hop([a,b,label,kind],tok){return new Promise(res=>{
+ const ps=mk('ellipse',{class:'psh',rx:S*.32,ry:S*.32*ISO},gP);
+ const g=mk('g',{class:'pk'+(kind?' '+kind:'')},gP),sh=mk('g',{transform:'translate(0,4)'},g);
+ const r=chip(g,label);const s=r.cloneNode();s.setAttribute('class','s');sh.appendChild(s);
+ const A0=P(a),B0=P(b),dist=Math.hypot(B0.x-A0.x,B0.y-A0.y),dur=RM?1:clamp(dist*1.6,600,1200);
+ const e=edgeEl(a,b);if(e)e.classList.add('hot');let t0=null;
+ const end=ok=>{if(e)e.classList.remove('hot');res(ok)};
+ const step=ts=>{if(tok!==tk){g.remove();ps.remove();return end(false)}
+  if(t0===null)t0=ts;const t=Math.min(1,(ts-t0)/dur),k=t<.5?4*t*t*t:1-((-2*t+2)**3)/2;
+  const q=qp(P(a),ctrl(a,b),P(b),k),lift=S*.32+Math.sin(Math.PI*k)*S*.28,sc=1-Math.sin(Math.PI*k)*.25;
+  ps.setAttribute('cx',q.x);ps.setAttribute('cy',q.y);ps.setAttribute('transform',`translate(${q.x} ${q.y}) scale(${sc}) translate(${-q.x} ${-q.y})`);
+  g.setAttribute('transform',`translate(${q.x},${q.y-lift})`);
+  if(kind==='lost'&&t>.55){g.classList.add('gone');ps.remove();const ng=mk('g',{transform:`translate(${q.x},${q.y-lift-34})`},gP),ni=mk('g',{class:'nt bad'},ng);chip(ni,'응답 유실');setTimeout(()=>ni.classList.add('out'),1300);setTimeout(()=>ng.remove(),1700);setTimeout(()=>g.remove(),500);return end(true)}
+  if(t<1)requestAnimationFrame(step);else{g.remove();ps.remove();pulse(b);end(true)}};
+ requestAnimationFrame(step)})}
+async function item(it,tok){if(Array.isArray(it))return hop(it,tok);
+ if(it.p)return Promise.all(it.p.map(h=>hop(h,tok)));
+ if(it.n){note(it.n[0],it.n[1],/장애|끊김|없음 ·|응답 없음/.test(it.n[1]));return sleep(RM?900:700)}
+ if(it.w)return sleep(it.w)}
+async function run(tok){for(;;){for(const it of STEPS[cur].f){if(tok!==tk)return;await item(it,tok);if(tok!==tk)return;await sleep(140)}
+ await sleep(1300);if(tok!==tk)return;if(auto){go(cur+1);return}}}
+function fill(id,text){const e=$(id);e.textContent=text;e.classList.remove('fade');void e.offsetWidth;e.classList.add('fade')}
+function segs(el){el.innerHTML=STEPS.map((s,i)=>`<button class="seg${i<=cur?' done':''}" data-i="${i}" aria-label="${i+1}단계: ${s.t}"><i></i></button>`).join('')}
+function panel(){const st=STEPS[cur];$('num').textContent=`${cur+1} / ${STEPS.length}단계`;fill('ttl',st.t);fill('txt',st.x);fill('key',st.k);
+ fill('rttl',st.t);fill('rtxt',st.s);$('rnum').textContent=`${cur+1} / ${STEPS.length}`;segs($('segs'));segs($('segs2'));
+ const old=[...document.querySelectorAll('.met b')].map(b=>b.textContent);
+ $('mets').innerHTML=st.m.map((v,i)=>{const c=(i===2&&v==='있음')||(i===3&&v==='보장 안 됨')?'bad':(i===2&&v==='없음')||(i===3&&v!=='—'&&v!=='?')?'good':'';
+  return `<div class="met"><span>${MLAB[i]}</span><b class="${c}${old[i]!==v?' flip':''}">${v}</b></div>`}).join('');
+ $('prev').disabled=cur===0;$('next').textContent=cur===STEPS.length-1?'처음부터':'다음';
+ document.querySelectorAll('#toc button').forEach((b,i)=>b.classList.toggle('cur',i===cur))}
+function go(i){cur=(i+STEPS.length)%STEPS.length;tk++;gP.innerHTML='';apply();panel();
+ try{history.replaceState(null,'','#step-'+(cur+1))}catch(_){}run(tk)}
+function setAuto(v){auto=v;$('play').textContent=v?'일시 정지':'자동 재생';$('rplay').textContent=v?'일시 정지':'자동 재생'}
+$('toc').innerHTML=STEPS.map((s,i)=>`<li><button data-i="${i}"><small>${i+1}단계</small><strong>${s.t}</strong><span>${s.s}</span></button></li>`).join('');
+document.addEventListener('click',e=>{const b=e.target.closest('[data-i]');if(!b)return;go(+b.dataset.i);if(b.closest('#toc')&&$('reel').hidden)$('slotA').scrollIntoView({behavior:RM?'auto':'smooth',block:'center'})});
+$('prev').onclick=()=>go(cur-1);$('next').onclick=()=>go(cur+1);
+$('play').onclick=()=>setAuto(!auto);$('rplay').onclick=()=>setAuto(!auto);
+const stage=$('stage');
+function openReel(){$('reel').hidden=false;$('slotB').appendChild(stage);setAuto(true);go(cur)}
+function closeReel(){$('reel').hidden=true;$('slotA').appendChild(stage);setAuto(false);go(cur)}
+$('reelBtn').onclick=openReel;$('rclose').onclick=closeReel;
+document.addEventListener('keydown',e=>{if(e.key==='ArrowRight')go(cur+1);else if(e.key==='ArrowLeft')go(cur-1);else if(e.key==='Escape'&&!$('reel').hidden)closeReel();else if(e.key===' '&&e.target===document.body){e.preventDefault();setAuto(!auto)}});
+const ro=new ResizeObserver(()=>render());ro.observe(svg);
+const m=/^#step-(\d+)$/.exec(location.hash);cur=m?clamp(+m[1]-1,0,STEPS.length-1):0;
+render();go(cur);
+if(document.fonts)document.fonts.ready.then(render);
+}
+</script>
+</body>
+</html>

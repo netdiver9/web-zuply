@@ -1,0 +1,61 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>ZUPLY Learn</title>
+<meta name="description" content="3D 인터랙티브 다이어그램으로 배우는 기술의 원리">
+<meta property="og:title" content="ZUPLY Learn">
+<meta property="og:description" content="3D 인터랙티브 다이어그램으로 배우는 기술의 원리">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Sans+KR:wght@400;500;600;700&family=Space+Grotesk:wght@500;700&display=swap" rel="stylesheet">
+<style>
+:root{color-scheme:light dark;--bg:light-dark(#ffffff,#07130d);--ink:light-dark(#0b0b10,#e9f3ee);--muted:light-dark(#56615b,#9db3a8);
+--green:#00a862;--green-ink:light-dark(#00754a,#3fd897);--mist:light-dark(#eafaf2,#0c2018);--line:light-dark(#d3e5db,#1f3a2d);--ol:light-dark(#1b2a22,#020604)}
+*{box-sizing:border-box;min-width:0}
+body{margin:0;background:var(--bg);color:var(--ink);font:16px/1.6 'IBM Plex Sans KR',system-ui,sans-serif}
+.band{padding:clamp(28px,4vw,56px) max(5vw,16px)}
+.top{background:var(--green);color:#fff}
+.top h1{font:700 clamp(36px,6vw,60px)/1.05 'Space Grotesk','IBM Plex Sans KR',sans-serif;letter-spacing:-.02em;margin:0}
+.top p{margin:12px 0 0;max-width:52ch;opacity:.92}
+.grid{display:grid;gap:18px;grid-template-columns:repeat(auto-fill,minmax(260px,1fr));max-width:1240px;margin:0 auto}
+.card{display:flex;flex-direction:column;border:1.5px solid var(--ol);border-radius:20px;overflow:hidden;color:inherit;text-decoration:none;background:var(--bg);transition:transform .25s cubic-bezier(.3,1.5,.5,1),box-shadow .25s}
+a.card:hover{transform:translateY(-4px);box-shadow:0 6px 0 var(--ol)}
+a.card:focus-visible{outline:3px solid var(--green);outline-offset:3px}
+.pic{height:170px;background:repeating-linear-gradient(30deg,transparent 0 25px,var(--line) 25px 26px),repeating-linear-gradient(150deg,transparent 0 25px,var(--line) 25px 26px),var(--mist);border-bottom:1.5px solid var(--ol);display:grid;place-items:center}
+.pic svg{width:150px;height:130px}
+.body{padding:16px 18px 18px;display:flex;flex-direction:column;gap:4px;flex:1}
+.body small{font:500 13px 'Space Grotesk',sans-serif;color:var(--green-ink)}
+.body h2{font:700 22px/1.2 'Space Grotesk','IBM Plex Sans KR',sans-serif;margin:0}
+.body em{font:600 15px 'Space Grotesk',sans-serif;font-style:normal;color:var(--muted)}
+.body p{margin:6px 0 0;font-size:15px;color:var(--muted)}
+.soon{opacity:.55}
+.soon .tag{align-self:flex-start;margin-top:8px;font-size:13px;border:1px solid var(--line);border-radius:999px;padding:2px 10px}
+footer{padding:24px max(5vw,16px);color:var(--muted);font-size:14px;text-align:center}
+</style>
+</head>
+<body>
+<header class="band top">
+  <h1>ZUPLY Learn</h1>
+  <p>눌러 보며 이해하는 기술의 원리. 부품과 서버 사이를 오가는 신호를 3D 다이어그램으로 한 단계씩 따라가 보세요.</p>
+</header>
+<main class="band"><div class="grid" id="grid"></div></main>
+<footer>© ZUPLY</footer>
+<script>
+{
+// learn.zuply.co.kr 이면 /computer, zuply.co.kr 이면 /learn/computer
+const BASE=location.hostname.startsWith('learn.')?'':'/learn';
+// 새 주제를 만들면 여기에 한 줄 추가
+const TOPICS=[
+ {path:'/computer',ko:'컴퓨터의 원리',en:'How a Computer Works',steps:6,lvl:'입문',desc:'A 키를 누르면 화면에 글자가 나오고 저장되기까지.',c:'#ffc976',d:'#f0a843'},
+ {path:'/phone',ko:'스마트폰의 원리',en:'How a Phone Works',steps:0,lvl:'입문',desc:'전화를 걸면 목소리는 어떻게 상대에게 갈까.',c:'#c0b1f3',d:'#a28fe6',soon:true},
+ {path:'/chat',ko:'채팅 시스템 설계',en:'Designing a Chat System',steps:7,lvl:'심화',desc:'메시지가 사라지지 않고 순서대로 한 번만 도착하게.',c:'#8fdbb5',d:'#5ec393'}];
+const tile=(c,d)=>`<svg viewBox="-75 -70 150 130" aria-hidden="true"><ellipse cx="0" cy="44" rx="58" ry="14" fill="rgba(10,50,30,.12)"/><path d="M-60 0V18L0 52L60 18V0Z" fill="${d}" stroke="#1b2a22" stroke-width="2" stroke-linejoin="round"/><path d="M0 -34L60 0L0 34L-60 0Z" fill="${c}" stroke="#1b2a22" stroke-width="2" stroke-linejoin="round"/><path d="M0 -8L26 -23V-55L0 -40L-26 -55V-23Z" fill="#f6f8fa" stroke="#1b2a22" stroke-width="2" stroke-linejoin="round"/><path d="M0 -40V-8M-26 -55L0 -70L26 -55" fill="none" stroke="#1b2a22" stroke-width="2" stroke-linejoin="round"/><path d="M-26 -55L0 -70L26 -55L0 -40Z" fill="#ffffff" stroke="#1b2a22" stroke-width="2" stroke-linejoin="round"/></svg>`;
+document.getElementById('grid').innerHTML=TOPICS.map(t=>{
+ const inner=`<div class="pic">${tile(t.c,t.d)}</div><div class="body"><small>${t.lvl}${t.steps?` · ${t.steps}단계`:''}</small><h2>${t.ko}</h2><em lang="en">${t.en}</em><p>${t.desc}</p>${t.soon?'<span class="tag">준비 중</span>':''}</div>`;
+ return t.soon?`<div class="card soon">${inner}</div>`:`<a class="card" href="${BASE}${t.path}">${inner}</a>`}).join('');
+}
+</script>
+</body>
+</html>
