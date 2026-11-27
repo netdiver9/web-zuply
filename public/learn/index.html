@@ -49,7 +49,8 @@ const BASE=location.hostname.startsWith('learn.')?'':'/learn';
 // 새 주제를 만들면 여기에 한 줄 추가
 const TOPICS=[
  {path:'/computer',ko:'컴퓨터의 원리',en:'How a Computer Works',steps:6,lvl:'입문',desc:'A 키를 누르면 화면에 글자가 나오고 저장되기까지.',c:'#ffc976',d:'#f0a843'},
- {path:'/phone',ko:'스마트폰의 원리',en:'How a Phone Works',steps:0,lvl:'입문',desc:'전화를 걸면 목소리는 어떻게 상대에게 갈까.',c:'#c0b1f3',d:'#a28fe6',soon:true},
+ {path:'/phone',ko:'스마트폰의 원리',en:'How a Smartphone Works',steps:6,lvl:'입문',desc:'화면을 터치하면 손안의 작은 컴퓨터가 일하기까지.',c:'#c0b1f3',d:'#a28fe6'},
+ {path:'/network',ko:'전화망의 원리',en:'How a Phone Network Works',steps:6,lvl:'입문',desc:'전화를 걸면 목소리는 중계기, 기지국, 코어망을 지나 상대에게 간다.',c:'#a9c8f3',d:'#86afe8'},
  {path:'/chat',ko:'채팅 시스템 설계',en:'Designing a Chat System',steps:7,lvl:'심화',desc:'메시지가 사라지지 않고 순서대로 한 번만 도착하게.',c:'#8fdbb5',d:'#5ec393'}];
 const tile=(c,d)=>`<svg viewBox="-75 -70 150 130" aria-hidden="true"><ellipse cx="0" cy="44" rx="58" ry="14" fill="rgba(10,50,30,.12)"/><path d="M-60 0V18L0 52L60 18V0Z" fill="${d}" stroke="#1b2a22" stroke-width="2" stroke-linejoin="round"/><path d="M0 -34L60 0L0 34L-60 0Z" fill="${c}" stroke="#1b2a22" stroke-width="2" stroke-linejoin="round"/><path d="M0 -8L26 -23V-55L0 -40L-26 -55V-23Z" fill="#f6f8fa" stroke="#1b2a22" stroke-width="2" stroke-linejoin="round"/><path d="M0 -40V-8M-26 -55L0 -70L26 -55" fill="none" stroke="#1b2a22" stroke-width="2" stroke-linejoin="round"/><path d="M-26 -55L0 -70L26 -55L0 -40Z" fill="#ffffff" stroke="#1b2a22" stroke-width="2" stroke-linejoin="round"/></svg>`;
 document.getElementById('grid').innerHTML=TOPICS.map(t=>{

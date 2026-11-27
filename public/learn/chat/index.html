@@ -87,6 +87,10 @@ button:focus-visible{outline:3px solid var(--green);outline-offset:2px}
 .toc span{display:block;font-size:14px;color:var(--muted)}
 @media(max-width:600px){.mets{grid-template-columns:repeat(2,minmax(0,1fr))}.slot{height:600px}.top .ctl{width:100%}.top .btn{flex:1}}
 .home{display:inline-block;color:#fff;text-decoration:none;font:600 14px 'Space Grotesk',sans-serif;opacity:.9;margin-bottom:10px}.home:hover{opacity:1;text-decoration:underline}
+/* full-flow list: Korean + English */
+.toc em{display:block;font:600 15px/1.35 'Space Grotesk',sans-serif;font-style:normal;color:var(--green-ink);margin-bottom:4px}
+.toc span.en{font-family:'Space Grotesk',sans-serif;margin-top:2px}
+.h2en{font-weight:500;color:var(--muted);font-size:.7em}
 /* svg */
 .e{opacity:0;transition:opacity .45s}.e.on{opacity:1}
 .ln{fill:none;stroke:var(--lane);stroke-linecap:round;transition:stroke .3s}
@@ -181,15 +185,15 @@ button:focus-visible{outline:3px solid var(--green);outline-offset:2px}
   </aside>
 </main>
 <section class="band toc">
-  <h2>전체 흐름</h2>
+  <h2>전체 흐름 <span class="h2en">Full flow</span></h2>
   <ol id="toc"></ol>
 </section>
 <div class="reel" id="reel" hidden>
   <div class="rframe">
     <div class="segs" id="segs2"></div>
-    <div class="rhead"><span>채팅 시스템 설계</span><span id="rnum"></span></div>
+    <div class="rhead"><span>Designing a Chat System</span><span id="rnum"></span></div>
     <div class="slot" id="slotB"></div>
-    <div class="rcap"><h3 id="rttl"></h3><p id="rtxt"></p></div>
+    <div class="rcap" lang="en"><h3 id="rttl"></h3><p id="rtxt"></p></div>
   </div>
   <div class="rside"><button class="btn" id="rplay">일시 정지</button><button class="btn" id="rclose">닫기</button></div>
   <p class="rhint">화면 녹화 후 가운데 9:16 영역만 잘라 릴스로 올리세요</p>
@@ -197,38 +201,38 @@ button:focus-visible{outline:3px solid var(--green);outline-offset:2px}
 <script>
 {
 const $=id=>document.getElementById(id);
-const NODES={alice:{t:'man',l:'서아',tile:'w',c:'g'},bob:{t:'man',l:'지호',tile:'w',c:'v'},gwA:{t:'srv',l:'게이트웨이 A',f:'게이트웨이 A',g:'A',tile:'g',i:'gw'},gwB:{t:'srv',l:'게이트웨이 B',f:'게이트웨이 B',g:'B',tile:'g',i:'gw'},gwC:{t:'srv',l:'게이트웨이 C',f:'게이트웨이 C',g:'C',tile:'g',i:'gw'},registry:{t:'srv',l:'세션 레지스트리',f:'세션 위치',g:'세션',tile:'v',i:'pin'},push:{t:'srv',l:'푸시 알림',f:'푸시 알림',g:'푸시',tile:'a',i:'bell'},store:{t:'db',l:'메시지 저장소',f:'저장소',tile:'b',i:'db'}};
+const NODES={alice:{t:'man',l:'Seoa',tile:'w',c:'g'},bob:{t:'man',l:'Jiho',tile:'w',c:'v'},gwA:{t:'srv',l:'Gateway A',f:'Gateway A',g:'A',tile:'g',i:'gw'},gwB:{t:'srv',l:'Gateway B',f:'Gateway B',g:'B',tile:'g',i:'gw'},gwC:{t:'srv',l:'Gateway C',f:'Gateway C',g:'C',tile:'g',i:'gw'},registry:{t:'srv',l:'Session registry',f:'Session registry',g:'Session',tile:'v',i:'pin'},push:{t:'srv',l:'Push service',f:'Push service',g:'Push',tile:'a',i:'bell'},store:{t:'db',l:'Message store',f:'Message store',tile:'b',i:'db'}};
 const LAND={alice:[0,.5],gwA:[.27,.5],registry:[.5,.04],push:[.86,.06],gwB:[.73,.5],bob:[1,.5],store:[.4,.96],gwC:[.68,.96]};
 const PORT={alice:[.14,0],push:[.6,0],gwA:[.14,.33],registry:[.86,.28],store:[.3,.66],gwB:[.86,.64],gwC:[.46,.98],bob:[.86,1]};
 const STEPS=[
-{t:'두 사람, 하나의 약속',s:'메시지는 사라지지 않고, 순서대로, 딱 한 번.',show:['alice','bob'],e:[['alice','bob','d']],m:['?','?','?','?'],
+{t:'두 사람, 하나의 약속',te:'Two people, one promise',se:'No message lost, all in order, each delivered exactly once.',s:'메시지는 사라지지 않고, 순서대로, 딱 한 번.',show:['alice','bob'],e:[['alice','bob','d']],m:['?','?','?','?'],
  x:'서아가 지호에게 메시지를 보냅니다. 단순해 보이지만 조건이 붙습니다. 메시지는 하나도 사라지면 안 되고, 보낸 순서대로, 딱 한 번만 보여야 합니다. 둘 다 접속해 있다면 0.2초 안에 도착해야 하고요.',
  k:'속도보다 신뢰가 먼저입니다. 아무리 빨라도 메시지가 하나라도 빠지면 실패한 설계입니다.',
- f:[{n:['alice','유실 0 · 순서대로 · 한 번만']},['alice','bob','안녕?'],{n:['bob','어떻게 보장하지?']}]},
-{t:'연결을 열어 둔다',s:'서버가 먼저 말을 걸 수 있게 연결을 유지한다.',show:['alice','gwA','gwB','bob'],e:[['alice','gwA'],['gwB','bob']],m:['—','3,000만','—','—'],
+ f:[{n:['alice','No loss · In order · Once']},['alice','bob','Hi?'],{n:['bob','How to guarantee?']}]},
+{t:'연결을 열어 둔다',te:'Keep the line open',se:'A persistent connection lets the server speak first.',s:'서버가 먼저 말을 걸 수 있게 연결을 유지한다.',show:['alice','gwA','gwB','bob'],e:[['alice','gwA'],['gwB','bob']],m:['—','3,000만','—','—'],
  x:'일반 HTTP는 클라이언트가 물어야만 서버가 답합니다. 채팅은 서버가 먼저 "새 메시지 왔어"라고 알려야 하므로, 각 기기는 게이트웨이와 WebSocket 연결을 계속 열어 둡니다. 주기적인 하트비트로 연결이 살아 있는지 확인합니다.',
  k:'동시 접속 3,000만 명을 서버당 5만 연결로 나누면 게이트웨이가 약 600대 필요합니다. 서버 대수는 메시지 수가 아니라 연결 수가 정합니다.',
- f:[{p:[['alice','gwA','ping','beat'],['bob','gwB','ping','beat']]},{p:[['gwA','alice','pong','beat'],['gwB','bob','pong','beat']]},{n:['gwA','연결 5만 개 유지 중']}]},
-{t:'지호는 어디에 있을까',s:'지호가 붙어 있는 서버를 레지스트리에서 찾는다.',show:['alice','gwA','registry','gwB','bob'],e:[['alice','gwA'],['gwA','registry'],['gwA','gwB'],['gwB','bob']],m:['80 ms','3,000만','있음','보장 안 됨'],
+ f:[{p:[['alice','gwA','ping','beat'],['bob','gwB','ping','beat']]},{p:[['gwA','alice','pong','beat'],['gwB','bob','pong','beat']]},{n:['gwA','Holding 50k connections']}]},
+{t:'지호는 어디에 있을까',te:'Where is Jiho?',se:'The session registry knows which server Jiho is connected to.',s:'지호가 붙어 있는 서버를 레지스트리에서 찾는다.',show:['alice','gwA','registry','gwB','bob'],e:[['alice','gwA'],['gwA','registry'],['gwA','gwB'],['gwB','bob']],m:['80 ms','3,000만','있음','보장 안 됨'],
  x:'서아는 게이트웨이 A에, 지호는 게이트웨이 B에 붙어 있습니다. 게이트웨이 A는 세션 레지스트리(Redis)에 지호의 위치를 묻고, 답을 받아 게이트웨이 B로 메시지를 넘깁니다.',
  k:'게이트웨이는 연결이라는 상태를 가진 서버입니다. 그래서 누가 어디에 붙어 있는지 기록하는 지도가 따로 필요합니다. 다만 아직은 중간에 서버가 죽으면 메시지가 사라집니다.',
- f:[['alice','gwA','안녕'],['gwA','registry','지호 어디?'],{n:['registry','지호 → B']},['registry','gwA','B','ack'],['gwA','gwB','안녕'],['gwB','bob','안녕'],{n:['bob','도착']}]},
-{t:'전달보다 저장이 먼저',s:'먼저 저장하고 순번을 붙인 뒤에 전달한다.',show:['alice','gwA','registry','store','gwB','bob'],e:[['alice','gwA'],['gwA','registry'],['gwA','store'],['gwA','gwB'],['gwB','bob']],m:['120 ms','3,000만','없음','seq 순번'],
+ f:[['alice','gwA','Hi'],['gwA','registry','Where is Jiho?'],{n:['registry','Jiho → B']},['registry','gwA','B','ack'],['gwA','gwB','Hi'],['gwB','bob','Hi'],{n:['bob','Delivered']}]},
+{t:'전달보다 저장이 먼저',te:'Save first, then deliver',se:'Each message is stored and numbered before it is delivered.',s:'먼저 저장하고 순번을 붙인 뒤에 전달한다.',show:['alice','gwA','registry','store','gwB','bob'],e:[['alice','gwA'],['gwA','registry'],['gwA','store'],['gwA','gwB'],['gwB','bob']],m:['120 ms','3,000만','없음','seq 순번'],
  x:'게이트웨이 A는 메시지를 받자마자 저장소에 기록하고 대화방별 순번(seq)을 붙입니다. 저장에 성공한 뒤에야 서아에게 "전송됨"을 돌려주고, 그다음 지호에게 전달합니다.',
  k:'저장된 메시지는 서버가 죽어도 남습니다. seq 번호가 있으니 지호의 화면은 네트워크 사정과 상관없이 언제나 같은 순서로 정렬됩니다.',
- f:[['alice','gwA','안녕'],['gwA','store','안녕'],{n:['store','seq 42 저장']},['store','gwA','ok','ack'],{p:[['gwA','alice','전송됨','ack'],['gwA','gwB','seq 42']]},['gwB','bob','seq 42'],{n:['bob','순서대로 표시']}]},
-{t:'지호가 자리에 없을 때',s:'오프라인이면 푸시 알림, 돌아오면 이어서 받는다.',show:['alice','gwA','registry','store','push','bob'],st:{bob:'off'},e:[['alice','gwA'],['gwA','registry'],['gwA','store'],['gwA','push'],['push','bob','d']],m:['접속 시','3,000만','없음','seq 순번'],
+ f:[['alice','gwA','Hi'],['gwA','store','Hi'],{n:['store','seq 42 saved']},['store','gwA','ok','ack'],{p:[['gwA','alice','Sent','ack'],['gwA','gwB','seq 42']]},['gwB','bob','seq 42'],{n:['bob','Shown in order']}]},
+{t:'지호가 자리에 없을 때',te:'When Jiho is offline',se:'Offline users get a push alert, then catch up when they return.',s:'오프라인이면 푸시 알림, 돌아오면 이어서 받는다.',show:['alice','gwA','registry','store','push','bob'],st:{bob:'off'},e:[['alice','gwA'],['gwA','registry'],['gwA','store'],['gwA','push'],['push','bob','d']],m:['접속 시','3,000만','없음','seq 순번'],
  x:'지호의 연결이 끊겨 있으면 레지스트리에 위치가 없습니다. 메시지는 이미 저장되어 있으니 잃어버릴 걱정은 없고, 푸시 서비스(APNs, FCM)로 알림만 보냅니다. 지호가 돌아오면 마지막으로 읽은 seq 이후를 한 번에 받아 갑니다.',
  k:'오프라인 메시지를 따로 쌓아 둘 필요가 없습니다. 기기마다 어디까지 읽었는지(seq)만 기억하면 됩니다.',
- f:[['alice','gwA','저녁 먹자'],['gwA','store','seq 43'],{n:['store','저장 완료']},['gwA','registry','지호?'],{n:['registry','접속 없음']},['gwA','push','알림','push'],['push','bob','새 메시지 1','push'],{n:['bob','접속하면 seq 42 이후 받기']}]},
-{t:'두 번 보내도 한 번만',s:'재전송돼도 메시지 ID로 한 번만 저장한다.',show:['alice','gwA','registry','store','gwB','bob'],e:[['alice','gwA'],['gwA','registry'],['gwA','store'],['gwA','gwB'],['gwB','bob']],m:['120 ms','3,000만','없음','중복 없음'],
+ f:[['alice','gwA','Dinner tonight?'],['gwA','store','seq 43'],{n:['store','Saved']},['gwA','registry','Jiho?'],{n:['registry','Offline']},['gwA','push','Notify','push'],['push','bob','1 new message','push'],{n:['bob','On return: after seq 42']}]},
+{t:'두 번 보내도 한 번만',te:'Sent twice, saved once',se:'A message ID makes a retried message count only once.',s:'재전송돼도 메시지 ID로 한 번만 저장한다.',show:['alice','gwA','registry','store','gwB','bob'],e:[['alice','gwA'],['gwA','registry'],['gwA','store'],['gwA','gwB'],['gwB','bob']],m:['120 ms','3,000만','없음','중복 없음'],
  x:'지하철에서 응답이 늦으면 서아의 앱은 같은 메시지를 다시 보냅니다. 앱이 처음 만든 메시지 ID를 함께 보내므로, 저장소는 이미 있는 ID를 보면 새로 저장하지 않고 기존 seq를 돌려줍니다.',
  k:'재시도는 막을 수 없습니다. 대신 같은 요청이 여러 번 와도 결과가 같도록(멱등성) 만듭니다.',
- f:[['alice','gwA','id a7f'],['gwA','store','id a7f'],{n:['store','seq 44 저장']},['store','gwA','seq 44','lost'],{w:450},{n:['alice','응답 없음 · 재전송']},['alice','gwA','id a7f'],['gwA','store','id a7f'],{n:['store','이미 있음 · 무시']},['store','gwA','seq 44','ack'],['gwA','alice','전송됨','ack']]},
-{t:'게이트웨이가 죽으면',s:'서버가 죽어도 저장소에서 빠짐없이 다시 받는다.',show:['alice','gwA','registry','store','gwB','gwC','bob'],st:{gwB:'dead'},e:[['alice','gwA'],['gwA','registry'],['gwA','store'],['gwB','bob','x'],['bob','gwC'],['gwC','store'],['gwC','registry']],m:['재접속 1초','3,000만','없음','seq 순번'],
+ f:[['alice','gwA','id a7f'],['gwA','store','id a7f'],{n:['store','seq 44 saved']},['store','gwA','seq 44','lost'],{w:450},{n:['alice','No reply · Retry']},['alice','gwA','id a7f'],['gwA','store','id a7f'],{n:['store','Duplicate · Ignored']},['store','gwA','seq 44','ack'],['gwA','alice','Sent','ack']]},
+{t:'게이트웨이가 죽으면',te:'When a gateway goes down',se:'Even if a server dies, messages are recovered from the store.',s:'서버가 죽어도 저장소에서 빠짐없이 다시 받는다.',show:['alice','gwA','registry','store','gwB','gwC','bob'],st:{gwB:'dead'},e:[['alice','gwA'],['gwA','registry'],['gwA','store'],['gwB','bob','x'],['bob','gwC'],['gwC','store'],['gwC','registry']],m:['재접속 1초','3,000만','없음','seq 순번'],
  x:'게이트웨이 B가 갑자기 멈추면 지호의 연결도 함께 끊깁니다. 지호의 앱은 하트비트가 끊긴 것을 알아채고 게이트웨이 C에 다시 접속한 뒤, 레지스트리의 위치를 고치고 마지막 seq 이후 메시지를 받아 갑니다.',
  k:'원본은 저장소에 있고, 게이트웨이는 언제든 바꿔 끼울 수 있는 통로입니다. 그래서 서버 하나가 죽어도 메시지는 하나도 사라지지 않습니다.',
- f:[{n:['gwB','장애 발생']},{w:350},{n:['bob','연결 끊김']},['bob','gwC','재접속'],['gwC','registry','지호 = C'],['gwC','store','seq 41 이후?'],['store','gwC','42 · 43 · 44','ack'],['gwC','bob','3건','ack'],{n:['bob','빠짐없이 복구']}]}];
+ f:[{n:['gwB','Server down']},{w:350},{n:['bob','Disconnected']},['bob','gwC','Reconnect'],['gwC','registry','Jiho = C'],['gwC','store','After seq 41?'],['store','gwC','42 · 43 · 44','ack'],['gwC','bob','3 messages','ack'],{n:['bob','Fully restored']}]}];
 const MLAB=['전달 지연','동시 연결','유실 위험','순서 보장'];
 const svg=$('dia'),gE=$('gE'),gN=$('gN'),gP=$('gP');
 const NS='http://www.w3.org/2000/svg';
@@ -311,19 +315,19 @@ function hop([a,b,label,kind],tok){return new Promise(res=>{
   const q=qp(P(a),ctrl(a,b),P(b),k),lift=S*.32+Math.sin(Math.PI*k)*S*.28,sc=1-Math.sin(Math.PI*k)*.25;
   ps.setAttribute('cx',q.x);ps.setAttribute('cy',q.y);ps.setAttribute('transform',`translate(${q.x} ${q.y}) scale(${sc}) translate(${-q.x} ${-q.y})`);
   g.setAttribute('transform',`translate(${q.x},${q.y-lift})`);
-  if(kind==='lost'&&t>.55){g.classList.add('gone');ps.remove();const ng=mk('g',{transform:`translate(${q.x},${q.y-lift-34})`},gP),ni=mk('g',{class:'nt bad'},ng);chip(ni,'응답 유실');setTimeout(()=>ni.classList.add('out'),1300);setTimeout(()=>ng.remove(),1700);setTimeout(()=>g.remove(),500);return end(true)}
+  if(kind==='lost'&&t>.55){g.classList.add('gone');ps.remove();const ng=mk('g',{transform:`translate(${q.x},${q.y-lift-34})`},gP),ni=mk('g',{class:'nt bad'},ng);chip(ni,'Reply lost');setTimeout(()=>ni.classList.add('out'),1300);setTimeout(()=>ng.remove(),1700);setTimeout(()=>g.remove(),500);return end(true)}
   if(t<1)requestAnimationFrame(step);else{g.remove();ps.remove();pulse(b);end(true)}};
  requestAnimationFrame(step)})}
 async function item(it,tok){if(Array.isArray(it))return hop(it,tok);
  if(it.p)return Promise.all(it.p.map(h=>hop(h,tok)));
- if(it.n){note(it.n[0],it.n[1],/장애|끊김|없음 ·|응답 없음/.test(it.n[1]));return sleep(RM?900:700)}
+ if(it.n){note(it.n[0],it.n[1],/Server down|Disconnected|No reply/.test(it.n[1]));return sleep(RM?900:700)}
  if(it.w)return sleep(it.w)}
 async function run(tok){for(;;){for(const it of STEPS[cur].f){if(tok!==tk)return;await item(it,tok);if(tok!==tk)return;await sleep(140)}
  await sleep(1300);if(tok!==tk)return;if(auto){go(cur+1);return}}}
 function fill(id,text){const e=$(id);e.textContent=text;e.classList.remove('fade');void e.offsetWidth;e.classList.add('fade')}
 function segs(el){el.innerHTML=STEPS.map((s,i)=>`<button class="seg${i<=cur?' done':''}" data-i="${i}" aria-label="${i+1}단계: ${s.t}"><i></i></button>`).join('')}
 function panel(){const st=STEPS[cur];$('num').textContent=`${cur+1} / ${STEPS.length}단계`;fill('ttl',st.t);fill('txt',st.x);fill('key',st.k);
- fill('rttl',st.t);fill('rtxt',st.s);$('rnum').textContent=`${cur+1} / ${STEPS.length}`;segs($('segs'));segs($('segs2'));
+ fill('rttl',st.te);fill('rtxt',st.se);$('rnum').textContent=`${cur+1} / ${STEPS.length}`;segs($('segs'));segs($('segs2'));
  const old=[...document.querySelectorAll('.met b')].map(b=>b.textContent);
  $('mets').innerHTML=st.m.map((v,i)=>{const c=(i===2&&v==='있음')||(i===3&&v==='보장 안 됨')?'bad':(i===2&&v==='없음')||(i===3&&v!=='—'&&v!=='?')?'good':'';
   return `<div class="met"><span>${MLAB[i]}</span><b class="${c}${old[i]!==v?' flip':''}">${v}</b></div>`}).join('');
@@ -332,7 +336,7 @@ function panel(){const st=STEPS[cur];$('num').textContent=`${cur+1} / ${STEPS.le
 function go(i){cur=(i+STEPS.length)%STEPS.length;tk++;gP.innerHTML='';apply();panel();
  try{history.replaceState(null,'','#step-'+(cur+1))}catch(_){}run(tk)}
 function setAuto(v){auto=v;$('play').textContent=v?'일시 정지':'자동 재생';$('rplay').textContent=v?'일시 정지':'자동 재생'}
-$('toc').innerHTML=STEPS.map((s,i)=>`<li><button data-i="${i}"><small>${i+1}단계</small><strong>${s.t}</strong><span>${s.s}</span></button></li>`).join('');
+$('toc').innerHTML=STEPS.map((s,i)=>`<li><button data-i="${i}"><small>${i+1}단계 · Step ${i+1}</small><strong>${s.t}</strong><em lang="en">${s.te}</em><span>${s.s}</span><span class="en" lang="en">${s.se}</span></button></li>`).join('');
 document.addEventListener('click',e=>{const b=e.target.closest('[data-i]');if(!b)return;go(+b.dataset.i);if(b.closest('#toc')&&$('reel').hidden)$('slotA').scrollIntoView({behavior:RM?'auto':'smooth',block:'center'})});
 $('prev').onclick=()=>go(cur-1);$('next').onclick=()=>go(cur+1);
 $('play').onclick=()=>setAuto(!auto);$('rplay').onclick=()=>setAuto(!auto);
