@@ -32,6 +32,17 @@ a.card:focus-visible{outline:3px solid var(--green);outline-offset:3px}
 .body p{margin:6px 0 0;font-size:15px;color:var(--muted)}
 .soon{opacity:.55}
 .soon .tag{align-self:flex-start;margin-top:8px;font-size:13px;border:1px solid var(--line);border-radius:999px;padding:2px 10px}
+/* categories */
+.cats{position:sticky;top:0;z-index:5;background:color-mix(in srgb,var(--bg) 92%,transparent);backdrop-filter:blur(8px);border-bottom:1px solid var(--line);display:flex;gap:8px;flex-wrap:wrap;padding-top:14px;padding-bottom:14px}
+.cats a{display:inline-flex;align-items:center;gap:6px;min-height:40px;padding:0 16px;border:1.5px solid var(--ol);border-radius:999px;color:inherit;text-decoration:none;font-weight:600;font-size:15px}
+.cats a span{font:500 13px 'Space Grotesk',sans-serif;color:var(--muted)}
+.cats a:hover,.cats a:focus-visible{background:var(--mist);outline:none}
+#grid{display:flex;flex-direction:column;gap:clamp(36px,5vw,56px)}
+.sec{max-width:1240px;width:100%;margin:0 auto;scroll-margin-top:84px}
+.sec-h{display:flex;flex-wrap:wrap;align-items:baseline;gap:4px 12px;margin:0 0 6px}
+.sec-h h2{font:700 clamp(24px,3vw,30px)/1.2 'Space Grotesk','IBM Plex Sans KR',sans-serif;margin:0}
+.sec-h em{font:600 16px 'Space Grotesk',sans-serif;font-style:normal;color:var(--green-ink)}
+.sec>p{margin:0 0 18px;color:var(--muted)}
 footer{padding:24px max(5vw,16px);color:var(--muted);font-size:14px;text-align:center}
 </style>
 </head>
@@ -40,7 +51,8 @@ footer{padding:24px max(5vw,16px);color:var(--muted);font-size:14px;text-align:c
   <h1>ZUPLY Learn</h1>
   <p>눌러 보며 이해하는 기술의 원리. 부품과 서버 사이를 오가는 신호를 3D 다이어그램으로 한 단계씩 따라가 보세요.</p>
 </header>
-<main class="band"><div class="grid" id="grid"></div></main>
+<nav class="cats band" id="cats" aria-label="분류"></nav>
+<main class="band" id="grid"></main>
 <footer>© ZUPLY</footer>
 <script>
 {
@@ -48,21 +60,30 @@ footer{padding:24px max(5vw,16px);color:var(--muted);font-size:14px;text-align:c
 const BASE=location.hostname.startsWith('learn.')?'':'/learn';
 // 새 주제를 만들면 여기에 한 줄 추가
 const TOPICS=[
- {path:'/computer',ko:'컴퓨터의 원리',en:'How a Computer Works',steps:6,lvl:'입문',desc:'A 키를 누르면 화면에 글자가 나오고 저장되기까지.',c:'#ffc976',d:'#f0a843'},
- {path:'/phone',ko:'스마트폰의 원리',en:'How a Smartphone Works',steps:6,lvl:'입문',desc:'화면을 터치하면 손안의 작은 컴퓨터가 일하기까지.',c:'#c0b1f3',d:'#a28fe6'},
- {path:'/network',ko:'전화망의 원리',en:'How a Phone Network Works',steps:8,lvl:'중급',desc:'중계기·기지국(액세스망)과 제어·가입자 DB·IMS·게이트웨이(코어망)를 지나 목소리가 가는 길.',c:'#a9c8f3',d:'#86afe8'},
- {path:'/server',ko:'서버와 클라이언트',en:'Servers and Clients',steps:6,lvl:'입문',desc:'앱을 열면 멀리 있는 서버가 어떻게 대답할까. 요청, 응답, API.',c:'#bfeed6',d:'#8fdbb5'},
- {path:'/web',ko:'웹사이트가 열리기까지',en:'How a Website Loads',steps:6,lvl:'입문',desc:'주소를 입력하고 화면이 뜨기까지. DNS, HTTPS, CDN, 렌더링.',c:'#ffe0aa',d:'#ffc976'},
- {path:'/tcp',ko:'TCP/IP와 핸드셰이크',en:'TCP/IP Handshake',steps:7,lvl:'중급',desc:'데이터를 보내기 전에 세 번 악수한다. SYN, ACK, 재전송.',c:'#ffd6d8',d:'#f2a3a7'},
- {path:'/nat',ko:'LAN·WAN·NAT',en:'LAN, WAN and NAT',steps:6,lvl:'중급',desc:'공유기는 사설 IP를 나눠 주고, 나갈 때 주소를 바꾼다.',c:'#c9f0e0',d:'#8fdbb5'},
- {path:'/routing',ko:'인터넷 라우팅',en:'How Internet Routing Works',steps:6,lvl:'중급',desc:'라우터는 다음 칸만 알고도 패킷을 지구 반대편까지 보낸다.',c:'#e5dcff',d:'#c0b1f3'},
- {path:'/vm',ko:'가상 머신의 원리',en:'How Virtual Machines Work',steps:6,lvl:'중급',desc:'컴퓨터 한 대를 여러 대처럼. 하이퍼바이저와 컨테이너.',c:'#dcd2fc',d:'#bfb0f3'},
- {path:'/cloud',ko:'클라우드의 원리',en:'How the Cloud Works',steps:6,lvl:'중급',desc:'사람이 몰려도, 서버가 고장 나도 멈추지 않는 법.',c:'#d3e5fd',d:'#a9c8f3'},
- {path:'/chat',ko:'채팅 시스템 설계',en:'Designing a Chat System',steps:7,lvl:'심화',desc:'메시지가 사라지지 않고 순서대로 한 번만 도착하게.',c:'#8fdbb5',d:'#5ec393'}];
+ {path:'/computer',cat:'basic',ko:'컴퓨터의 원리',en:'How a Computer Works',steps:6,lvl:'입문',desc:'A 키를 누르면 화면에 글자가 나오고 저장되기까지.',c:'#ffc976',d:'#f0a843'},
+ {path:'/phone',cat:'mobile',ko:'스마트폰의 원리',en:'How a Smartphone Works',steps:6,lvl:'입문',desc:'화면을 터치하면 손안의 작은 컴퓨터가 일하기까지.',c:'#c0b1f3',d:'#a28fe6'},
+ {path:'/network',cat:'mobile',ko:'전화망의 원리',en:'How a Phone Network Works',steps:8,lvl:'중급',desc:'중계기·기지국(액세스망)과 제어·가입자 DB·IMS·게이트웨이(코어망)를 지나 목소리가 가는 길.',c:'#a9c8f3',d:'#86afe8'},
+ {path:'/server',cat:'basic',ko:'서버와 클라이언트',en:'Servers and Clients',steps:6,lvl:'입문',desc:'앱을 열면 멀리 있는 서버가 어떻게 대답할까. 요청, 응답, API.',c:'#bfeed6',d:'#8fdbb5'},
+ {path:'/web',cat:'basic',ko:'웹사이트가 열리기까지',en:'How a Website Loads',steps:6,lvl:'입문',desc:'주소를 입력하고 화면이 뜨기까지. DNS, HTTPS, CDN, 렌더링.',c:'#ffe0aa',d:'#ffc976'},
+ {path:'/tcp',cat:'net',ko:'TCP/IP와 핸드셰이크',en:'TCP/IP Handshake',steps:7,lvl:'중급',desc:'데이터를 보내기 전에 세 번 악수한다. SYN, ACK, 재전송.',c:'#ffd6d8',d:'#f2a3a7'},
+ {path:'/nat',cat:'net',ko:'LAN·WAN·NAT',en:'LAN, WAN and NAT',steps:6,lvl:'중급',desc:'공유기는 사설 IP를 나눠 주고, 나갈 때 주소를 바꾼다.',c:'#c9f0e0',d:'#8fdbb5'},
+ {path:'/routing',cat:'net',ko:'인터넷 라우팅',en:'How Internet Routing Works',steps:6,lvl:'중급',desc:'라우터는 다음 칸만 알고도 패킷을 지구 반대편까지 보낸다.',c:'#e5dcff',d:'#c0b1f3'},
+ {path:'/vm',cat:'virt',ko:'가상 머신의 원리',en:'How Virtual Machines Work',steps:6,lvl:'중급',desc:'컴퓨터 한 대를 여러 대처럼. 하이퍼바이저와 컨테이너.',c:'#dcd2fc',d:'#bfb0f3'},
+ {path:'/cloud',cat:'virt',ko:'클라우드의 원리',en:'How the Cloud Works',steps:6,lvl:'중급',desc:'사람이 몰려도, 서버가 고장 나도 멈추지 않는 법.',c:'#d3e5fd',d:'#a9c8f3'},
+ {path:'/chat',cat:'basic',ko:'채팅 시스템 설계',en:'Designing a Chat System',steps:7,lvl:'심화',desc:'메시지가 사라지지 않고 순서대로 한 번만 도착하게.',c:'#8fdbb5',d:'#5ec393'}];
+// 분류 (화면에 나오는 순서)
+const CATS=[
+ {id:'basic',ko:'기본',en:'Basics',desc:'컴퓨터와 서버, 웹이 움직이는 기본 원리.'},
+ {id:'virt',ko:'가상화',en:'Virtualization',desc:'컴퓨터를 나눠 쓰고 빌려 쓰는 법. 가상 머신과 클라우드.'},
+ {id:'net',ko:'네트워크',en:'Network',desc:'데이터가 인터넷을 건너는 법. 연결, 주소, 길 찾기.'},
+ {id:'mobile',ko:'스마트폰 · 전화',en:'Mobile',desc:'손안의 기기와 통신사 망이 하는 일.'}];
 const tile=(c,d)=>`<svg viewBox="-75 -70 150 130" aria-hidden="true"><ellipse cx="0" cy="44" rx="58" ry="14" fill="rgba(10,50,30,.12)"/><path d="M-60 0V18L0 52L60 18V0Z" fill="${d}" stroke="#1b2a22" stroke-width="2" stroke-linejoin="round"/><path d="M0 -34L60 0L0 34L-60 0Z" fill="${c}" stroke="#1b2a22" stroke-width="2" stroke-linejoin="round"/><path d="M0 -8L26 -23V-55L0 -40L-26 -55V-23Z" fill="#f6f8fa" stroke="#1b2a22" stroke-width="2" stroke-linejoin="round"/><path d="M0 -40V-8M-26 -55L0 -70L26 -55" fill="none" stroke="#1b2a22" stroke-width="2" stroke-linejoin="round"/><path d="M-26 -55L0 -70L26 -55L0 -40Z" fill="#ffffff" stroke="#1b2a22" stroke-width="2" stroke-linejoin="round"/></svg>`;
-document.getElementById('grid').innerHTML=TOPICS.map(t=>{
+const card=t=>{
  const inner=`<div class="pic">${tile(t.c,t.d)}</div><div class="body"><small>${t.lvl}${t.steps?` · ${t.steps}단계`:''}</small><h2>${t.ko}</h2><em lang="en">${t.en}</em><p>${t.desc}</p>${t.soon?'<span class="tag">준비 중</span>':''}</div>`;
- return t.soon?`<div class="card soon">${inner}</div>`:`<a class="card" href="${BASE}${t.path}">${inner}</a>`}).join('');
+ return t.soon?`<div class="card soon">${inner}</div>`:`<a class="card" href="${BASE}${t.path}">${inner}</a>`};
+const groups=CATS.map(c=>({...c,items:TOPICS.filter(t=>t.cat===c.id)})).filter(c=>c.items.length);
+document.getElementById('cats').innerHTML=groups.map(c=>`<a href="#${c.id}">${c.ko} <span>${c.items.length}</span></a>`).join('');
+document.getElementById('grid').innerHTML=groups.map(c=>`<section class="sec" id="${c.id}" aria-labelledby="h-${c.id}"><div class="sec-h"><h2 id="h-${c.id}">${c.ko}</h2><em lang="en">${c.en}</em></div><p>${c.desc}</p><div class="grid">${c.items.map(card).join('')}</div></section>`).join('');
 }
 </script>
 </body>
