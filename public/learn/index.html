@@ -70,13 +70,29 @@ const TOPICS=[
  {path:'/routing',cat:'net',ko:'인터넷 라우팅',en:'How Internet Routing Works',steps:6,lvl:'중급',desc:'라우터는 다음 칸만 알고도 패킷을 지구 반대편까지 보낸다.',c:'#e5dcff',d:'#c0b1f3'},
  {path:'/vm',cat:'virt',ko:'가상 머신의 원리',en:'How Virtual Machines Work',steps:6,lvl:'중급',desc:'컴퓨터 한 대를 여러 대처럼. 하이퍼바이저와 컨테이너.',c:'#dcd2fc',d:'#bfb0f3'},
  {path:'/cloud',cat:'virt',ko:'클라우드의 원리',en:'How the Cloud Works',steps:6,lvl:'중급',desc:'사람이 몰려도, 서버가 고장 나도 멈추지 않는 법.',c:'#d3e5fd',d:'#a9c8f3'},
+ {path:'/latency',cat:'scale',ko:'지연과 처리량',en:'Latency and Throughput',steps:7,lvl:'중급',desc:'나노초에서 바다 건너까지, p99와 대기열로 보는 속도.',c:'#D9E8FF',d:'#3C82E0'},
+ {path:'/scaling',cat:'scale',ko:'수직 확장과 수평 확장',en:'Scaling Up vs Out',steps:7,lvl:'입문',desc:'서버를 키울까, 늘릴까. 로드밸런서와 무상태 서버까지.',c:'#D6F0E2',d:'#3FAF7A'},
+ {path:'/caching',cat:'scale',ko:'캐시의 원리',en:'How Caching Works',steps:7,lvl:'중급',desc:'자주 쓰는 데이터를 메모리에 두어 DB를 아끼는 법. 히트·미스, TTL, 무효화.',c:'#FFE3B0',d:'#E8A33C'},
+ {path:'/ratelimit',cat:'scale',ko:'요청 제한',en:'How Rate Limiting Works',steps:7,lvl:'중급',desc:'토큰 버킷과 429 응답으로 몰려드는 요청을 막는 법.',c:'#E4DCFF',d:'#7C5CFF'},
+ {path:'/sqlnosql',cat:'data',ko:'SQL과 NoSQL',en:'SQL vs NoSQL',steps:7,lvl:'입문',desc:'표와 JOIN, 트랜잭션부터 문서형·키-값·와이드 컬럼·그래프까지.',c:'#ffe0aa',d:'#ffc976'},
+ {path:'/dbindex',cat:'data',ko:'데이터베이스 인덱스',en:'Database Indexes',steps:7,lvl:'중급',desc:'1,000만 줄에서 한 줄을 4페이지 만에. B-트리와 복합 인덱스.',c:'#d3e5fd',d:'#a9c8f3'},
+ {path:'/replication',cat:'data',ko:'데이터베이스 복제',en:'Database Replication',steps:7,lvl:'중급',desc:'리더와 팔로워, 복제 지연, 리더가 쓰러졌을 때의 장애 조치.',c:'#c9f0e0',d:'#8fdbb5'},
+ {path:'/sharding',cat:'data',ko:'샤딩과 일관된 해싱',en:'Sharding & Consistent Hashing',steps:7,lvl:'심화',desc:'hash mod N은 왜 대이동을 부를까. 해시 고리와 가상 노드.',c:'#e5dcff',d:'#c0b1f3'},
+ {path:'/queue',cat:'comm',ko:'메시지 큐',en:'How Message Queues Work',steps:7,lvl:'중급',desc:'오래 걸리는 일은 줄 세워 두고 나중에 처리한다.',c:'#ece6ff',d:'#7c5cff'},
+ {path:'/realtime',cat:'comm',ko:'실시간 통신',en:'Real-time Updates',steps:7,lvl:'중급',desc:'폴링부터 웹소켓까지, 새 메시지가 바로 뜨는 원리.',c:'#e3f0ff',d:'#3c82e0'},
+ {path:'/retry',cat:'comm',ko:'타임아웃과 재시도',en:'Timeouts and Retries',steps:7,lvl:'심화',desc:'실패가 번지지 않게 막는 타임아웃·백오프·서킷 브레이커.',c:'#fff1d6',d:'#e09a1a'},
+ {path:'/auth',cat:'comm',ko:'로그인과 인증',en:'Login and Authentication',steps:7,lvl:'입문',desc:'비밀번호 해시부터 구글 로그인, 2단계 인증까지.',c:'#e2f7ec',d:'#22a06b'},
+ {path:'/satellite',cat:'mobile',ko:'위성 통신의 원리',en:'How Satellite Internet Works',steps:6,lvl:'중급',desc:'케이블이 없는 곳에서 하늘을 거쳐 가는 인터넷. 저궤도 위성과 지상국.',c:'#d3e5fd',d:'#2f6fd6'},
  {path:'/chat',cat:'basic',ko:'채팅 시스템 설계',en:'Designing a Chat System',steps:7,lvl:'심화',desc:'메시지가 사라지지 않고 순서대로 한 번만 도착하게.',c:'#8fdbb5',d:'#5ec393'}];
 // 분류 (화면에 나오는 순서)
 const CATS=[
  {id:'basic',ko:'기본',en:'Basics',desc:'컴퓨터와 서버, 웹이 움직이는 기본 원리.'},
  {id:'virt',ko:'가상화',en:'Virtualization',desc:'컴퓨터를 나눠 쓰고 빌려 쓰는 법. 가상 머신과 클라우드.'},
  {id:'net',ko:'네트워크',en:'Network',desc:'데이터가 인터넷을 건너는 법. 연결, 주소, 길 찾기.'},
- {id:'mobile',ko:'스마트폰 · 전화',en:'Mobile',desc:'손안의 기기와 통신사 망이 하는 일.'}];
+ {id:'scale',ko:'확장 · 성능',en:'Scaling',desc:'사람이 몰려도 빠르게. 지연, 확장, 캐시, 요청 제한.'},
+ {id:'data',ko:'데이터',en:'Data & Storage',desc:'데이터를 빨리 찾고, 안전하게 나누고, 여러 곳에 복사하는 법.'},
+ {id:'comm',ko:'통신 · 신뢰성 · 보안',en:'Communication & Reliability',desc:'서버끼리 주고받고, 실패를 견디고, 사용자를 확인하는 법.'},
+ {id:'mobile',ko:'스마트폰 · 전화 · 위성',en:'Mobile & Satellite',desc:'손안의 기기, 통신사 망, 하늘의 위성이 하는 일.'}];
 const tile=(c,d)=>`<svg viewBox="-75 -70 150 130" aria-hidden="true"><ellipse cx="0" cy="44" rx="58" ry="14" fill="rgba(10,50,30,.12)"/><path d="M-60 0V18L0 52L60 18V0Z" fill="${d}" stroke="#1b2a22" stroke-width="2" stroke-linejoin="round"/><path d="M0 -34L60 0L0 34L-60 0Z" fill="${c}" stroke="#1b2a22" stroke-width="2" stroke-linejoin="round"/><path d="M0 -8L26 -23V-55L0 -40L-26 -55V-23Z" fill="#f6f8fa" stroke="#1b2a22" stroke-width="2" stroke-linejoin="round"/><path d="M0 -40V-8M-26 -55L0 -70L26 -55" fill="none" stroke="#1b2a22" stroke-width="2" stroke-linejoin="round"/><path d="M-26 -55L0 -70L26 -55L0 -40Z" fill="#ffffff" stroke="#1b2a22" stroke-width="2" stroke-linejoin="round"/></svg>`;
 const card=t=>{
  const inner=`<div class="pic">${tile(t.c,t.d)}</div><div class="body"><small>${t.lvl}${t.steps?` · ${t.steps}단계`:''}</small><h2>${t.ko}</h2><em lang="en">${t.en}</em><p>${t.desc}</p>${t.soon?'<span class="tag">준비 중</span>':''}</div>`;
