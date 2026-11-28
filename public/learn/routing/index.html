@@ -205,7 +205,7 @@ button:focus-visible{outline:3px solid var(--green);outline-offset:2px}
 <script>
 {
 const $=id=>document.getElementById(id);
-const NODES={client:{t:'mon',scr:'tracert',l:'내 컴퓨터',e:'You',tile:'w'},home:{t:'rep',l:'공유기',e:'Home router',tile:'a'},ispA:{t:'lb',l:'통신사 A',e:'ISP A router',tile:'g'},ixr:{t:'lb',l:'중계 망',e:'Transit router',tile:'v'},ispB:{t:'lb',l:'통신사 B',e:'ISP B router',tile:'g'},server:{t:'srv',chip:'WEB',l:'서버',e:'Server',tile:'b'}};
+const NODES={client:{t:'mon',scr:'tracert',l:'내 컴퓨터',e:'You',tile:'w'},home:{t:'rep',l:'공유기',e:'Home router',tile:'a'},ispA:{t:'rt',l:'통신사 A',e:'ISP A router',tile:'g'},ixr:{t:'rt',p:'v',l:'중계 망',e:'Transit router',tile:'v'},ispB:{t:'rt',l:'통신사 B',e:'ISP B router',tile:'g'},server:{t:'srv',chip:'WEB',l:'서버',e:'Server',tile:'b'}};
 const LAND={client:[0,.6],home:[.22,.6],ispA:[.46,.08],ixr:[.64,.95],ispB:[.8,.08],server:[1,.6]};
 const PORT={client:[.15,0],home:[.72,.06],ispA:[.2,.4],ixr:[.85,.6],ispB:[.25,.8],server:[.78,1]};
 const ZONES=[{ids:['client','home'],l:'HOME'},{ids:['ispB','server'],l:'ISP B',c:'core'}];
@@ -264,6 +264,7 @@ const LED=(x,y,r,c)=>`<circle cx="${x}" cy="${y}" r="${r*2.2}" fill="${c}" opaci
 const csh=(U,V)=>`<ellipse cx="0" cy="${(U+V)*ISO*.25}" rx="${(U+V)*1.05}" ry="${(U+V)*ISO*.7}" class="sh"/>`;
 function wv(x,y,s,n=2){let d='';for(let i=1;i<=n;i++){const r=s*(.07+.07*i);d+=`<path class="wave" d="M${x+r*.55} ${y-r*.8}A${r} ${r} 0 0 1 ${x+r*.55} ${y+r*.8}M${x-r*.55} ${y-r*.8}A${r} ${r} 0 0 0 ${x-r*.55} ${y+r*.8}"/>`}return d}
 function dev2(n,s){let g='',top;
+ if(typeof DEV_EXTRA==='function'){const X=DEV_EXTRA(n,s);if(X)return X}
  if(n.t==='ph'){const U=s*.2,V=s*.38,Z=s*.045;
   const sc=`<rect x="${-U*.86}" y="${-V*.92}" width="${U*1.72}" height="${V*1.84}" rx="${U*.22}" fill="url(#mscr)"/>`+
    `<circle cx="0" cy="${-V*.38}" r="${U*.42}" fill="#2a3a46"/><circle cx="0" cy="${-V*.38}" r="${U*.24}" fill="${n.c||'#7fd3a8'}"/>`+
@@ -298,6 +299,29 @@ function dev2(n,s){let g='',top;
   g=csh(U,U)+box(U,U,Z,0,[`url(#t-${p})`,`var(--${p}3)`,`var(--${p}4)`],{top:n.chip?`<text class="chip" x="0" y="0" style="fill:var(--ink)">${n.chip}</text>`:''});top=-2*U*ISO-Z}
  else if(n.t==='ctrs'){const u=s*.13,Z=s*.2,d=s*.3;
   g=csh(s*.3,s*.3)+[-1,0,1].map((k,i)=>{const p=['v','b','a'][i];return `<g transform="translate(${k*d} ${k*d*ISO})">${box(u,u,Z,0,[`url(#t-${p})`,`var(--${p}3)`,`var(--${p}4)`])}</g>`}).join('');top=-2*u*ISO-Z-d*ISO}
+ else if(n.t==='rt'){const r=s*.46,ry=r*ISO,h=s*.28,p=n.p||'b',ac=[];
+  for(const a of [45,135,225,315]){const c=Math.cos(a*Math.PI/180),q=Math.sin(a*Math.PI/180),out=a===45||a===225,
+    P0=[c*r*.2,q*r*.2*ISO-h],P1=[c*r*.72,q*r*.72*ISO-h],tip=out?P1:P0,bk=out?P0:P1,ux=(tip[0]-bk[0]),uy=(tip[1]-bk[1]),L=Math.hypot(ux,uy)||1,nx=ux/L,ny=uy/L,w=s*.07;
+    ac.push(`M${bk[0].toFixed(1)} ${bk[1].toFixed(1)}L${tip[0].toFixed(1)} ${tip[1].toFixed(1)}M${(tip[0]-nx*w-ny*w*.7).toFixed(1)} ${(tip[1]-ny*w+nx*w*.7).toFixed(1)}L${tip[0].toFixed(1)} ${tip[1].toFixed(1)}L${(tip[0]-nx*w+ny*w*.7).toFixed(1)} ${(tip[1]-ny*w-nx*w*.7).toFixed(1)}`)}
+  g=`<ellipse class="sh" cx="0" cy="${ry*.35}" rx="${r*1.12}" ry="${ry*.85}"/>`+
+   `<path class="ol" d="M${-r} ${-h}V0A${r} ${ry} 0 0 0 ${r} 0V${-h}Z" fill="url(#s-${p})"/>`+
+   [-.5,-.25,0,.25].map((x,i)=>LED(r*x+r*.12,-h*.45+ry*Math.sqrt(1-(x+.12)**2)*.95,s*.018,i===2?'#f5a300':'#2ee58a')).join('')+
+   `<ellipse class="ol" cx="0" cy="${-h}" rx="${r}" ry="${ry}" fill="url(#t-${p})"/>`+
+   `<ellipse cx="0" cy="${-h}" rx="${r*.86}" ry="${ry*.86}" fill="none" stroke="#fff" stroke-opacity=".5" stroke-width="1"/>`+
+   `<path d="${ac.join('')}" fill="none" stroke="#fff" stroke-width="${Math.max(2,s*.035).toFixed(1)}" stroke-linecap="round" stroke-linejoin="round"/>`;top=-h-ry}
+ else if(n.t==='sat'){const z0=s*.42,b=s*.15,Z=s*.24,pz=z0+Z*.45,pw=s*.3,pd=s*.12,off=s*.48;
+  const panel=k=>`<g transform="translate(${(k*off).toFixed(1)} ${(k*off*ISO).toFixed(1)})">${box(pw,pd,s*.02,pz,['#2f6fd6','#1f4fa0','#173b78'],{top:[-.5,0,.5].map(x=>`<path d="M${pw*x} ${-pd}V${pd}" stroke="#9fc4f5" stroke-width=".8"/>`).join('')+`<path d="M${-pw} 0H${pw}" stroke="#9fc4f5" stroke-width=".8"/>`})}</g>`;
+  g=`<ellipse class="sh" cx="0" cy="${s*.08}" rx="${s*.5}" ry="${s*.16}" opacity=".6"/>`+panel(-1)+`<path class="mast" d="M${-off*.7} ${-pz+(-off*.7)*ISO*0}L${off*.7} ${-pz}" opacity="0"/>`+
+   box(b,b,Z,z0,['#f3d27a','#d9a93c','#b7862a'],{top:`<circle r="${b*.45}" fill="#f6f8fa" stroke="#1b2a22" stroke-width="1"/>`})+panel(1)+
+   `<path d="M0 ${-z0-Z-b*2*ISO}v${-s*.14}" stroke="#1b2a22" stroke-width="1.6"/>`+LED(0,-z0-Z-b*2*ISO-s*.15,s*.025,'#e5484d');top=-z0-Z-b*2*ISO-s*.2}
+ else if(n.t==='dish'){const z0=s*.18,U=s*.3,V=s*.24;
+  g=csh(s*.12,s*.12)+box(s*.04,s*.04,z0,0,['#d9dfe4','#aab4bc','#8a959e'])+
+   box(U,V,s*.04,z0,['#f6f8fa','#d6dce1','#b9c2c9'],{top:`<rect x="${-U*.86}" y="${-V*.82}" width="${U*1.72}" height="${V*1.64}" rx="${s*.05}" fill="#e9eef2" stroke="#c3ccd3" stroke-width=".8"/>`+[-.4,0,.4].map(x=>`<path d="M${U*x} ${-V*.8}V${V*.8}M${-U*.84} ${V*x}H${U*.84}" stroke="#d3dae0" stroke-width=".6"/>`).join('')})+
+   wv(0,-z0-s*.25,s,2);top=-z0-(U+V)*ISO-s*.4}
+ else if(n.t==='gs'){const cy=-s*.62,r=s*.42;
+  g=csh(s*.24,s*.24)+box(s*.24,s*.24,s*.1,0,METAL)+box(s*.05,s*.05,s*.36,s*.1,['#d9dfe4','#aab4bc','#8a959e'])+
+   `<g transform="rotate(-28 0 ${cy})"><ellipse class="ol" cx="0" cy="${cy}" rx="${r}" ry="${r*.42}" fill="url(#t-w)"/><ellipse cx="0" cy="${cy+r*.04}" rx="${r*.8}" ry="${r*.32}" fill="var(--w3)"/>`+
+   `<path d="M${-r*.6} ${cy}L0 ${cy-r*.62}M${r*.6} ${cy}L0 ${cy-r*.62}" stroke="#1b2a22" stroke-width="1.4"/><circle cx="0" cy="${cy-r*.62}" r="${s*.035}" fill="#1b2a22"/></g>`;top=cy-r*.75}
  else return null;
  return {g,top}}
 function device(n,s){let g='',top;
@@ -319,9 +343,9 @@ function device(n,s){let g='',top;
   g=csh(s*.3,s*.2)+box(s*.24,s*.17,s*.035,0,DARK)+box(s*.045,s*.035,s*.3,s*.035,DARK)+box(U,V,Z,z0,['#2b3137','#1e2328','#15181b'],{lf:sc});top=-(U+V)*ISO-Z-z0}
  return {g,top}}
 function nodeSVG(id){const n=NODES[id],s=S,T=s*.82,d=s*.2;const dv=device(n,s);
- const b=`<ellipse class="sh" cx="0" cy="${T*ISO+d-1}" rx="${T*.82}" ry="${T*ISO*.42}"/>`+slab(0,T,d,n.tile,1)+dv.g;
+ const b=`<ellipse class="sh" cx="0" cy="${T*ISO+d-1}" rx="${T*.82}" ry="${T*ISO*.42}"/>`+slab(0,T,d,n.tile,1)+dv.g;const B=n.float?dv.g:b;
  TOP[id]=dv.top;const P0=P(id);
- return `<g transform="translate(${P0.x},${P0.y})"><g class="nd" id="n-${id}"><g class="bd">${b}</g><text class="lbl" y="${BOT+24}">${n.e}</text></g></g>`}
+ return `<g transform="translate(${P0.x},${P0.y})"><g class="nd" id="n-${id}"><g class="bd">${B}</g><text class="lbl" y="${BOT+24}">${n.e}</text></g></g>`}
 function zoneSVG(){if(!ZONES.length)return '';const pad=Math.max(HW,62)+10;return ZONES.map(z=>{const ps=z.ids.map(id=>Object.assign(P(id),{t:TOP[id]||0}));
  const x0=clamp(Math.min(...ps.map(p=>p.x))-pad,4,W),x1=clamp(Math.max(...ps.map(p=>p.x))+pad,0,W-4),y0=clamp(Math.min(...ps.map(p=>p.y+p.t))-30,4,H),y1=clamp(Math.max(...ps.map(p=>p.y))+BOT+40,0,H-4);
  return `<g class="zn ${z.c||''}"><rect x="${x0}" y="${y0}" width="${x1-x0}" height="${y1-y0}" rx="18"/><text x="${x0+14}" y="${y0+18}">${z.l}</text></g>`}).join('')}
